@@ -42,7 +42,7 @@
 
 ## Методы
 * override string ToString()
-* void SetPassword()
+* void SetPassword() - генерирует случайную строку из 10 символов. 
 ...
 
 Тип AttemptDesctription будет разработан в следующих частях
