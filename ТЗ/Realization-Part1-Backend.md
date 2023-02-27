@@ -38,8 +38,8 @@
 * FirstAttempt (AttemptDescription) - get; set
 * SecondAttempt (AttemptDescription) - get; set
 
-Первые 3 поля задаются при инициализации, остальные ставятся в значение поумолчанию.
-
+первые 3 задаются при инициализации, 1 раз
+  
 ## Методы
 * override string ToString()
 * void SetPassword() - генерирует случайную строку из 10 символов. 
