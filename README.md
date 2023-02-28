@@ -12,7 +12,6 @@
 
 ## Подтягиваем мастер
 1. git remote add upstream git@github.com:ilyasvet/TestSimulator.git (делается 1 раз)
-2. git checkout master
 3. git fetch upstream
 4. git merge upstream/master
 
