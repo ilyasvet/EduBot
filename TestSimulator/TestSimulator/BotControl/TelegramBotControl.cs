@@ -17,7 +17,7 @@ namespace TestSimulator.BotControl
         {
             botClient = new TelegramBotClient("6250154721:AAHNyMELX0pyxhX3KbCpWFI8nSCUFdDtiv8");
         }
-        public void TelegramBotController()
+        public void managementTelegramBot()
         {
             botClient.StartReceiving(
                 Update,

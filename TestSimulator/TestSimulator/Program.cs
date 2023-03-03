@@ -13,7 +13,7 @@ namespace TestSimulator
         static void Main(string[] args)
         {
             TelegramBotControl telegramBotControl = new TelegramBotControl();
-            telegramBotControl.TelegramBotController();
+            telegramBotControl.managementTelegramBot();
             Console.ReadLine();
         }
     }
