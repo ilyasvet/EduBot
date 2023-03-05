@@ -11,7 +11,8 @@ namespace Simulator.BotControl
     {
         static void Main(string[] args)
         {
-            TelegramBotControl telegramBotControl = new TelegramBotControl("", "", "");
+            TelegramBotControl telegramBotControl = new TelegramBotControl("6071291263:AAHDfQXU8LbyuUUc_p7Qx-qyObp25Q9ttxg",
+                "", "");
             telegramBotControl.ManagementTelegramBot();
             Console.ReadLine();
         }
