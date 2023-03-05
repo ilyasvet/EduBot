@@ -22,6 +22,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>9.0</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -61,12 +62,14 @@
   <ItemGroup>
     <Compile Include="BotControl\Program.cs" />
     <Compile Include="BotControl\TelegramBotControl.cs" />
-    <Compile Include="Commands\AcceptRequestCommandA.cs" />
+    <Compile Include="Commands\AdminAcceptRequestCommand.cs" />
     <Compile Include="Commands\Command.cs" />
-    <Compile Include="Commands\CommandParameters.cs" />
     <Compile Include="Commands\LogInCommand.cs" />
+    <Compile Include="Commands\NewFolder1\CommandParameters.cs" />
+    <Compile Include="Commands\NewFolder1\CommandResult.cs" />
     <Compile Include="Commands\RegistrationRequestCommand.cs" />
-    <Compile Include="Commands\ShowUsersInfoCommandA.cs" />
+    <Compile Include="Commands\AdminShowUsersInfoCommand.cs" />
+    <Compile Include="Commands\TestCommand.cs" />
     <Compile Include="Commands\WelcomeCommand.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
