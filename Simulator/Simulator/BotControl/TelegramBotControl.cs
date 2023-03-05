@@ -43,6 +43,7 @@ namespace Simulator.BotControl
             if (message.Text != null)
             {
                 Tuple<string, CommandParameters> commandDeclarator = TransformMessageToCommand(message);
+                //kirill L O X
                 commandsDictionary[commandDeclarator.Item1].Execute(commandDeclarator.Item2);
             }
         }
