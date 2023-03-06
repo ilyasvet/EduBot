@@ -5,6 +5,12 @@ namespace Simulator.Models
 {
     public class User
     {
+        private int dbID;
+        public int DbID
+        {
+            get { return dbID; }
+        }
+
         private long userID;
         public long UserID
         {
@@ -106,6 +112,6 @@ namespace Simulator.Models
             Password = password;
         }
 
-        public override string ToString() { return name +" "+ surname; }
+        public override string ToString() { return dbID + " " + name + " " + surname; }
     }
 }
