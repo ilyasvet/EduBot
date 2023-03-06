@@ -94,9 +94,10 @@ namespace Simulator.Models
             }
         }
 
-        public User(long id, string name, string surname)
+        public User(int id, long userId, string name, string surname)
         {
-            this.userID = id;
+            this.dbID = id;
+            this.userID = userId;
             this.name = name;
             this.surname = surname;
         }

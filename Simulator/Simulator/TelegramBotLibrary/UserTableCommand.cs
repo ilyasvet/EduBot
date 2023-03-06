@@ -86,7 +86,7 @@ namespace TelegramBotLibrary
             user = null;
             if (reader.Read())
             {
-                user = new User((long)reader[1], (string)reader[2], (string)reader[3]);
+                user = new User((int)reader[0], (long)reader[1], (string)reader[2], (string)reader[3]);
                 user.SetPassword((string)reader[4]);
                 user.IsAdmin = (bool)reader[5];
                 user.IsOnline = (bool)reader[6];
