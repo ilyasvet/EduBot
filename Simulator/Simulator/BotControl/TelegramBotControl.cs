@@ -37,7 +37,7 @@ namespace Simulator.BotControl
 
         private async Task Update(ITelegramBotClient botClient, Update update, CancellationToken token)
         {
-            if (update.Message.Text != null)
+            if (update.Message?.Text != null)
             {
                 string messageText = update.Message.Text;
                 long userId = update.Message.Chat.Id;
@@ -99,15 +99,15 @@ namespace Simulator.BotControl
             {
                 { "/show", "ShowUsersInfoCommandA" },
                 { "/accept", "AcceptRequestCommandA" },
-                { "/login", "LogInCommand" },
-                { "/registration", "RegistrationRequestCommand" },
+                { "/login", "LogInCommand" },     
                 { "/start", "WelcomeCommand" },
                 { "/a", "TestCommand" },
             };
             accordanceDictionaryButtonCommand = new Dictionary<string, string>()
             {
-                { "UserName", "SetUserNameCommand" },
-                { "UserSurName", "SetUserSurnameCommand"},
+                { "EnterName", "EnterNameCommand" },
+                { "EnterSurname", "EnterSurnameCommand"},
+                { "Registration", "RegistrationRequestCommand" },
             };
         }
     }

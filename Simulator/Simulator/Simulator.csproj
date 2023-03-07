@@ -67,6 +67,7 @@
     <Compile Include="BotControl\TelegramBotControl.cs" />
     <Compile Include="Commands\AdminAcceptRequestCommand.cs" />
     <Compile Include="Commands\Command.cs" />
+    <Compile Include="Commands\EnterUserInfoCommand.cs" />
     <Compile Include="Commands\LogInCommand.cs" />
     <Compile Include="Commands\RegistrationRequestCommand.cs" />
     <Compile Include="Commands\AdminShowUsersInfoCommand.cs" />
@@ -74,6 +75,11 @@
     <Compile Include="Commands\WelcomeCommand.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="TelegramBotLibrary\LocalSqlDbConnection.cs" />
     <Compile Include="TelegramBotLibrary\UserTableCommand.cs" />
   </ItemGroup>
@@ -82,6 +88,11 @@
     <None Include="packages.config" />
     <None Include="TelegramBotLibrary\TelegramBotLibrary.csproj" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
