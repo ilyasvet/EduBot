@@ -1,5 +1,4 @@
 ﻿using Simulator.Commands;
-using Simulator.Commands.ExtensionFiles;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot;
 using Telegram.Bot.Types;
-using TelegramBotLibrary;
+using Telegram.Bot.Types.Enums;
 
 namespace Simulator.BotControl
 {
@@ -16,21 +15,17 @@ namespace Simulator.BotControl
     {
         private TelegramBotClient botClient;
         private static Dictionary<string, Command> commandsDictionary;
-        private static Dictionary<string, string> accordanceDictionary;
-
-        private string serverName;
-        private string dataBaseName;
+        private static Dictionary<string, string> accordanceDictionaryTextCommand;
+        private static Dictionary<string, string> accordanceDictionaryButtonCommand;
 
         static TelegramBotControl()
         {
             FillCommandDictionary();
-            FillAccordanceDictionary();
+            FillAccordanceDictionaries();
         }
-        public TelegramBotControl(string token, string server, string dataBase)
+        public TelegramBotControl(string token)
         {
             botClient = new TelegramBotClient(token);
-            serverName = server;
-            dataBaseName = dataBase;
         }
         public void ManagementTelegramBot()
         {
@@ -42,56 +37,47 @@ namespace Simulator.BotControl
 
         private async Task Update(ITelegramBotClient botClient, Update update, CancellationToken token)
         {
-            var message = update.Message;
-            if (message.Text != null)
+            if (update.Message.Text != null)
             {
-                Tuple<string, CommandParameters> commandDeclarator = TransformMessageToCommand(message);
-                if(commandDeclarator == null)
+                string messageText = update.Message.Text;
+                long userId = update.Message.Chat.Id;
+                if(TextIsCommand(messageText))
                 {
-                    await botClient.SendTextMessageAsync(message.Chat.Id, "Команды нет");
-                    return;
+                    //Тут бот выполняет команду, введённую пользователем
+                    await commandsDictionary[accordanceDictionaryTextCommand[messageText]].Execute(userId, botClient);
                 }
-                CommandResult result = commandsDictionary[commandDeclarator.Item1].Execute(commandDeclarator.Item2);
-                switch (result.Result)
+                else
                 {
-                    case Result.Text:
-                        await botClient.SendTextMessageAsync(message.Chat.Id, result.Text);
-                        break;
-                    case Result.Photo:
-                        await botClient.SendPhotoAsync(message.Chat.Id, result.InputOnlineFile);
-                        break;
+                    //Тут бот принимает от пользователя какие-то данные
+                    await CommandExecuteExtension.Execute(userId, botClient, messageText);
                 }
             }
-            return;
+            if(update.Type == UpdateType.CallbackQuery)
+            {
+                //Тут бот выполняет команду по нажатию на кнопку
+                CallbackQuery callbackQuery = update.CallbackQuery;
+                await commandsDictionary[accordanceDictionaryButtonCommand[callbackQuery.Data]].Execute(
+                    callbackQuery.Message.Chat.Id,
+                    botClient);
+            }
         }
         private async Task Error(ITelegramBotClient botClient, Exception exception, CancellationToken token)
         {
             throw new NotImplementedException();
         }
 
-        private Tuple<string, CommandParameters> TransformMessageToCommand(Message message)
+        private bool TextIsCommand(string text)
         {
-            long senderId = message.Chat.Id;
-            bool isAdmin = false;
-            using (var connection = new LocalSqlDbConnection(serverName, dataBaseName))
+            if (text.StartsWith("/"))
             {
-                using (var command = new UserTableCommand(connection))
+                if (accordanceDictionaryTextCommand.ContainsKey(text))
                 {
-                    isAdmin = command.IsAdmin(senderId);
+                    return true;
                 }
             }
-            string messageText = message.Text;
-            string commandName = messageText.Split(' ')[0];
-            messageText = messageText.Remove(0, commandName.Length).Trim();
-            
-            CommandParameters parameters = new CommandParameters(senderId, isAdmin, messageText);
-            if(accordanceDictionary.ContainsKey(commandName))
-            {
-                commandName = accordanceDictionary[commandName];
-                return new Tuple<string, CommandParameters>(commandName, parameters);
-            }
-            return null;
+            return false;
         }
+
         private static void FillCommandDictionary()
         {
             commandsDictionary = new Dictionary<string, Command>();
@@ -107,15 +93,22 @@ namespace Simulator.BotControl
                 commandsDictionary.Add(type.Name, commandObject);
             }
         }
-        private static void FillAccordanceDictionary()
+        private static void FillAccordanceDictionaries()
         {
-            accordanceDictionary = new Dictionary<string, string>();
-            accordanceDictionary.Add("show", "ShowUsersInfoCommandA");
-            accordanceDictionary.Add("accept", "AcceptRequestCommandA");
-            accordanceDictionary.Add("login", "LogInCommand");
-            accordanceDictionary.Add("registration", "RegistrationRequestCommand");
-            accordanceDictionary.Add("welcome", "WelcomeCommand");
-            accordanceDictionary.Add("a", "TestCommand");
+            accordanceDictionaryTextCommand = new Dictionary<string, string>()
+            {
+                { "/show", "ShowUsersInfoCommandA" },
+                { "/accept", "AcceptRequestCommandA" },
+                { "/login", "LogInCommand" },
+                { "/registration", "RegistrationRequestCommand" },
+                { "/start", "WelcomeCommand" },
+                { "/a", "TestCommand" },
+            };
+            accordanceDictionaryButtonCommand = new Dictionary<string, string>()
+            {
+                { "UserName", "SetUserNameCommand" },
+                { "UserSurName", "SetUserSurnameCommand"},
+            };
         }
     }
 }

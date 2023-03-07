@@ -9,9 +9,7 @@ namespace Simulator.BotControl
         static void Main(string[] args)
         {
             TelegramBotControl telegramBotControl = new TelegramBotControl(
-                ConfigurationManager.AppSettings["BotToken"],
-                ConfigurationManager.AppSettings["ServerName"],
-                ConfigurationManager.AppSettings["DataBaseName"]
+                ConfigurationManager.AppSettings["BotToken"]
                 );
             telegramBotControl.ManagementTelegramBot();
             Console.ReadLine();

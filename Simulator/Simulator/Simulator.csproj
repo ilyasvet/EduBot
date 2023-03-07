@@ -61,20 +61,19 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BotControl\CommandExecuteExtension.cs" />
+    <Compile Include="BotControl\CommandKeyboard.cs" />
     <Compile Include="BotControl\Program.cs" />
     <Compile Include="BotControl\TelegramBotControl.cs" />
     <Compile Include="Commands\AdminAcceptRequestCommand.cs" />
     <Compile Include="Commands\Command.cs" />
     <Compile Include="Commands\LogInCommand.cs" />
-    <Compile Include="Commands\NewFolder1\CommandParameters.cs" />
-    <Compile Include="Commands\NewFolder1\CommandResult.cs" />
     <Compile Include="Commands\RegistrationRequestCommand.cs" />
     <Compile Include="Commands\AdminShowUsersInfoCommand.cs" />
     <Compile Include="Commands\TestCommand.cs" />
     <Compile Include="Commands\WelcomeCommand.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TelegramBotLibrary\AbstractSqlCommand.cs" />
     <Compile Include="TelegramBotLibrary\LocalSqlDbConnection.cs" />
     <Compile Include="TelegramBotLibrary\UserTableCommand.cs" />
   </ItemGroup>

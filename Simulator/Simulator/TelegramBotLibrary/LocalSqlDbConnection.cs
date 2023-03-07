@@ -1,22 +1,23 @@
 ﻿using System;
+using System.Configuration;
 using System.Data.SqlClient;
 
 namespace TelegramBotLibrary
 {
-    public class LocalSqlDbConnection : IDisposable
+    public static class LocalSqlDbConnection
     {
-        public SqlConnection Connection { get; private set; }
+        public static SqlConnection Connection { get; private set; }
         /// <summary>
         /// Создаёт экземпляр подключения к базе данных. Сразу открывает соединение.
         /// </summary>
         /// <param name="serverName"></param>
         /// <param name="dataBaseName"></param>
-        public LocalSqlDbConnection(string serverName, string dataBaseName)
+        static LocalSqlDbConnection()
         {
             SqlConnectionStringBuilder stringBuilder = new SqlConnectionStringBuilder
             {
-                DataSource = serverName,
-                InitialCatalog = dataBaseName,
+                DataSource = ConfigurationManager.AppSettings["ServerName"],
+                InitialCatalog = ConfigurationManager.AppSettings["DataBaseName"],
                 IntegratedSecurity = true,
                 ConnectTimeout = 15,
             };
@@ -24,7 +25,7 @@ namespace TelegramBotLibrary
             Connection.Open();
         }
 
-        public void Dispose()
+        public static void Dispose()
         {
             Connection.Dispose();
         }

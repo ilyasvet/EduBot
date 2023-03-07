@@ -1,12 +1,13 @@
-using Simulator.Commands.ExtensionFiles;
+using System.Threading.Tasks;
+using Telegram.Bot;
 
 namespace Simulator.Commands
 {
   class AdminShowUsersInfoCommand : Command
   {
-    public override CommandResult Execute(CommandParameters commandParameters)
+    public override Task Execute(long userId, ITelegramBotClient botClient)
     {
-            return null;
+       return null;
     }
   }
 }
