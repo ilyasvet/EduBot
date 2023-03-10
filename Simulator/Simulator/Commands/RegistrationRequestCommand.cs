@@ -1,12 +1,22 @@
-using Simulator.Commands.ExtensionFiles;
+using Simulator.BotControl;
+using Simulator.Properties;
+using System.Threading.Tasks;
+using Telegram.Bot;
+using TelegramBotLibrary;
 
 namespace Simulator.Commands
 {
-  class RegistrationRequestCommand : Command
-  {
-    public override CommandResult Execute(CommandParameters commandParameters)
+    class RegistrationRequestCommand : Command
     {
-            return null;
+        public override Task Execute(long userId, ITelegramBotClient botClient)
+        {
+            return Task.Run(() =>
+            {
+                UserTableCommand.AddUser(userId);
+                botClient.SendTextMessageAsync(userId,
+                    text: Resources.RegistrationGuide,
+                    replyMarkup: CommandKeyboard.EnterName);
+            });
         }
-  }
+    }
 }

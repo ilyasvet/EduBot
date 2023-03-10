@@ -1,98 +1,164 @@
-﻿using Simulator.Models;
+﻿using Simulator.BotControl;
+using Simulator.Models;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 
 namespace TelegramBotLibrary
 {
-    public class UserTableCommand : AbstractSqlCommand
+    public static class UserTableCommand
     {
-        public UserTableCommand(LocalSqlDbConnection localConnection) : base(localConnection) { }
+        private static SqlCommand command = new SqlCommand();
 
-        public void AddUser(User user)
+        static UserTableCommand()
         {
-            string commandText = $"insert into Users (UserId, FirstName, Surname)" +
-                $" values ('{user.UserID}','{user.Name}','{user.Surname}')";
+            command.Connection = LocalSqlDbConnection.Connection;
+        }
+   
+        public static void Dispose()
+        {
+            command.Dispose();
+        }
+
+        public static void AddUser(long userID)
+        {
+            string commandText = $"insert into Users (UserId, DialogState)" +
+                $" values ('{userID}','{0}')";
             //Добавлять пользователя (если его нет в базе)
             ExecuteNonQueryCommand(commandText);
         }
-        public bool HasUser(long userId)
+        public static void AddName(long userID, string name)
+        {
+            string commandText = $"update users set Name = '{name}' where UserId = {userID}";
+            ExecuteNonQueryCommand(commandText);
+        }
+        public static void AddSurname(long userID, string surname)
+        {
+            string commandText = $"update users set Surname = '{surname}' where UserId = {userID}";
+            ExecuteNonQueryCommand(commandText);
+        }
+        public static DialogState GetDialogState(long userId)
         {
             string commandText = $"select * from users where UserId = {userId}";
             //Искать по уникальному идентификтаору, есть ли такой пользователь
-            _command.CommandText = commandText;
-            SqlDataReader reader = _command.ExecuteReader();
-            return reader.HasRows;
+            command.CommandText = commandText;
+            using (SqlDataReader reader = command.ExecuteReader())
+            {
+                if (reader.Read())
+                {
+                    return (DialogState)reader[9];
+                }
+            }
+            return DialogState.None;
         }
-        public bool IsAdmin(long userId)
+        public static void SetDialogState(long userId, DialogState state)
+        {
+            string commandText = $"update users set DialogState = '{(int)state}' where UserId = {userId}";
+            ExecuteNonQueryCommand(commandText);
+        }
+        public static bool HasUser(long userId)
         {
             string commandText = $"select * from users where UserId = {userId}";
-            _command.CommandText = commandText;
-            SqlDataReader reader = _command.ExecuteReader();
-            if(reader.Read())
+            //Искать по уникальному идентификтаору, есть ли такой пользователь
+            command.CommandText = commandText;
+            using (SqlDataReader reader = command.ExecuteReader())
             {
-                return (bool)reader[5];
+                return reader.HasRows;
+            }
+        }
+        public static bool IsAdmin(long userId)
+        {
+            string commandText = $"select * from users where UserId = {userId}";
+            command.CommandText = commandText;
+            using (SqlDataReader reader = command.ExecuteReader())
+            {
+                if (reader.Read())
+                {
+                    return (bool)reader[5];
+                }
             }
             throw new ArgumentException();
         }
-        public User GetUserById(long userId)
+        public static bool IsRegistered(long userId)
         {
             string commandText = $"select * from users where UserId = {userId}";
-            _command.CommandText = commandText;
-            SqlDataReader reader = _command.ExecuteReader();
-            GetUserFromReader(reader, out User user);
-            return user;
+            command.CommandText = commandText;
+            using (SqlDataReader reader = command.ExecuteReader())
+            {
+                if (reader.Read())
+                {
+                    return reader[4] == null;
+                }
+            }
+            throw new ArgumentException();
         }
-        public void SetAccess(long userId, bool up)
+        public static User GetUserById(long userId)
         {
-            string commandText = $"update users set IsAdmin = {up} where UserId = {userId}";
+            string commandText = $"select * from users where UserId = {userId}";
+            command.CommandText = commandText;
+            using (SqlDataReader reader = command.ExecuteReader())
+            {
+                GetUserFromReader(reader, out User user);
+                return user;
+            }
+        }
+        public static void SetAccess(long userId, bool up)
+        {
+            string commandText = $"update users set IsAdmin = '{up}' where UserId = {userId}";
             //Назначить пользователя администратором
             ExecuteNonQueryCommand(commandText);
         }
-        public void SetPassword(long userId, string password)
+        public static void SetPassword(long userId, string password)
         {
-            string commandText = $"update users set Password = {password} where UserId = {userId}";
+            string commandText = $"update users set Password = '{password}' where UserId = {userId}";
             //Назначить пароль пользователю
             ExecuteNonQueryCommand(commandText);
         }
-        public void SetOnline(long userId, bool online)
+        public static void SetOnline(long userId, bool online)
         {
-            string commandText = $"update users set Password = {online} where UserId = {userId}";
+            string commandText = $"update users set Password = '{online}' where UserId = {userId}";
             ExecuteNonQueryCommand(commandText);
         }
-        public List<User> GetRegisteredUsers()
+        public static List<User> GetRegisteredUsers()
         {
             string commandText = $"select * from users where password is not null";
             return GetListUsers(commandText);
         }
-        public List<User> GetOnlineUsers()
+        public static List<User> GetOnlineUsers()
         {
             string commandText = $"select * from users where IsOnline is true";
             return GetListUsers(commandText);
         }
-        private List<User> GetListUsers(string commandText)
+        private static List<User> GetListUsers(string commandText)
         {
-            _command.CommandText = commandText;
-            SqlDataReader reader = _command.ExecuteReader();
-            List<User> registeredUsers = new List<User>();
-            while (GetUserFromReader(reader, out User user))
+            command.CommandText = commandText;
+            using (SqlDataReader reader = command.ExecuteReader())
             {
-                registeredUsers.Add(user);
+                List<User> registeredUsers = new List<User>();
+                while (GetUserFromReader(reader, out User user))
+                {
+                    registeredUsers.Add(user);
+                }
+                return registeredUsers;
             }
-            return registeredUsers;
         }
-        private bool GetUserFromReader(SqlDataReader reader, out User user)
+        private static bool GetUserFromReader(SqlDataReader reader, out User user)
         {
             user = null;
             if (reader.Read())
             {
-                user = new User((long)reader[1], (string)reader[2], (string)reader[3]);
+                user = new User((int)reader[0], (long)reader[1], (string)reader[2], (string)reader[3]);
                 user.SetPassword((string)reader[4]);
                 user.IsAdmin = (bool)reader[5];
                 user.IsOnline = (bool)reader[6];
                 return true;
             }
             return false;
+        }
+        private static void ExecuteNonQueryCommand(string commandText)
+        {
+            command.CommandText = commandText;
+            command.ExecuteNonQuery();
         }
     }
 }

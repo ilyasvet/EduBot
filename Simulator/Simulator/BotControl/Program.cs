@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Configuration;
 
 
 namespace Simulator.BotControl
@@ -11,8 +8,9 @@ namespace Simulator.BotControl
     {
         static void Main(string[] args)
         {
-            TelegramBotControl telegramBotControl = new TelegramBotControl("6071291263:AAHDfQXU8LbyuUUc_p7Qx-qyObp25Q9ttxg",
-                "", "");
+            TelegramBotControl telegramBotControl = new TelegramBotControl(
+                ConfigurationManager.AppSettings["BotToken"]
+                );
             telegramBotControl.ManagementTelegramBot();
             Console.ReadLine();
         }
