@@ -138,6 +138,9 @@
   <data name="WelcomeKnown" xml:space="preserve">
     <value>С возвращением! Давайте скорей продолжим :)</value>
   </data>
+  <data name="RequestPassword" xml:space="preserve">
+    <value>Для продолжения введите пароль</value>
+  </data>
   <data name="WelcomeUnknown" xml:space="preserve">
     <value>Приветствуем! Мы ещё не знакомы.</value>
   </data>
