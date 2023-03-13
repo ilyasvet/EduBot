@@ -12,9 +12,9 @@ namespace Simulator.Commands
         {
             return Task.Run(() =>
             {
-                UserTableCommand.SetDialogState(userId, DialogState.RegistrationName);
+                UserTableCommand.SetDialogState(userId, DialogState.LoginName);
                 botClient.SendTextMessageAsync(userId,
-                    text: Resources.RegistrationName);
+                    text: Resources.LoginName);
             });
         }
     }
@@ -24,9 +24,9 @@ namespace Simulator.Commands
         {
             return Task.Run(() =>
             {
-                UserTableCommand.SetDialogState(userId, DialogState.RegistrationSurname);
+                UserTableCommand.SetDialogState(userId, DialogState.LoginSurname);
                 botClient.SendTextMessageAsync(userId,
-                    text: Resources.RegistrationSurname);
+                    text: Resources.LoginSurname);
             });
         }
     }

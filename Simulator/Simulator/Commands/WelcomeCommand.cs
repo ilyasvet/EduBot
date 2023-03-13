@@ -14,26 +14,16 @@ namespace Simulator.Commands
             {
                 if (UserTableCommand.HasUser(userId))
                 {
-                    if (UserTableCommand.IsRegistered(userId))
-                    {
-                        botClient.SendTextMessageAsync(
+                    botClient.SendTextMessageAsync(
                             chatId: userId,
                             text: Resources.WelcomeKnown,
                             replyMarkup: CommandKeyboard.LogIn);
-                    }
-                    else
-                    {
-                        botClient.SendTextMessageAsync(
-                            chatId: userId,
-                            text: Resources.WeclomeUnregistered);
-                    }
                 }
                 else
                 {
                     botClient.SendTextMessageAsync(
                             chatId: userId,
-                            text: Resources.WelcomeUnknown,
-                            replyMarkup: CommandKeyboard.Registration);
+                            text: Resources.WelcomeUnknown);
                 }
             });
         }

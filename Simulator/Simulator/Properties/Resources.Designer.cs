@@ -61,6 +61,42 @@ namespace Simulator.Properties {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на Введите имя.
+        /// </summary>
+        internal static string LoginName {
+            get {
+                return ResourceManager.GetString("LoginName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Отлично, теперь фамилия.
+        /// </summary>
+        internal static string LoginNameSuccess {
+            get {
+                return ResourceManager.GetString("LoginNameSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Введите фамилию.
+        /// </summary>
+        internal static string LoginSurname {
+            get {
+                return ResourceManager.GetString("LoginSurname", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Заявка отправлена администратору.
+        /// </summary>
+        internal static string LoginSurnameSuccess {
+            get {
+                return ResourceManager.GetString("LoginSurnameSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на Для регистрации Вам необходимо ввести свои имя и фамилию (не менее 2х символов, только кириллица).
         /// </summary>
         internal static string RegistrationGuide {
@@ -70,52 +106,7 @@ namespace Simulator.Properties {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Введите имя.
-        /// </summary>
-        internal static string RegistrationName {
-            get {
-                return ResourceManager.GetString("RegistrationName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Ищет локализованную строку, похожую на Отлично, теперь фамилия.
-        /// </summary>
-        internal static string RegistrationNameSuccess {
-            get {
-                return ResourceManager.GetString("RegistrationNameSuccess", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Ищет локализованную строку, похожую на Введите фамилию.
-        /// </summary>
-        internal static string RegistrationSurname {
-            get {
-                return ResourceManager.GetString("RegistrationSurname", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Ищет локализованную строку, похожую на Заявка отправлена администратору.
-        /// </summary>
-        internal static string RegistrationSurnameSuccess {
-            get {
-                return ResourceManager.GetString("RegistrationSurnameSuccess", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Ищет локализованную строку, похожую на Снова приветствуем. Ваша заявка ещё в рассмотрении....
-        /// </summary>
-        internal static string WeclomeUnregistered {
-            get {
-                return ResourceManager.GetString("WeclomeUnregistered", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Ищет локализованную строку, похожую на С возвращением! Давайте скорей продолжим :).
+        ///   Ищет локализованную строку, похожую на Здравствуйте, вы уже записаны на этот курс.
         /// </summary>
         internal static string WelcomeKnown {
             get {
@@ -124,7 +115,7 @@ namespace Simulator.Properties {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Приветствуем! Мы ещё не знакомы..
+        ///   Ищет локализованную строку, похожую на Приветствуем! К сожалению, вам недоступен этот курс.
         /// </summary>
         internal static string WelcomeUnknown {
             get {
