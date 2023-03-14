@@ -80,6 +80,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="TelegramBotLibrary\IGroupTableCommand.cs" />
     <Compile Include="TelegramBotLibrary\LocalSqlDbConnection.cs" />
     <Compile Include="TelegramBotLibrary\UserTableCommand.cs" />
   </ItemGroup>
