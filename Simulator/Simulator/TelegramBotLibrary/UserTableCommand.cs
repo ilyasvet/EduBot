@@ -20,21 +20,11 @@ namespace TelegramBotLibrary
             command.Dispose();
         }
 
-        public static void AddUser(long userID)
+        public static void AddUser(User user)
         {
-            string commandText = $"insert into Users (UserId, DialogState)" +
-                $" values ('{userID}','{0}')";
+            string commandText = $"insert into Users (UserId, Name, Surname, DialogState)" +
+                $" values ('{user.UserID}','{user.Name}','{user.Surname}','{0}')";
             //Добавлять пользователя (если его нет в базе)
-            ExecuteNonQueryCommand(commandText);
-        }
-        public static void AddName(long userID, string name)
-        {
-            string commandText = $"update users set Name = '{name}' where UserId = {userID}";
-            ExecuteNonQueryCommand(commandText);
-        }
-        public static void AddSurname(long userID, string surname)
-        {
-            string commandText = $"update users set Surname = '{surname}' where UserId = {userID}";
             ExecuteNonQueryCommand(commandText);
         }
         public static DialogState GetDialogState(long userId)
@@ -79,19 +69,6 @@ namespace TelegramBotLibrary
             }
             throw new ArgumentException();
         }
-        public static bool IsRegistered(long userId)
-        {
-            string commandText = $"select * from users where UserId = {userId}";
-            command.CommandText = commandText;
-            using (SqlDataReader reader = command.ExecuteReader())
-            {
-                if (reader.Read())
-                {
-                    return reader[4] == null;
-                }
-            }
-            throw new ArgumentException();
-        }
         public static User GetUserById(long userId)
         {
             string commandText = $"select * from users where UserId = {userId}";
@@ -107,27 +84,6 @@ namespace TelegramBotLibrary
             string commandText = $"update users set IsAdmin = '{up}' where UserId = {userId}";
             //Назначить пользователя администратором
             ExecuteNonQueryCommand(commandText);
-        }
-        public static void SetPassword(long userId, string password)
-        {
-            string commandText = $"update users set Password = '{password}' where UserId = {userId}";
-            //Назначить пароль пользователю
-            ExecuteNonQueryCommand(commandText);
-        }
-        public static void SetOnline(long userId, bool online)
-        {
-            string commandText = $"update users set Password = '{online}' where UserId = {userId}";
-            ExecuteNonQueryCommand(commandText);
-        }
-        public static List<User> GetRegisteredUsers()
-        {
-            string commandText = $"select * from users where password is not null";
-            return GetListUsers(commandText);
-        }
-        public static List<User> GetOnlineUsers()
-        {
-            string commandText = $"select * from users where IsOnline is true";
-            return GetListUsers(commandText);
         }
         private static List<User> GetListUsers(string commandText)
         {
@@ -147,10 +103,9 @@ namespace TelegramBotLibrary
             user = null;
             if (reader.Read())
             {
-                user = new User((int)reader[0], (long)reader[1], (string)reader[2], (string)reader[3]);
-                user.SetPassword((string)reader[4]);
-                user.IsAdmin = (bool)reader[5];
-                user.IsOnline = (bool)reader[6];
+                user = new User((long)reader["UserID"], (string)reader["Name"], (string)reader["Surname"]);
+                user.IsAdmin = (bool)reader["IsAdmin"];
+                user.GroupId = (int)reader["GroupId"];
                 return true;
             }
             return false;

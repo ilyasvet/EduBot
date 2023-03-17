@@ -4,13 +4,6 @@ namespace Simulator.BotControl
 {
     public static class CommandKeyboard
     {
-        public static InlineKeyboardMarkup Registration = new(new[]
-        {
-            new[]
-            {
-                InlineKeyboardButton.WithCallbackData("Регистрация", "Registration")
-            },
-        });
         public static InlineKeyboardMarkup LogIn = new(new[]
         {
             new[]

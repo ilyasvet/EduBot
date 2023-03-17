@@ -98,8 +98,6 @@ namespace Simulator.BotControl
             accordanceDictionaryTextCommand = new Dictionary<string, string>()
             {
                 { "/show", "ShowUsersInfoCommandA" },
-                { "/accept", "AcceptRequestCommandA" },
-                { "/login", "LogInCommand" },     
                 { "/start", "WelcomeCommand" },
                 { "/a", "TestCommand" },
             };
@@ -107,7 +105,7 @@ namespace Simulator.BotControl
             {
                 { "EnterName", "EnterNameCommand" },
                 { "EnterSurname", "EnterSurnameCommand"},
-                { "Registration", "RegistrationRequestCommand" },
+                { "Login", "LogInCommand" },
             };
         }
     }
