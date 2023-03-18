@@ -117,28 +117,19 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="LoginName" xml:space="preserve">
-    <value>Введите имя</value>
+  <data name="EnterPassword" xml:space="preserve">
+    <value>Введите пароль</value>
   </data>
-  <data name="LoginNameSuccess" xml:space="preserve">
-    <value>Отлично, теперь фамилия</value>
-  </data>
-  <data name="LoginSurname" xml:space="preserve">
-    <value>Введите фамилию</value>
-  </data>
-  <data name="LoginSurnameSuccess" xml:space="preserve">
-    <value>Заявка отправлена администратору</value>
-  </data>
-  <data name="RegistrationGuide" xml:space="preserve">
-    <value>Для регистрации Вам необходимо ввести свои имя и фамилию (не менее 2х символов, только кириллица)</value>
+  <data name="RightPassword" xml:space="preserve">
+    <value>Вход совершён успешно, переходим в главное меню</value>
   </data>
   <data name="WelcomeKnown" xml:space="preserve">
     <value>Здравствуйте, вы уже записаны на этот курс</value>
   </data>
-  <data name="RequestPassword" xml:space="preserve">
-    <value>Для продолжения введите пароль</value>
-  </data>
   <data name="WelcomeUnknown" xml:space="preserve">
     <value>Приветствуем! К сожалению, вам недоступен этот курс</value>
+  </data>
+  <data name="WrongPassword" xml:space="preserve">
+    <value>Пароль неверный, попробуйте ещё раз</value>
   </data>
 </root>

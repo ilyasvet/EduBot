@@ -1,7 +1,4 @@
-using Simulator.BotControl;
 using Simulator.Models;
-using System;
-using System.Collections.Generic;
 using System.Data.SqlClient;
 
 namespace Simulator.TelegramBotLibrary
@@ -27,13 +24,13 @@ namespace Simulator.TelegramBotLibrary
             using (SqlDataReader reader = command.ExecuteReader())
             {
                 GetGroupFromReader(reader, out Group group);
-                return group["Password"];
+                return group.Password;
             }
         }
         
         public static void SetPassword(int groupId, string password)
         {
-            string commandText = $"update Groups set Password = '{password}' where GroupNumber = '{groupNumber}'";
+            string commandText = $"update Groups set Password = '{password}' where ID = '{groupId}'";
             ExecuteNonQueryCommand(commandText);
         }
 
@@ -66,7 +63,8 @@ namespace Simulator.TelegramBotLibrary
             group = null;
             if (reader.Read())
             {
-                user = new User((int)reader["GroupNumber"], (string)reader["Password"]);
+                group = new Group((int)reader["GroupNumber"]);
+                group.Password = (string)reader["Password"];
                 return true;
             }
             return false;

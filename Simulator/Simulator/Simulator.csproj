@@ -67,10 +67,8 @@
     <Compile Include="BotControl\TelegramBotControl.cs" />
     <Compile Include="Commands\AdminAcceptRequestCommand.cs" />
     <Compile Include="Commands\Command.cs" />
-    <Compile Include="Commands\EnterUserInfoCommand.cs" />
     <Compile Include="Commands\LogInCommand.cs" />
     <Compile Include="Commands\AdminShowUsersInfoCommand.cs" />
-    <Compile Include="Commands\TestCommand.cs" />
     <Compile Include="Commands\WelcomeCommand.cs" />
     <Compile Include="Models\Group.cs" />
     <Compile Include="Models\User.cs" />
@@ -80,7 +78,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="TelegramBotLibrary\IGroupTableCommand.cs" />
+    <Compile Include="TelegramBotLibrary\GroupTableCommand.cs" />
     <Compile Include="TelegramBotLibrary\LocalSqlDbConnection.cs" />
     <Compile Include="TelegramBotLibrary\UserTableCommand.cs" />
   </ItemGroup>

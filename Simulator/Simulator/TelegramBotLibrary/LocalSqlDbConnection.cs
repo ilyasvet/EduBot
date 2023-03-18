@@ -1,8 +1,7 @@
-﻿using System;
-using System.Configuration;
+﻿using System.Configuration;
 using System.Data.SqlClient;
 
-namespace TelegramBotLibrary
+namespace Simulator.TelegramBotLibrary
 {
     public static class LocalSqlDbConnection
     {

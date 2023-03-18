@@ -1,17 +1,15 @@
-﻿using Simulator.Properties;
-using System;
-using System.Configuration;
+﻿using Simulator.Models;
+using Simulator.Properties;
+using Simulator.TelegramBotLibrary;
 using System.Threading.Tasks;
 using Telegram.Bot;
-using TelegramBotLibrary;
 
 namespace Simulator.BotControl
 {
     public enum DialogState
     {
         None,
-        LoginName,
-        LoginSurname,
+        EnterPassword,
     }
     public static class CommandExecuteExtension
     {
@@ -24,14 +22,33 @@ namespace Simulator.BotControl
                 {
                     case DialogState.None:
                         break;
-                    case DialogState.LoginName:
-                        break;
-                    case DialogState.LoginSurname:
+                    case DialogState.EnterPassword:
+                        CheckPassword(userId, botClient, message);
                         break;
                     default:
                         break;
                 }
             });
+        }
+
+        private static void CheckPassword(long userId, ITelegramBotClient botClient, string password)
+        {
+            User user = UserTableCommand.GetUserById(userId);
+            string groupPassword = GroupTableCommand.GetPassword(user.GroupId);
+            if(password == groupPassword)
+            {
+                UserTableCommand.SetDialogState(userId, DialogState.None);
+                botClient.SendTextMessageAsync(
+                            chatId: userId,
+                            text: Resources.RightPassword,
+                            replyMarkup: CommandKeyboard.MainMenuUser);
+            }
+            else
+            {
+                botClient.SendTextMessageAsync(
+                            chatId: userId,
+                            text: Resources.WrongPassword);
+            }
         }
     }
 }

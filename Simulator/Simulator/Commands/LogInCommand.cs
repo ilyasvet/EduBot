@@ -1,22 +1,20 @@
-using System.Threading.Tasks;
 using Simulator.BotControl;
 using Simulator.Properties;
+using System.Threading.Tasks;
 using Telegram.Bot;
-using TelegramBotLibrary;
+using Simulator.TelegramBotLibrary;
 
 namespace Simulator.Commands
 {
-  class LogInCommand : Command
-  {
-    public override Task Execute(long userId, ITelegramBotClient botClient)
+    class LogInCommand : Command
     {
-        return Task.Run(() =>
+        public override Task Execute(long userId, ITelegramBotClient botClient)
         {
-            botClient.SendTextMessageAsync(
-                chatId: userId,
-                text: Resources.RequestPassword,
-                replyMarkup: CommandKeyboard.EnterPassword);
-        });
+            return Task.Run(() =>
+            {
+                UserTableCommand.SetDialogState(userId, DialogState.EnterPassword);
+                botClient.SendTextMessageAsync(userId, Resources.EnterPassword);
+            });
+        }
     }
-  }
 }

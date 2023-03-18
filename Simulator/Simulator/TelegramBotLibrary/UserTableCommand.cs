@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 
-namespace TelegramBotLibrary
+namespace Simulator.TelegramBotLibrary
 {
     public static class UserTableCommand
     {

@@ -12,32 +12,46 @@ namespace Simulator.Properties {
     using System;
     
     
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
-    [System.Diagnostics.DebuggerNonUserCodeAttribute()]
-    [System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
+    /// <summary>
+    ///   Класс ресурса со строгой типизацией для поиска локализованных строк и т.д.
+    /// </summary>
+    // Этот класс создан автоматически классом StronglyTypedResourceBuilder
+    // с помощью такого средства, как ResGen или Visual Studio.
+    // Чтобы добавить или удалить член, измените файл .ResX и снова запустите ResGen
+    // с параметром /str или перестройте свой проект VS.
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+    [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Resources {
         
-        private static System.Resources.ResourceManager resourceMan;
+        private static global::System.Resources.ResourceManager resourceMan;
         
-        private static System.Globalization.CultureInfo resourceCulture;
+        private static global::System.Globalization.CultureInfo resourceCulture;
         
-        [System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
+        [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         internal Resources() {
         }
         
-        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static System.Resources.ResourceManager ResourceManager {
+        /// <summary>
+        ///   Возвращает кэшированный экземпляр ResourceManager, использованный этим классом.
+        /// </summary>
+        [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
+        internal static global::System.Resources.ResourceManager ResourceManager {
             get {
-                if (object.Equals(null, resourceMan)) {
-                    System.Resources.ResourceManager temp = new System.Resources.ResourceManager("Simulator.Properties.Resources", typeof(Resources).Assembly);
+                if (object.ReferenceEquals(resourceMan, null)) {
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Simulator.Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
             }
         }
         
-        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static System.Globalization.CultureInfo Culture {
+        /// <summary>
+        ///   Перезаписывает свойство CurrentUICulture текущего потока для всех
+        ///   обращений к ресурсу с помощью этого класса ресурса со строгой типизацией.
+        /// </summary>
+        [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
+        internal static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -47,47 +61,20 @@ namespace Simulator.Properties {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Введите имя.
+        ///   Ищет локализованную строку, похожую на Введите пароль.
         /// </summary>
-        internal static string LoginName {
+        internal static string EnterPassword {
             get {
-                return ResourceManager.GetString("LoginName", resourceCulture);
+                return ResourceManager.GetString("EnterPassword", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Отлично, теперь фамилия.
+        ///   Ищет локализованную строку, похожую на Вход совершён успешно, переходим в главное меню.
         /// </summary>
-        internal static string LoginNameSuccess {
+        internal static string RightPassword {
             get {
-                return ResourceManager.GetString("LoginNameSuccess", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Ищет локализованную строку, похожую на Введите фамилию.
-        /// </summary>
-        internal static string LoginSurname {
-            get {
-                return ResourceManager.GetString("LoginSurname", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Ищет локализованную строку, похожую на Заявка отправлена администратору.
-        /// </summary>
-        internal static string LoginSurnameSuccess {
-            get {
-                return ResourceManager.GetString("LoginSurnameSuccess", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Ищет локализованную строку, похожую на Для регистрации Вам необходимо ввести свои имя и фамилию (не менее 2х символов, только кириллица).
-        /// </summary>
-        internal static string RegistrationGuide {
-            get {
-                return ResourceManager.GetString("RegistrationGuide", resourceCulture);
+                return ResourceManager.GetString("RightPassword", resourceCulture);
             }
         }
         
@@ -103,15 +90,18 @@ namespace Simulator.Properties {
         /// <summary>
         ///   Ищет локализованную строку, похожую на Приветствуем! К сожалению, вам недоступен этот курс.
         /// </summary>
-        internal static string RequestPassword {
-            get {
-                return ResourceManager.GetString("RequestPassword", resourceCulture);
-            }
-        }
-        
         internal static string WelcomeUnknown {
             get {
                 return ResourceManager.GetString("WelcomeUnknown", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Пароль неверный, попробуйте ещё раз.
+        /// </summary>
+        internal static string WrongPassword {
+            get {
+                return ResourceManager.GetString("WrongPassword", resourceCulture);
             }
         }
     }

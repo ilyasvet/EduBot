@@ -2,7 +2,7 @@ using Simulator.BotControl;
 using Simulator.Properties;
 using System.Threading.Tasks;
 using Telegram.Bot;
-using TelegramBotLibrary;
+using Simulator.TelegramBotLibrary;
 
 namespace Simulator.Commands
 {
