@@ -6,7 +6,7 @@ using System.Data.SqlClient;
 
 namespace Simulator.TelegramBotLibrary
 {
-    public static class GroupTableCommand : IGroupTableCommand
+    public static class GroupTableCommand
     {
         private static SqlCommand command = new SqlCommand();
         
@@ -20,7 +20,7 @@ namespace Simulator.TelegramBotLibrary
             command.Dispose();
         }
         
-        public string GetPassword(int groupId)
+        public static string GetPassword(int groupId)
         {
             string commandText = $"select * from groups where groupId = {groupId}";
             command.CommandText = commandText;
@@ -31,20 +31,20 @@ namespace Simulator.TelegramBotLibrary
             }
         }
         
-        public void SetPassword(int groupId, string password)
+        public static void SetPassword(int groupId, string password)
         {
             string commandText = $"update Groups set Password = '{password}' where GroupNumber = '{groupNumber}'";
             ExecuteNonQueryCommand(commandText);
         }
 
-        public void AddGroup(Group group)
+        public static void AddGroup(Group group)
         {
             string commandText = $"insert into Groups (GroupNumber, Password)" +
                                  $" values ('{group.GroupNumber}','{group.Password}')";
             ExecuteNonQueryCommand(commandText);
         }
 
-        public Group GetGroup(int groupId)
+        public static Group GetGroup(int groupId)
         {
             string commandText = $"select * from groups where groupId = {groupId}";
             command.CommandText = commandText;
@@ -55,7 +55,7 @@ namespace Simulator.TelegramBotLibrary
             }
         }
 
-        public void DeleteGroup(int groupId)
+        public static void DeleteGroup(int groupId)
         {
             string commandText = $"delete from Groups where groupId = '{groupId}'";
             ExecuteNonQueryCommand(commandText);
