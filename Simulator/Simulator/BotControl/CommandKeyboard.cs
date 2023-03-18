@@ -25,6 +25,13 @@ namespace Simulator.BotControl
                 InlineKeyboardButton.WithCallbackData("Ввести фамилию", "EnterSurname")
             },
         });
+        public static InlineKeyboardMarkup EnterPassword = new(new[]
+        {
+            new[]
+            {
+                InlineKeyboardButton.WithCallbackData("Ввести пароль", "EnterPassword")
+            },
+        });
     }
    
 }

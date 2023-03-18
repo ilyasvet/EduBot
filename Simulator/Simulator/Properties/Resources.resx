@@ -135,6 +135,9 @@
   <data name="WelcomeKnown" xml:space="preserve">
     <value>Здравствуйте, вы уже записаны на этот курс</value>
   </data>
+  <data name="RequestPassword" xml:space="preserve">
+    <value>Для продолжения введите пароль</value>
+  </data>
   <data name="WelcomeUnknown" xml:space="preserve">
     <value>Приветствуем! К сожалению, вам недоступен этот курс</value>
   </data>

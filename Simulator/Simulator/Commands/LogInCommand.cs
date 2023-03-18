@@ -1,5 +1,8 @@
 using System.Threading.Tasks;
+using Simulator.BotControl;
+using Simulator.Properties;
 using Telegram.Bot;
+using TelegramBotLibrary;
 
 namespace Simulator.Commands
 {
@@ -7,7 +10,13 @@ namespace Simulator.Commands
   {
     public override Task Execute(long userId, ITelegramBotClient botClient)
     {
-       return null;
+        return Task.Run(() =>
+        {
+            botClient.SendTextMessageAsync(
+                chatId: userId,
+                text: Resources.RequestPassword,
+                replyMarkup: CommandKeyboard.EnterPassword);
+        });
     }
   }
 }
