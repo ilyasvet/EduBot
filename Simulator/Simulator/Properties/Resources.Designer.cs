@@ -61,6 +61,15 @@ namespace Simulator.Properties {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на Это меню администратора.
+        /// </summary>
+        internal static string AdminMenu {
+            get {
+                return ResourceManager.GetString("AdminMenu", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на Введите пароль.
         /// </summary>
         internal static string EnterPassword {
@@ -79,11 +88,29 @@ namespace Simulator.Properties {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на Это меню пользователя.
+        /// </summary>
+        internal static string UserMenu {
+            get {
+                return ResourceManager.GetString("UserMenu", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на Здравствуйте, вы уже записаны на этот курс.
         /// </summary>
         internal static string WelcomeKnown {
             get {
                 return ResourceManager.GetString("WelcomeKnown", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Приветствуем, вы администратор, как неожиданно и приятно!).
+        /// </summary>
+        internal static string WelcomeKnownAdmin {
+            get {
+                return ResourceManager.GetString("WelcomeKnownAdmin", resourceCulture);
             }
         }
         

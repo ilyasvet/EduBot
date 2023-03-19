@@ -117,14 +117,23 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AdminMenu" xml:space="preserve">
+    <value>Это меню администратора</value>
+  </data>
   <data name="EnterPassword" xml:space="preserve">
     <value>Введите пароль</value>
   </data>
   <data name="RightPassword" xml:space="preserve">
     <value>Вход совершён успешно, переходим в главное меню</value>
   </data>
+  <data name="UserMenu" xml:space="preserve">
+    <value>Это меню пользователя</value>
+  </data>
   <data name="WelcomeKnown" xml:space="preserve">
     <value>Здравствуйте, вы уже записаны на этот курс</value>
+  </data>
+  <data name="WelcomeKnownAdmin" xml:space="preserve">
+    <value>Приветствуем, вы администратор, как неожиданно и приятно!)</value>
   </data>
   <data name="WelcomeUnknown" xml:space="preserve">
     <value>Приветствуем! К сожалению, вам недоступен этот курс</value>

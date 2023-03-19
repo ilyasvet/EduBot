@@ -67,6 +67,8 @@
     <Compile Include="BotControl\TelegramBotControl.cs" />
     <Compile Include="Commands\AdminAcceptRequestCommand.cs" />
     <Compile Include="Commands\Command.cs" />
+    <Compile Include="Commands\GoToMainMenuAdminCommand.cs" />
+    <Compile Include="Commands\GoToMainMenuUserCommand.cs" />
     <Compile Include="Commands\LogInCommand.cs" />
     <Compile Include="Commands\AdminShowUsersInfoCommand.cs" />
     <Compile Include="Commands\WelcomeCommand.cs" />

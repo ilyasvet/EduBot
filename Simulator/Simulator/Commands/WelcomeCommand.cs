@@ -14,10 +14,20 @@ namespace Simulator.Commands
             {
                 if (UserTableCommand.HasUser(userId))
                 {
-                    botClient.SendTextMessageAsync(
+                    if(!UserTableCommand.IsAdmin(userId))
+                    {
+                        botClient.SendTextMessageAsync(
                             chatId: userId,
                             text: Resources.WelcomeKnown,
                             replyMarkup: CommandKeyboard.LogIn);
+                    }
+                    else
+                    {
+                        botClient.SendTextMessageAsync(
+                            chatId: userId,
+                            text: Resources.WelcomeKnownAdmin,
+                            replyMarkup: CommandKeyboard.ToMainMenuAdmin);
+                    }
                 }
                 else
                 {

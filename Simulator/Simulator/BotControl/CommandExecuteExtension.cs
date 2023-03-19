@@ -41,7 +41,7 @@ namespace Simulator.BotControl
                 botClient.SendTextMessageAsync(
                             chatId: userId,
                             text: Resources.RightPassword,
-                            replyMarkup: CommandKeyboard.MainMenuUser);
+                            replyMarkup: CommandKeyboard.ToMainMenuUser);
             }
             else
             {
