@@ -49,7 +49,7 @@ namespace Simulator.BotControl
                 else
                 {
                     //Тут бот принимает от пользователя какие-то данные
-                    await CommandExecuteExtension.Execute(userId, botClient, messageText);
+                    await CommandExecuteExtensionText.Execute(userId, botClient, messageText);
                 }
             }
             if(update.Type == UpdateType.CallbackQuery)

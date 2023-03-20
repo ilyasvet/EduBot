@@ -11,7 +11,7 @@ namespace Simulator.BotControl
         None,
         EnterPassword,
     }
-    public static class CommandExecuteExtension
+    public static class CommandExecuteExtensionText
     {
         public static Task Execute(long userId, ITelegramBotClient botClient, string message)
         {

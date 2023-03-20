@@ -61,7 +61,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BotControl\CommandExecuteExtension.cs" />
+    <Compile Include="BotControl\CommandExecuteExtensionText.cs" />
     <Compile Include="BotControl\CommandKeyboard.cs" />
     <Compile Include="BotControl\Program.cs" />
     <Compile Include="BotControl\TelegramBotControl.cs" />
