@@ -19,15 +19,23 @@ namespace Simulator.TelegramBotLibrary
         
         public static string GetPassword(int groupId)
         {
-            string commandText = $"select * from groups where groupId = {groupId}";
+            string commandText = $"select * from groups where ID = {groupId}";
             command.CommandText = commandText;
             using (SqlDataReader reader = command.ExecuteReader())
             {
-                GetGroupFromReader(reader, out Group group);
-                return group.Password;
+                return (string)reader["Password"];
             }
         }
-        
+        public static int GetGroupId(int groupNumber)
+        {
+            string commandText = $"select * from groups where GroupNumber = {groupNumber}";
+            command.CommandText = commandText;
+            using (SqlDataReader reader = command.ExecuteReader())
+            {
+                return (int)reader["ID"];
+            }
+        }
+
         public static void SetPassword(int groupId, string password)
         {
             string commandText = $"update Groups set Password = '{password}' where ID = '{groupId}'";
@@ -43,7 +51,7 @@ namespace Simulator.TelegramBotLibrary
 
         public static Group GetGroup(int groupId)
         {
-            string commandText = $"select * from groups where groupId = {groupId}";
+            string commandText = $"select * from groups where ID = {groupId}";
             command.CommandText = commandText;
             using (SqlDataReader reader = command.ExecuteReader())
             {
@@ -54,7 +62,7 @@ namespace Simulator.TelegramBotLibrary
 
         public static void DeleteGroup(int groupId)
         {
-            string commandText = $"delete from Groups where groupId = '{groupId}'";
+            string commandText = $"delete from Groups where ID = '{groupId}'";
             ExecuteNonQueryCommand(commandText);
         }
         
