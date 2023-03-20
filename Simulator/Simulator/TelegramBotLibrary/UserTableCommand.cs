@@ -85,9 +85,9 @@ namespace Simulator.TelegramBotLibrary
             //Назначить пользователя администратором
             ExecuteNonQueryCommand(commandText);
         }
-        private static List<User> GetListUsers(string commandText)
+        public static List<User> GetListUsers()
         {
-            command.CommandText = commandText;
+            command.CommandText = $"select * from users";
             using (SqlDataReader reader = command.ExecuteReader())
             {
                 List<User> registeredUsers = new List<User>();

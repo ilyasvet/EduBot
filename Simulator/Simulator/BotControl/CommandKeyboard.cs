@@ -29,14 +29,14 @@ namespace Simulator.BotControl
         {
             new[]
             {
-                InlineKeyboardButton.WithCallbackData("Затычка", "AssPlug") //Тут будут кнопки для меню админа
+                InlineKeyboardButton.WithCallbackData("Список пользователей", "ListUsers")
             },
         });
         public static InlineKeyboardMarkup UserMenu = new(new[]
         {
             new[]
             {
-                InlineKeyboardButton.WithCallbackData("Затычка", "AssPlug") //Тут будут кнопки для меню пользователя
+                InlineKeyboardButton.WithCallbackData("Карточка пользователя", "UserCard")
             },
         });
     }

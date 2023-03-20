@@ -126,6 +126,12 @@
   <data name="RightPassword" xml:space="preserve">
     <value>Вход совершён успешно, переходим в главное меню</value>
   </data>
+  <data name="ShowUsers" xml:space="preserve">
+    <value>Список пользователей, добавленных на курс</value>
+  </data>
+  <data name="UserCard" xml:space="preserve">
+    <value>Это ваша персональная карточка</value>
+  </data>
   <data name="UserMenu" xml:space="preserve">
     <value>Это меню пользователя</value>
   </data>

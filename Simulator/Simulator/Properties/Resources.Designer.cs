@@ -88,6 +88,24 @@ namespace Simulator.Properties {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на Список пользователей, добавленных на курс.
+        /// </summary>
+        internal static string ShowUsers {
+            get {
+                return ResourceManager.GetString("ShowUsers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Это ваша персональная карточка.
+        /// </summary>
+        internal static string UserCard {
+            get {
+                return ResourceManager.GetString("UserCard", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на Это меню пользователя.
         /// </summary>
         internal static string UserMenu {

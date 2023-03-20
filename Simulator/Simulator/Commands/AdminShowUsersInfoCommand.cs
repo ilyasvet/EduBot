@@ -1,13 +1,30 @@
+using Simulator.BotControl;
+using Simulator.Models;
+using Simulator.Properties;
+using Simulator.TelegramBotLibrary;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Telegram.Bot;
 
 namespace Simulator.Commands
 {
-  class AdminShowUsersInfoCommand : Command
-  {
-    public override Task Execute(long userId, ITelegramBotClient botClient)
+    public class AdminShowUsersInfoCommand : Command
     {
-       return null;
+        public override Task Execute(long userId, ITelegramBotClient botClient)
+        {
+            return Task.Run(() =>
+            {
+                List<User> users = UserTableCommand.GetListUsers();
+                string messageWithList = $"{Resources.ShowUsers}\n";
+                foreach (User user in users)
+                {
+                    messageWithList += $"{user}\n";
+                }
+                botClient.SendTextMessageAsync(
+                            chatId: userId,
+                            text: messageWithList,
+                            replyMarkup: CommandKeyboard.ToMainMenuAdmin);
+            });
+        }
     }
-  }
 }
