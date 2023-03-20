@@ -103,7 +103,7 @@ namespace Simulator.BotControl
             {
                 { "Login", "LogInCommand" },
                 { "MainMenuUser", "GoToMainMenuUserCommand" },
-                { "MainMenuAdmin", "GoToMainMenuAdminCommand" },
+                { "MainMenuAdmin", "AdminGoToMainMenuCommand" },
                 { "UserCard", "UserCardCommand" },
                 { "ListUsers", "AdminShowUsersInfoCommand" },
             };

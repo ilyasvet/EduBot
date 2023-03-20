@@ -36,7 +36,7 @@ namespace Simulator.TelegramBotLibrary
             {
                 if (reader.Read())
                 {
-                    return (DialogState)reader[9];
+                    return (DialogState)reader["DialogState"];
                 }
             }
             return DialogState.None;
@@ -64,7 +64,7 @@ namespace Simulator.TelegramBotLibrary
             {
                 if (reader.Read())
                 {
-                    return (bool)reader[5];
+                    return (bool)reader["IsAdmin"];
                 }
             }
             throw new ArgumentException();
@@ -103,7 +103,7 @@ namespace Simulator.TelegramBotLibrary
             user = null;
             if (reader.Read())
             {
-                user = new User((long)reader["UserID"], (string)reader["Name"], (string)reader["Surname"]);
+                user = new User((int)reader["UserID"], (string)reader["Name"], (string)reader["Surname"]);
                 user.IsAdmin = (bool)reader["IsAdmin"];
                 user.GroupId = (int)reader["GroupId"];
                 return true;

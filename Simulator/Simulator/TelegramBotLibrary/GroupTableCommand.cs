@@ -1,4 +1,5 @@
 using Simulator.Models;
+using System;
 using System.Data.SqlClient;
 
 namespace Simulator.TelegramBotLibrary
@@ -23,7 +24,11 @@ namespace Simulator.TelegramBotLibrary
             command.CommandText = commandText;
             using (SqlDataReader reader = command.ExecuteReader())
             {
-                return (string)reader["Password"];
+                if(reader.Read())
+                {
+                    return (string)reader["Password"];
+                }
+                throw new ArgumentNullException();
             }
         }
         public static int GetGroupId(int groupNumber)
@@ -32,7 +37,11 @@ namespace Simulator.TelegramBotLibrary
             command.CommandText = commandText;
             using (SqlDataReader reader = command.ExecuteReader())
             {
-                return (int)reader["ID"];
+                if (reader.Read())
+                {
+                    return (int)reader["ID"];
+                }
+                throw new ArgumentNullException();
             }
         }
 
