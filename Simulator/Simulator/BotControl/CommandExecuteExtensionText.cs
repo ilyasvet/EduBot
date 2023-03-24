@@ -10,6 +10,7 @@ namespace Simulator.BotControl
     {
         None,
         EnterPassword,
+        SendingGroupFile,
     }
     public static class CommandExecuteExtensionText
     {

@@ -150,4 +150,7 @@
   <data name="NotAdmin" xml:space="preserve">
     <value>Вы не являетесь администратором</value>
   </data>
+  <data name="AddNewGroupOfUsers" xml:space="preserve">
+    <value>Добавление новой группы пользователей</value>
+  </data>
 </root>

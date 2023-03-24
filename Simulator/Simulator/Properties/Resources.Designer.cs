@@ -110,5 +110,11 @@ namespace Simulator.Properties {
                 return ResourceManager.GetString("NotAdmin", resourceCulture);
             }
         }
+        
+        internal static string AddNewGroupOfUsers {
+            get {
+                return ResourceManager.GetString("AddNewGroupOfUsers", resourceCulture);
+            }
+        }
     }
 }

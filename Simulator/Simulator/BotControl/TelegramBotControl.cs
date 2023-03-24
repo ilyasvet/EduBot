@@ -52,6 +52,15 @@ namespace Simulator.BotControl
                     await CommandExecuteExtensionText.Execute(userId, botClient, messageText);
                 }
             }
+            else if (update.Message?.Document != null)
+            {
+                Document messageDocument = update.Message.Document;
+                long userId = update.Message.Chat.Id;
+                if (messageDocument.FileName != null && (messageDocument.FileName.EndsWith(".xlsx") || messageDocument.FileName.EndsWith(".xls")))
+                {
+                    await CommandExecuteExtensionFile.Execute(userId, botClient, messageDocument); //TODO схерали Cannot resolve symbol 'CommandExecuteExtensionFile'
+                }
+            }
             if(update.Type == UpdateType.CallbackQuery)
             {
                 //Тут бот выполняет команду по нажатию на кнопку
