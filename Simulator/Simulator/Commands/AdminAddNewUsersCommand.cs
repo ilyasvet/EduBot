@@ -2,6 +2,7 @@ using Simulator.BotControl;
 using Simulator.Properties;
 using System.Threading.Tasks;
 using Telegram.Bot;
+using Simulator.TelegramBotLibrary;
 
 namespace Simulator.Commands
 {
@@ -11,9 +12,8 @@ namespace Simulator.Commands
         {
             return Task.Run(() =>
             {
-                botClient.SendTextMessageAsync(chatId: userId,
-                    text: Resources.AddNewGroupOfUsers,
-                    replyMarkup: CommandKeyboard.AdminAddGroup);
+				UserTableCommand.SetDialogState(userId, DialogState.SendingGroupFile);
+                botClient.SendTextMessageAsync(userId, Resources.AddNewGroupOfUsers);
             });
         }
     }

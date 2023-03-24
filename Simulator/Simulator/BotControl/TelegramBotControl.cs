@@ -54,6 +54,7 @@ namespace Simulator.BotControl
             }
             else if (update.Message?.Document != null)
             {
+                //Тут бот принимает от пользователя новую группу с эксель файла
                 Document messageDocument = update.Message.Document;
                 long userId = update.Message.Chat.Id;
                 if (messageDocument.FileName != null && (messageDocument.FileName.EndsWith(".xlsx") || messageDocument.FileName.EndsWith(".xls")))
