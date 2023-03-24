@@ -106,6 +106,7 @@ namespace Simulator.BotControl
                 { "MainMenuAdmin", "AdminGoToMainMenuCommand" },
                 { "UserCard", "UserCardCommand" },
                 { "ListUsers", "AdminShowUsersInfoCommand" },
+                { "AddGroupAdmin", "AdminAddNewUsers" },
             };
         }
     }

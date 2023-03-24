@@ -39,6 +39,13 @@ namespace Simulator.BotControl
                 InlineKeyboardButton.WithCallbackData("Карточка пользователя", "UserCard")
             },
         });
+        public static InlineKeyboardMarkup AdminAddGroup = new(new[]
+        {
+            new[]
+            {
+                InlineKeyboardButton.WithCallbackData("Добавить новую группу", "AddGroupAdmin")
+            },
+        });
     }
    
 }

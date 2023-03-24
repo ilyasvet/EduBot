@@ -147,4 +147,7 @@
   <data name="WrongPassword" xml:space="preserve">
     <value>Пароль неверный, попробуйте ещё раз</value>
   </data>
+  <data name="NotAdmin" xml:space="preserve">
+    <value>Вы не являетесь администратором</value>
+  </data>
 </root>
