@@ -6,7 +6,7 @@ using Simulator.TelegramBotLibrary;
 
 namespace Simulator.Commands
 {
-    public class AdminAddNewUsers : Command
+    public class AdminAddNewUsersCommand : Command
     {
         public override Task Execute(long userId, ITelegramBotClient botClient)
         {
