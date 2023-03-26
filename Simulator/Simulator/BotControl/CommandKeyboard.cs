@@ -29,7 +29,8 @@ namespace Simulator.BotControl
         {
             new[]
             {
-                InlineKeyboardButton.WithCallbackData("Список пользователей", "ListUsers")
+                InlineKeyboardButton.WithCallbackData("Список пользователей", "ListUsers"),
+                InlineKeyboardButton.WithCallbackData("Добавить новую группу", "AddGroupAdmin")
             },
         });
         public static InlineKeyboardMarkup UserMenu = new(new[]

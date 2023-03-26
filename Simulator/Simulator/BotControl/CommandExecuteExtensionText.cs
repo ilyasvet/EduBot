@@ -6,18 +6,13 @@ using Telegram.Bot;
 
 namespace Simulator.BotControl
 {
-    public enum DialogState
-    {
-        None,
-        EnterPassword,
-    }
     public static class CommandExecuteExtensionText
     {
         public static Task Execute(long userId, ITelegramBotClient botClient, string message)
         {
             return Task.Run(() =>
             {
-                DialogState state = UserTableCommand.GetDialogState(userId);
+                DialogState state = UserTableCommand.GetDialogState(userId);//TODO схерали Cannot resolve symbol 'DialogState'
                 switch (state)
                 {
                     case DialogState.None:
