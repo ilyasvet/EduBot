@@ -2,9 +2,9 @@
 {
     public class Group
     {
-        public int GroupNumber { get; private set; }
+        public string GroupNumber { get; private set; }
         public string Password { get; set; }
-        public Group(int number)
+        public Group(string number)
         {
             GroupNumber = number;
         }

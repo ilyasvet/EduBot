@@ -1,4 +1,4 @@
-﻿using Simulator.BotControl;
+﻿using Simulator.BotControl.State;
 using Simulator.Models;
 using System;
 using System.Collections.Generic;
@@ -22,8 +22,8 @@ namespace Simulator.TelegramBotLibrary
 
         public static void AddUser(User user)
         {
-            string commandText = $"insert into Users (UserId, Name, Surname, DialogState)" +
-                $" values ('{user.UserID}','{user.Name}','{user.Surname}','{0}')";
+            string commandText = $"insert into Users (UserId, Name, Surname, IsAdmin, DialogState, GroupID)" +
+                $" values ('{user.UserID}','{user.Name}','{user.Surname}','{false}','{0}','{user.GroupId}')";
             //Добавлять пользователя (если его нет в базе)
             ExecuteNonQueryCommand(commandText);
         }

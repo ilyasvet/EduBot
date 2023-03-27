@@ -1,16 +1,18 @@
-using Simulator.Properties;
 using Simulator.TelegramBotLibrary;
 using System.Threading.Tasks;
 using Telegram.Bot;
-using Telegram.Bot.Types;
-using User = Simulator.Models.User;
+using Simulator.BotControl.State;
 using Excel = Microsoft.Office.Interop.Excel;
+using System;
+using Simulator.Properties;
+using System.Diagnostics;
+using Microsoft.Office.Interop.Excel;
 
 namespace Simulator.BotControl
 {
     public static class CommandExecuteExtensionFile
     {
-        public static Task Execute(long userId, ITelegramBotClient botClient, Document message)
+        public static Task Execute(long userId, ITelegramBotClient botClient, string path)
         {
             return Task.Run(() =>
             {
@@ -20,7 +22,7 @@ namespace Simulator.BotControl
                     case DialogState.None:
                         break;
                     case DialogState.SendingGroupFile:
-                        AddNewUsersTable(userId, botClient, message);
+                        AddNewUsersTable(userId, botClient, path);
                         break;
                     default:
                         break;
@@ -28,94 +30,92 @@ namespace Simulator.BotControl
             });
         }
 
-        private static void AddNewUsersTable(long userId, ITelegramBotClient botClient, Document message)
-        {
-            User user = UserTableCommand.GetUserById(userId);
-            if (!user.IsAdmin)
-            {
-                botClient.SendTextMessageAsync(
-                    chatId: userId,
-                    text: Resources.NotAdmin);
-            }
-            string FileName = message.FileName;
-            object rOnly = true;
-            object SaveChanges = false;
-            object MissingObj = System.Reflection.Missing.Value;
-
-            Excel.Application app = new Excel.Application();
+        private static void AddNewUsersTable(long userId, ITelegramBotClient botClient, string path)
+        {    
+            Excel.Application excelApp = new Excel.Application();
             Excel.Workbooks workbooks = null;
             Excel.Workbook workbook = null;
-            Excel.Sheets sheets = null;
             try
             {
-                workbooks = app.Workbooks;
-                workbook  = workbooks.Open(FileName, MissingObj, rOnly, MissingObj, MissingObj,
-                                            MissingObj, MissingObj, MissingObj, MissingObj, MissingObj,
-                                            MissingObj, MissingObj, MissingObj, MissingObj, MissingObj);
+                workbooks = excelApp.Workbooks;
+                workbook = excelApp.Workbooks.Open(path);
+                Excel.Worksheet worksheet = workbook.Worksheets[1];
 
-                // Получение всех страниц докуента
-                sheets = workbook.Sheets;
-                            
-                foreach(Excel.Worksheet worksheet in sheets)
-                {
-                    // Получаем диапазон используемых на странице ячеек
-                    Excel.Range UsedRange = worksheet.UsedRange;
-                    // Получаем строки в используемом диапазоне
-                    Excel.Range urRows = UsedRange.Rows;
-                    // Получаем столбцы в используемом диапазоне
-                    Excel.Range urColums = UsedRange.Columns;
+                // Получаем диапазон используемых на странице ячеек
+                Excel.Range usedRange = worksheet.UsedRange;
+                // Получаем строки в используемом диапазоне
+                Excel.Range urRows = usedRange.Rows;
+                // Получаем столбцы в используемом диапазоне
+                Excel.Range urColums = usedRange.Columns;
 
-                    // Количества строк и столбцов
-                    int RowsCount = urRows.Count;
-                    int ColumnsCount = urColums.Count;
-                    for(int i = 1; i <= RowsCount; i++)
-                    {
-                        for(int j = 1; j <= ColumnsCount; j++)
-                        {
-                            Excel.Range CellRange = UsedRange.Cells[i, j]; //TODO переделать обработку
-                            // Получение текста ячейки
-                            string CellText = (CellRange == null || CellRange.Value2 == null) ? null :
-                                                (CellRange as Excel.Range).Value2.ToString();
+                if (urColums.Count != 3) throw new ArgumentException(); //Проверка, что колонок должно быть 3
 
-                            if(CellText != null)
-                            {
-                                /* Обработка текста */
-                            }
-                        }
-                    }
-                    // Очистка неуправляемых ресурсов на каждой итерации
-                    if (urRows != null) Marshal.ReleaseComObject(urRows);
-                    if (urColums != null) Marshal.ReleaseComObject(urColums);
-                    if (UsedRange != null) Marshal.ReleaseComObject(UsedRange);
-                    if (worksheet != null) Marshal.ReleaseComObject(worksheet);
-                }
-            } catch (Exception ex)
+                int groupId = AddGroup(path); //Возвращает groupId в базе данных
+                SetGroupPassword(groupId);
+                AddUsersIterative(worksheet, urRows.Count, groupId);
+                BotCallBack(userId, botClient);
+            }
+            catch(Exception ex)
             {
-                /* Обработка исключений */
+                Console.WriteLine(ex.Message);
             }
             finally
             {
-                /* Очистка оставшихся неуправляемых ресурсов */
-                if (sheets != null) Marshal.ReleaseComObject(sheets);
-                if (workbook != null)
-                {
-                    workbook.Close(SaveChanges);
-                    Marshal.ReleaseComObject(workbook);
-                    workbook = null;
-                }
+                workbook.Close();
+                workbooks.Close();
+                excelApp.Quit();
+                KillProcess("EXCEL");
+            }
+        }
 
-                if (workbooks != null)
-                {
-                    workbooks.Close();
-                    Marshal.ReleaseComObject(workbooks);
-                    workbooks = null;
-                }
-                if (app != null)
-                {
-                    app.Quit();
-                    Marshal.ReleaseComObject(app);
-                    app = null;
-                }
+        private static void BotCallBack(long userId, ITelegramBotClient botClient)
+        {
+            UserTableCommand.SetDialogState(userId, DialogState.None);
+            botClient.SendTextMessageAsync(
+                       chatId: userId,
+                       text: Resources.SuccessAddGroup,
+                       replyMarkup: CommandKeyboard.ToMainMenuAdmin);
+        }
+
+        private static void AddUsersIterative(Worksheet worksheet, int rowsCount, int groupId)
+        {
+            for (int i = 1; i <= rowsCount; i++)
+            {
+                string userName = worksheet.Cells[i, 1].Value;
+                string userSurame = worksheet.Cells[i, 2].Value;
+                long userTelegramId = (long)worksheet.Cells[i, 3].Value;
+
+                Models.User user = new Models.User(userTelegramId, userName, userSurame);
+                user.GroupId = groupId;
+                UserTableCommand.AddUser(user);
+            }
+        }
+
+        private static int AddGroup(string path)
+        {
+            string groupNumber = path.Substring(path.LastIndexOf('\\') + 1).Split('.')[0];
+            Models.Group group = new Models.Group(groupNumber);
+            GroupTableCommand.AddGroup(group);
+            return GroupTableCommand.GetGroupId(groupNumber);
+        }
+        private static void SetGroupPassword(int groupId)
+        {
+            string password = "";
+            Random rnd = new Random();
+            for(int i = 0; i < password.Length; i++)
+            {
+                password += (char)(rnd.Next(25)+97);
+            }
+            GroupTableCommand.SetPassword(groupId, password);
+        }
+        private static void KillProcess(string name)
+        { 
+            GC.Collect();
+            Process[] List;
+            List = Process.GetProcessesByName(name);
+            foreach (Process proc in List)
+            {
+                proc.Kill();
             }
         }
     }

@@ -1,6 +1,7 @@
 ﻿using Simulator.Commands;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
@@ -54,15 +55,22 @@ namespace Simulator.BotControl
             }
             else if (update.Message?.Document != null)
             {
-                //Тут бот принимает от пользователя новую группу с эксель файла
-                Document messageDocument = update.Message.Document;
+                //Тут бот принимает от пользователя файл
                 long userId = update.Message.Chat.Id;
-                if (messageDocument.FileName != null && (messageDocument.FileName.EndsWith(".xlsx") || messageDocument.FileName.EndsWith(".xls")))
-                {
-                    await CommandExecuteExtensionFile.Execute(userId, botClient, messageDocument); //TODO схерали Cannot resolve symbol 'CommandExecuteExtensionFile'
-                }
+                Document messageDocument = update.Message.Document;
+                var file = await botClient.GetFileAsync(messageDocument.FileId);
+                
+                //все файлы, посланные боту, хранятся в папке temp
+                string path = $"{AppDomain.CurrentDomain.BaseDirectory}temp\\{messageDocument.FileName}";
+                FileStream fs = new FileStream(path, FileMode.Create);
+                await botClient.DownloadFileAsync(file.FilePath, fs);
+                fs.Dispose();
+
+                await CommandExecuteExtensionFile.Execute(userId, botClient, path);
+                System.IO.File.Delete(path);
+                //После обработки файл удаляется
             }
-            if(update.Type == UpdateType.CallbackQuery)
+            if (update.Type == UpdateType.CallbackQuery)
             {
                 //Тут бот выполняет команду по нажатию на кнопку
                 CallbackQuery callbackQuery = update.CallbackQuery;
@@ -105,6 +113,7 @@ namespace Simulator.BotControl
         }
         private static void FillAccordanceDictionaries()
         {
+            //TODO лучше вынести в файл
             accordanceDictionaryTextCommand = new Dictionary<string, string>()
             {
                 { "/start", "WelcomeCommand" },
@@ -116,7 +125,7 @@ namespace Simulator.BotControl
                 { "MainMenuAdmin", "AdminGoToMainMenuCommand" },
                 { "UserCard", "UserCardCommand" },
                 { "ListUsers", "AdminShowUsersInfoCommand" },
-                { "AddGroupAdmin", "AdminAddNewUsers" },
+                { "AddGroupAdmin", "AdminAddNewUsersCommand" },
             };
         }
     }

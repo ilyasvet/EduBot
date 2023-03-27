@@ -1,4 +1,4 @@
-namespace Simulator.BotControl
+namespace Simulator.BotControl.State
 {
     public enum DialogState
     {

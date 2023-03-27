@@ -1,4 +1,5 @@
-﻿using Simulator.Models;
+﻿using Simulator.BotControl.State;
+using Simulator.Models;
 using Simulator.Properties;
 using Simulator.TelegramBotLibrary;
 using System.Threading.Tasks;

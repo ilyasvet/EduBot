@@ -31,7 +31,7 @@ namespace Simulator.TelegramBotLibrary
                 throw new ArgumentNullException();
             }
         }
-        public static int GetGroupId(int groupNumber)
+        public static int GetGroupId(string groupNumber)
         {
             string commandText = $"select * from groups where GroupNumber = {groupNumber}";
             command.CommandText = commandText;
@@ -80,7 +80,7 @@ namespace Simulator.TelegramBotLibrary
             group = null;
             if (reader.Read())
             {
-                group = new Group((int)reader["GroupNumber"]);
+                group = new Group((string)reader["GroupNumber"]);
                 group.Password = (string)reader["Password"];
                 return true;
             }

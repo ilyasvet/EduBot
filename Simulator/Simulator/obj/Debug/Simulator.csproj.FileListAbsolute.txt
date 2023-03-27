@@ -19,3 +19,4 @@ E:\Repos\TestSimulator\Simulator\Simulator\obj\Debug\Simulator.exe
 E:\Repos\TestSimulator\Simulator\Simulator\obj\Debug\Simulator.pdb
 E:\Repos\TestSimulator\Simulator\Simulator\obj\Debug\Simulator.Properties.Resources.resources
 E:\Repos\TestSimulator\Simulator\Simulator\obj\Debug\Simulator.csproj.GenerateResource.cache
+E:\Repos\TestSimulator\Simulator\Simulator\obj\Debug\Simulator.csproj.ResolveComReference.cache

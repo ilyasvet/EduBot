@@ -15,6 +15,7 @@
             UserID = userId;
             Name = name;
             Surname = surname;
+            IsAdmin = false;
         }
         public override string ToString() { return Name + " " + Surname; }
     }
