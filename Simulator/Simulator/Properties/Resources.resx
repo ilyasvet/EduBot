@@ -151,7 +151,7 @@
     <value>Добавление новой группы пользователей</value>
   </data>
   <data name="SuccessAddGroup" xml:space="preserve">
-    <value>Группа пользователей успешно добавлена</value>
+    <value>Пользователи успешно добавлены</value>
   </data>
   <data name="ShowGroups" xml:space="preserve">
     <value>Список групп, добавленных на курс</value>

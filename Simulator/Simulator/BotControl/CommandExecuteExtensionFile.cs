@@ -22,6 +22,9 @@ namespace Simulator.BotControl
                     case DialogState.None:
                         break;
                     case DialogState.SendingGroupFile:
+                        AddNewGroupTable(userId, botClient, path);
+                        break;
+                    case DialogState.AddingUsersToGroup:
                         AddNewUsersTable(userId, botClient, path);
                         break;
                     default:
@@ -29,14 +32,23 @@ namespace Simulator.BotControl
                 }
             });
         }
+        private static void AddNewGroupTable(long userId, ITelegramBotClient botClient, string path)
+        {
+            int groupId = AddGroup(path); //Возвращает groupId в базе данных
+            //TODO обработать случай, если название файла неправильное
+            SetGroupPassword(groupId);
+            AddNewUsersTable(userId, botClient, path);
 
+        }
         private static void AddNewUsersTable(long userId, ITelegramBotClient botClient, string path)
-        {    
+        {
+            
             Excel.Application excelApp = new Excel.Application();
             Excel.Workbooks workbooks = null;
             Excel.Workbook workbook = null;
             try
             {
+                int groupId = GroupTableCommand.GetGroupId(GetGroupNumber(path));
                 workbooks = excelApp.Workbooks;
                 workbook = excelApp.Workbooks.Open(path);
                 Excel.Worksheet worksheet = workbook.Worksheets[1];
@@ -50,8 +62,6 @@ namespace Simulator.BotControl
 
                 if (urColums.Count != 3) throw new ArgumentException(); //Проверка, что колонок должно быть 3
 
-                int groupId = AddGroup(path); //Возвращает groupId в базе данных
-                SetGroupPassword(groupId);
                 AddUsersIterative(worksheet, urRows.Count, groupId);
                 BotCallBack(userId, botClient);
             }
@@ -67,7 +77,6 @@ namespace Simulator.BotControl
                 KillProcess("EXCEL");
             }
         }
-
         private static void BotCallBack(long userId, ITelegramBotClient botClient)
         {
             UserTableCommand.SetDialogState(userId, DialogState.None);
@@ -76,27 +85,33 @@ namespace Simulator.BotControl
                        text: Resources.SuccessAddGroup,
                        replyMarkup: CommandKeyboard.ToMainMenuAdmin);
         }
-
         private static void AddUsersIterative(Worksheet worksheet, int rowsCount, int groupId)
         {
             for (int i = 1; i <= rowsCount; i++)
             {
+                long userTelegramId = (long)worksheet.Cells[i, 3].Value;
+                if(UserTableCommand.HasUser(userTelegramId))
+                {
+                    continue;
+                }
                 string userName = worksheet.Cells[i, 1].Value;
                 string userSurame = worksheet.Cells[i, 2].Value;
-                long userTelegramId = (long)worksheet.Cells[i, 3].Value;
 
                 Models.User user = new Models.User(userTelegramId, userName, userSurame);
                 user.GroupId = groupId;
                 UserTableCommand.AddUser(user);
             }
         }
-
         private static int AddGroup(string path)
         {
-            string groupNumber = path.Substring(path.LastIndexOf('\\') + 1).Split('.')[0];
+            string groupNumber = GetGroupNumber(path);
             Models.Group group = new Models.Group(groupNumber);
             GroupTableCommand.AddGroup(group);
             return GroupTableCommand.GetGroupId(groupNumber);
+        }
+        private static string GetGroupNumber(string path)
+        {
+            return path.Substring(path.LastIndexOf('\\') + 1).Split('.')[0];
         }
         private static void SetGroupPassword(int groupId)
         {

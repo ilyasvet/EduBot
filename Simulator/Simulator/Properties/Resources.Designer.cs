@@ -124,7 +124,7 @@ namespace Simulator.Properties {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Группа пользователей успешно добавлена.
+        ///   Ищет локализованную строку, похожую на Пользователи успешно добавлены.
         /// </summary>
         internal static string SuccessAddGroup {
             get {

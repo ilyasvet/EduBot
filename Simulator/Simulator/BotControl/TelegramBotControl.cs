@@ -71,7 +71,7 @@ namespace Simulator.BotControl
                 System.IO.File.Delete(path);
                 //После обработки файл удаляется
             }
-            if (update.Type == UpdateType.CallbackQuery)
+            else if (update.Type == UpdateType.CallbackQuery)
             {
                 //Тут бот выполняет команду по нажатию на кнопку
                 CallbackQuery callbackQuery = update.CallbackQuery;
@@ -82,7 +82,7 @@ namespace Simulator.BotControl
         }
         private async Task Error(ITelegramBotClient botClient, Exception exception, CancellationToken token)
         {
-            throw new NotImplementedException();
+            //await botClient.SendTextMessageAsync(long.Parse(exception.Data["userId"].ToString()), exception.Message);
         }
 
         private bool TextIsCommand(string text)
