@@ -17,6 +17,14 @@
             Surname = surname;
             IsAdmin = false;
         }
-        public override string ToString() { return Name + " " + Surname; }
+        public override string ToString()
+        {
+            string result = Name + " " + Surname;
+            if(IsAdmin)
+            {
+                result += " (Администратор)";
+            }
+            return result;
+        }
     }
 }

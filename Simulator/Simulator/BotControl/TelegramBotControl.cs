@@ -1,5 +1,4 @@
 ﻿using Simulator.Commands;
-using Simulator.Properties;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -97,7 +96,6 @@ namespace Simulator.BotControl
             }
             return false;
         }
-
         private static void FillCommandDictionary()
         {
             commandsDictionary = new Dictionary<string, Command>();
@@ -122,18 +120,13 @@ namespace Simulator.BotControl
             {
                 using (var sr = new StreamReader(fs))
                 {
-                    string line;
-                    do
+                    string line = sr.ReadLine();
+                    while (line != null)
                     {
-                        line = sr.ReadLine();
-                        if (line == null)
-                        {
-                            break;
-                        }
                         string[] pair = line.Split(' ');
                         result.Add(pair[0], pair[1]);
+                        line = sr.ReadLine();
                     }
-                    while (true);
                 }
             }
             return result;
