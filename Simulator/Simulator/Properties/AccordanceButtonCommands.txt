@@ -3,4 +3,5 @@ MainMenuUser GoToMainMenuUserCommand
 MainMenuAdmin AdminGoToMainMenuCommand
 UserCard UserCardCommand
 ListUsers AdminShowUsersInfoCommand
+ListGroups AdminShowGroupsInfoCommand
 AddGroupAdmin AdminAddNewUsersCommand

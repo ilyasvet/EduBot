@@ -97,6 +97,24 @@ namespace Simulator.Properties {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на Список групп, добавленных на курс.
+        /// </summary>
+        internal static string ShowGroups {
+            get {
+                return ResourceManager.GetString("ShowGroups", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на ID === Number === Password.
+        /// </summary>
+        internal static string ShowGroupsFormat {
+            get {
+                return ResourceManager.GetString("ShowGroupsFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на Список пользователей, добавленных на курс.
         /// </summary>
         internal static string ShowUsers {

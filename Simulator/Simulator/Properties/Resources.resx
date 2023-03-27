@@ -153,4 +153,10 @@
   <data name="SuccessAddGroup" xml:space="preserve">
     <value>Группа пользователей успешно добавлена</value>
   </data>
+  <data name="ShowGroups" xml:space="preserve">
+    <value>Список групп, добавленных на курс</value>
+  </data>
+  <data name="ShowGroupsFormat" xml:space="preserve">
+    <value>ID === Number === Password</value>
+  </data>
 </root>
