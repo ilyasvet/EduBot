@@ -1,0 +1,6 @@
+﻿Login LogInCommand
+MainMenuUser GoToMainMenuUserCommand
+MainMenuAdmin AdminGoToMainMenuCommand
+UserCard UserCardCommand
+ListUsers AdminShowUsersInfoCommand
+AddGroupAdmin AdminAddNewUsersCommand

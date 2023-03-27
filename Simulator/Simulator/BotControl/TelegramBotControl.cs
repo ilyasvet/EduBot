@@ -1,4 +1,5 @@
 ﻿using Simulator.Commands;
+using Simulator.Properties;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -16,13 +17,14 @@ namespace Simulator.BotControl
     {
         private TelegramBotClient botClient;
         private static Dictionary<string, Command> commandsDictionary;
-        private static Dictionary<string, string> accordanceDictionaryTextCommand;
-        private static Dictionary<string, string> accordanceDictionaryButtonCommand;
+        private static Dictionary<string, string> accordanceDictionaryTextCommand = new Dictionary<string, string>();
+        private static Dictionary<string, string> accordanceDictionaryButtonCommand = new Dictionary<string, string>();
 
         static TelegramBotControl()
         {
             FillCommandDictionary();
-            FillAccordanceDictionaries();
+            accordanceDictionaryButtonCommand = FillAccordanceDictionary("AccordanceButtonCommands.txt");
+            accordanceDictionaryTextCommand = FillAccordanceDictionary("AccordanceTextCommands.txt");
         }
         public TelegramBotControl(string token)
         {
@@ -111,22 +113,30 @@ namespace Simulator.BotControl
                 commandsDictionary.Add(type.Name, commandObject);
             }
         }
-        private static void FillAccordanceDictionaries()
+        private static Dictionary<string, string> FillAccordanceDictionary(string ResourceName)
         {
-            //TODO лучше вынести в файл
-            accordanceDictionaryTextCommand = new Dictionary<string, string>()
+            Dictionary<string, string> result = new Dictionary<string, string>();
+            string path = Directory.GetParent(Directory.GetParent(Directory.GetCurrentDirectory()).FullName).FullName;
+            path += $"\\Properties\\{ResourceName}";
+            using (var fs = new FileStream(path, FileMode.Open))
             {
-                { "/start", "WelcomeCommand" },
-            };
-            accordanceDictionaryButtonCommand = new Dictionary<string, string>()
-            {
-                { "Login", "LogInCommand" },
-                { "MainMenuUser", "GoToMainMenuUserCommand" },
-                { "MainMenuAdmin", "AdminGoToMainMenuCommand" },
-                { "UserCard", "UserCardCommand" },
-                { "ListUsers", "AdminShowUsersInfoCommand" },
-                { "AddGroupAdmin", "AdminAddNewUsersCommand" },
-            };
+                using (var sr = new StreamReader(fs))
+                {
+                    string line;
+                    do
+                    {
+                        line = sr.ReadLine();
+                        if (line == null)
+                        {
+                            break;
+                        }
+                        string[] pair = line.Split(' ');
+                        result.Add(pair[0], pair[1]);
+                    }
+                    while (true);
+                }
+            }
+            return result;
         }
     }
 }

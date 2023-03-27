@@ -101,8 +101,9 @@ namespace Simulator.BotControl
         private static void SetGroupPassword(int groupId)
         {
             string password = "";
+            int passwordLenght = 6;
             Random rnd = new Random();
-            for(int i = 0; i < password.Length; i++)
+            for(int i = 0; i < passwordLenght; i++)
             {
                 password += (char)(rnd.Next(25)+97);
             }
