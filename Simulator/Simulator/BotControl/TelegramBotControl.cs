@@ -3,8 +3,6 @@ using Simulator.Services;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot;
@@ -22,9 +20,9 @@ namespace Simulator.BotControl
 
         static TelegramBotControl()
         {
-            FillCommandDictionary();
-            accordanceDictionaryButtonCommand = FillAccordanceDictionary("AccordanceButtonCommands.txt");
-            accordanceDictionaryTextCommand = FillAccordanceDictionary("AccordanceTextCommands.txt");
+            commandsDictionary = Filler.FillCommandDictionary();
+            accordanceDictionaryButtonCommand = Filler.FillAccordanceDictionary("AccordanceButtonCommands.txt");
+            accordanceDictionaryTextCommand = Filler.FillAccordanceDictionary("AccordanceTextCommands.txt");
         }
         public TelegramBotControl(string token)
         {
@@ -96,40 +94,5 @@ namespace Simulator.BotControl
             long userId = long.Parse(exception.Message.Split(' ')[0]);
             await botClient.SendTextMessageAsync(userId, exception.Message.Remove(0, userId.ToString().Length).Trim());
         }        
-        private static void FillCommandDictionary()
-        {
-            commandsDictionary = new Dictionary<string, Command>();
-
-            Type baseType = typeof(Command);
-            IEnumerable<Type> listOfSubclasses = Assembly.GetAssembly(baseType)
-                .GetTypes()
-                .Where(type => type.IsSubclassOf(baseType));
-
-            foreach (Type type in listOfSubclasses)
-            {
-                Command commandObject = Activator.CreateInstance(type) as Command;
-                commandsDictionary.Add(type.Name, commandObject);
-            }
-        }
-        private static Dictionary<string, string> FillAccordanceDictionary(string ResourceName)
-        {
-            Dictionary<string, string> result = new Dictionary<string, string>();
-            string path = Directory.GetParent(Directory.GetParent(Directory.GetCurrentDirectory()).FullName).FullName;
-            path += $"\\Properties\\{ResourceName}";
-            using (var fs = new FileStream(path, FileMode.Open))
-            {
-                using (var sr = new StreamReader(fs))
-                {
-                    string line = sr.ReadLine();
-                    while (line != null)
-                    {
-                        string[] pair = line.Split(' ');
-                        result.Add(pair[0], pair[1]);
-                        line = sr.ReadLine();
-                    }
-                }
-            }
-            return result;
-        }
     }
 }
