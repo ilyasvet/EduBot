@@ -2,6 +2,6 @@
 MainMenuUser GoToMainMenuUserCommand
 MainMenuAdmin AdminGoToMainMenuCommand
 UserCard UserCardCommand
-ListUsers AdminShowUsersInfoCommand
+ShowUsersInfo AdminShowUsersInfoCommand
 ListGroups AdminShowGroupsInfoCommand
 AddUsersAdmin AdminAddNewUsersCommand

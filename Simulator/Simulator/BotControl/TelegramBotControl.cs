@@ -45,7 +45,7 @@ namespace Simulator.BotControl
                 {
                     string messageText = update.Message.Text;
                     userId = update.Message.Chat.Id;
-                    if (Checker.TextIsCommand(commandsDictionary, messageText))
+                    if (Checker.TextIsCommand(accordanceDictionaryTextCommand, messageText))
                     {
                         //Тут бот выполняет команду, введённую пользователем
                         await commandsDictionary[accordanceDictionaryTextCommand[messageText]].Execute(userId, botClient);
@@ -86,6 +86,10 @@ namespace Simulator.BotControl
                         botClient,
                         param);
                 }
+                int messageId = update.CallbackQuery != null ?
+                    update.CallbackQuery.Message.MessageId :
+                    update.Message.MessageId;
+                await botClient.DeleteMessageAsync(userId, messageId);
             }
             catch (Exception ex)
             {

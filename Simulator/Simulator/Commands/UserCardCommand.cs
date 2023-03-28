@@ -16,7 +16,7 @@ namespace Simulator.Commands
                 string userCardString = Resources.UserCard;
                 User user = UserTableCommand.GetUserById(userId);
                 userCardString += $"\n{user}";
-                userCardString += $"\n Ваша группа: {GroupTableCommand.GetGroup(user.GroupId).GroupNumber}\n";
+                userCardString += $"\n Ваша группа: {user.GroupNumber}\n";
                 botClient.SendTextMessageAsync(chatId: userId,
                     text: userCardString,
                     replyMarkup: CommandKeyboard.ToMainMenuUser);

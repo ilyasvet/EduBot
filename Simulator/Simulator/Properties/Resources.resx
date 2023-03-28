@@ -148,10 +148,10 @@
     <value>Пароль неверный, попробуйте ещё раз</value>
   </data>
   <data name="AddNewGroupOfUsers" xml:space="preserve">
-    <value>Добавление новой группы пользователей</value>
+    <value>Отправтье файл excel. Формат названия &lt;1ч.группы&gt;-&lt;2ч.группы&gt;. Таблица имеет 3 столбца (Имя, фамилия, telegramID)</value>
   </data>
   <data name="SuccessAddGroup" xml:space="preserve">
-    <value>Пользователи успешно добавлены</value>
+    <value>Операция добавления прошла успешно</value>
   </data>
   <data name="ShowGroups" xml:space="preserve">
     <value>Список групп, добавленных на курс</value>

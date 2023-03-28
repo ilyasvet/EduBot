@@ -30,7 +30,7 @@ namespace Simulator.BotControl
         private static void CheckPassword(long userId, ITelegramBotClient botClient, string password)
         {
             User user = UserTableCommand.GetUserById(userId);
-            string groupPassword = GroupTableCommand.GetPassword(user.GroupId);
+            string groupPassword = GroupTableCommand.GetPassword(user.GroupNumber);
             if(password == groupPassword)
             {
                 UserTableCommand.SetDialogState(userId, DialogState.None);

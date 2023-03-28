@@ -5,7 +5,7 @@ namespace Simulator.Services
 {
     public static class Checker
     {
-        public static bool TextIsCommand(Dictionary<string, Command> dict, string text)
+        public static bool TextIsCommand(Dictionary<string, string> dict, string text)
         {
             if (text.StartsWith("/"))
             {

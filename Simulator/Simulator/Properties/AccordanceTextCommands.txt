@@ -1,1 +1,2 @@
 ﻿/start WelcomeCommand
+/skip SkipCommand

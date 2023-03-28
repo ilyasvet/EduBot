@@ -61,7 +61,7 @@ namespace Simulator.Properties {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Добавление новой группы пользователей.
+        ///   Ищет локализованную строку, похожую на Отправтье файл excel. Формат названия &lt;1ч.группы&gt;-&lt;2ч.группы&gt;. Таблица имеет 3 столбца (Имя, фамилия, telegramID).
         /// </summary>
         internal static string AddNewGroupOfUsers {
             get {
@@ -124,7 +124,7 @@ namespace Simulator.Properties {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Пользователи успешно добавлены.
+        ///   Ищет локализованную строку, похожую на Операция добавления прошла успешно.
         /// </summary>
         internal static string SuccessAddGroup {
             get {

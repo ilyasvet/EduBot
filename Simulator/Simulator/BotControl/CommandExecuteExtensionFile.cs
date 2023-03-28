@@ -8,7 +8,6 @@ using Simulator.Properties;
 using System.Diagnostics;
 using Microsoft.Office.Interop.Excel;
 using Simulator.Models;
-using Telegram.Bot.Types;
 
 namespace Simulator.BotControl
 {
@@ -33,19 +32,23 @@ namespace Simulator.BotControl
         }
         private static void AddNewUsersTable(long userId, ITelegramBotClient botClient, string path)
         {
+            string callBackMessage = Resources.SuccessAddGroup;
             string groupNumber = GetGroupNumber(path);
             if (!GroupTableCommand.HasGroup(groupNumber))
             {
                 AddGroup(groupNumber);
+                callBackMessage += $"\nГруппа \"{groupNumber}\" была добавлена";
             }
-            AddUsers(path, groupNumber);
-            BotCallBack(userId, botClient);
+            int count = AddUsers(path, groupNumber);
+            callBackMessage += $"\nДобавлено пользователей в группу \"{groupNumber}\": {count}\n";
+            BotCallBack(userId, botClient, callBackMessage);
         }
-        private static void AddUsers(string path, string groupNumber)
+        private static int AddUsers(string path, string groupNumber)
         {
             Excel.Application excelApp = new Excel.Application();
             Excel.Workbooks workbooks = null;
             Excel.Workbook workbook = null;
+            int count = 0;
             try
             {
                 workbooks = excelApp.Workbooks;
@@ -59,9 +62,9 @@ namespace Simulator.BotControl
                 // Получаем столбцы в используемом диапазоне
                 Excel.Range urColums = usedRange.Columns;
 
-                if (urColums.Count != 3) throw new ArgumentException("В таблице должно быть только 3 столбца!"); //Проверка, что колонок должно быть 3
+                if (urColums.Count != 3) throw new ArgumentException("В таблице должно быть только 3 столбца!");
 
-                AddUsersIterative(worksheet, urRows.Count, groupNumber);
+                count = AddUsersIterative(worksheet, urRows.Count, groupNumber);
             }
             catch (Exception ex)
             {
@@ -74,17 +77,19 @@ namespace Simulator.BotControl
                 excelApp.Quit();
                 KillProcess("EXCEL");
             }
+            return count;
         }
-        private static void BotCallBack(long userId, ITelegramBotClient botClient)
+        private static void BotCallBack(long userId, ITelegramBotClient botClient, string message)
         {
             UserTableCommand.SetDialogState(userId, DialogState.None);
             botClient.SendTextMessageAsync(
                        chatId: userId,
-                       text: Resources.SuccessAddGroup,
+                       text: message,
                        replyMarkup: CommandKeyboard.ToMainMenuAdmin);
         }
-        private static void AddUsersIterative(Worksheet worksheet, int rowsCount, string groupNumber)
+        private static int AddUsersIterative(Worksheet worksheet, int rowsCount, string groupNumber)
         {
+            int count = 0;
             for (int i = 1; i <= rowsCount; i++)
             {
                 long userTelegramId = (long)worksheet.Cells[i, 3].Value;
@@ -93,12 +98,14 @@ namespace Simulator.BotControl
                     continue;
                 }
                 string userName = worksheet.Cells[i, 1].Value;
-                string userSurame = worksheet.Cells[i, 2].Value;
+                string userSurname = worksheet.Cells[i, 2].Value;
 
-                Models.User user = new Models.User(userTelegramId, userName, userSurame);
+                Models.User user = new Models.User(userTelegramId, userName, userSurname);
                 user.GroupNumber = groupNumber;
                 UserTableCommand.AddUser(user);
+                count++;
             }
+            return count;
         }
         private static void AddGroup(string groupNumber)
         {
