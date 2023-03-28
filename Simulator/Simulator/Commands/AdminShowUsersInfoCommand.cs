@@ -10,11 +10,11 @@ namespace Simulator.Commands
 {
     public class AdminShowUsersInfoCommand : Command
     {
-        public override Task Execute(long userId, ITelegramBotClient botClient)
+        public override Task Execute(long userId, ITelegramBotClient botClient, string param = "")
         {
             return Task.Run(() =>
             {
-                List<User> users = UserTableCommand.GetListUsers();
+                List<User> users = UserTableCommand.GetListUsers(param);
                 string messageWithList = $"{Resources.ShowUsers}\n";
                 foreach (User user in users)
                 {

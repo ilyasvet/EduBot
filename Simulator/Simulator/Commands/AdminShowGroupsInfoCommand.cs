@@ -7,7 +7,7 @@ namespace Simulator.Commands
 {
     public class AdminShowGroupsInfoCommand : Command
     {
-        public override Task Execute(long userId, ITelegramBotClient botClient)
+        public override Task Execute(long userId, ITelegramBotClient botClient, string param = "")
         {
             return Task.Run(() =>
             {
