@@ -20,7 +20,7 @@ namespace Simulator.TelegramBotLibrary
         
         public static string GetPassword(string groupNumber)
         {
-            string commandText = $"select * from groups where GroupNumber = {groupNumber}";
+            string commandText = $"select * from groups where GroupNumber = '{groupNumber}'";
             command.CommandText = commandText;
             using (SqlDataReader reader = command.ExecuteReader())
             {

@@ -79,9 +79,9 @@ namespace Simulator.BotControl
 
                 count = AddUsersIterative(worksheet, urRows.Count, groupNumber);
             }
-            catch (Exception ex)
+            catch
             {
-                throw new Exception(ex.Message);
+                throw;
             }
             finally
             {
