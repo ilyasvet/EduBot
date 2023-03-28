@@ -8,6 +8,7 @@ using Simulator.Properties;
 using System.Diagnostics;
 using Microsoft.Office.Interop.Excel;
 using Simulator.Models;
+using Simulator.Services;
 
 namespace Simulator.BotControl
 {
@@ -32,16 +33,28 @@ namespace Simulator.BotControl
         }
         private static void AddNewUsersTable(long userId, ITelegramBotClient botClient, string path)
         {
-            string callBackMessage = Resources.SuccessAddGroup;
-            string groupNumber = GetGroupNumber(path);
-            if (!GroupTableCommand.HasGroup(groupNumber))
+            try
             {
-                AddGroup(groupNumber);
-                callBackMessage += $"\nГруппа \"{groupNumber}\" была добавлена";
+                string groupNumber = GetGroupNumber(path);
+                if (!Checker.IsCorrectGroupNumber(groupNumber)) throw new ArgumentException("Неверный формат номера группы");
+                string callBackMessage = Resources.SuccessAddGroup;
+                if (!GroupTableCommand.HasGroup(groupNumber))
+                {
+                    AddGroup(groupNumber);
+                    callBackMessage += $"\nГруппа \"{groupNumber}\" была добавлена";
+                }
+                int count = AddUsers(path, groupNumber);
+                callBackMessage += $"\nДобавлено пользователей в группу \"{groupNumber}\": {count}\n";
+                BotCallBack(userId, botClient, callBackMessage);
             }
-            int count = AddUsers(path, groupNumber);
-            callBackMessage += $"\nДобавлено пользователей в группу \"{groupNumber}\": {count}\n";
-            BotCallBack(userId, botClient, callBackMessage);
+            catch
+            {
+                throw;
+            }
+            finally
+            {
+                UserTableCommand.SetDialogState(userId, DialogState.None);
+            }
         }
         private static int AddUsers(string path, string groupNumber)
         {
@@ -81,7 +94,6 @@ namespace Simulator.BotControl
         }
         private static void BotCallBack(long userId, ITelegramBotClient botClient, string message)
         {
-            UserTableCommand.SetDialogState(userId, DialogState.None);
             botClient.SendTextMessageAsync(
                        chatId: userId,
                        text: message,

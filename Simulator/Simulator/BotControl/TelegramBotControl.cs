@@ -100,7 +100,10 @@ namespace Simulator.BotControl
         {
             //Все исключения обработаны так, что возвращают в сообщении также userId
             long userId = long.Parse(exception.Message.Split(' ')[0]);
-            await botClient.SendTextMessageAsync(userId, exception.Message.Remove(0, userId.ToString().Length).Trim());
+            await commandsDictionary[accordanceDictionaryTextCommand["/skip"]].Execute(
+                        userId,
+                        botClient,
+                        exception.Message.Remove(0, userId.ToString().Length).Trim());
         }
     }
 }

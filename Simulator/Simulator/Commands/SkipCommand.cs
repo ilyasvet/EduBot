@@ -13,10 +13,20 @@ namespace Simulator.Commands
             return Task.Run(() =>
             {
                 UserTableCommand.SetDialogState(userId, BotControl.State.DialogState.None);
-                botClient.SendTextMessageAsync(
-                            chatId: userId,
-                            text: Resources.AdminMenu,
-                            replyMarkup: CommandKeyboard.AdminMenu);
+                if (UserTableCommand.IsAdmin(userId))
+                {
+                    botClient.SendTextMessageAsync(
+                                chatId: userId,
+                                text: Resources.AdminMenu,
+                                replyMarkup: CommandKeyboard.AdminMenu);
+                }
+                else
+                {
+                    botClient.SendTextMessageAsync(
+                                   chatId: userId,
+                                   text: Resources.UserMenu,
+                                   replyMarkup: CommandKeyboard.UserMenu);
+                }
             });
         }
     }

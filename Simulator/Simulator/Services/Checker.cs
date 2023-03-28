@@ -1,5 +1,6 @@
 ﻿using Simulator.Commands;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace Simulator.Services
 {
@@ -24,6 +25,11 @@ namespace Simulator.Services
                 return parameters[1];
             }
             return "";
+        }
+        public static bool IsCorrectGroupNumber(string groupNumber)
+        {
+            Regex regex = new Regex("^[0-9]{7}-[0-9]{5}$");
+            return regex.IsMatch(groupNumber);
         }
     }
 }
