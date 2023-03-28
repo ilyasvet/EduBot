@@ -16,5 +16,14 @@ namespace Simulator.Services
             }
             return false;
         }
+        public static string GetParam(string data)
+        {
+            string[] parameters = data.Split('|');
+            if (parameters.Length > 1)
+            {
+                return parameters[1];
+            }
+            return "";
+        }
     }
 }

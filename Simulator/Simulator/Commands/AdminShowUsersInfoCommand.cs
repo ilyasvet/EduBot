@@ -14,8 +14,9 @@ namespace Simulator.Commands
         {
             return Task.Run(() =>
             {
-                List<User> users = UserTableCommand.GetListUsers(param);
-                string messageWithList = $"{Resources.ShowUsers}\n";
+                List<User> users = UserTableCommand.GetGroupUsers(param);
+                string messageWithList = $"{Resources.ShowUsers} {param}\n" +
+                $"{Resources.GroupPassword} {GroupTableCommand.GetPassword(param)}";
                 foreach (User user in users)
                 {
                     messageWithList += $"{user}\n";
@@ -23,7 +24,7 @@ namespace Simulator.Commands
                 botClient.SendTextMessageAsync(
                             chatId: userId,
                             text: messageWithList,
-                            replyMarkup: CommandKeyboard.ToMainMenuAdmin);
+                            replyMarkup: CommandKeyboard.BackToLists);
             });
         }
     }

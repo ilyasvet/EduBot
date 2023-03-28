@@ -78,9 +78,13 @@ namespace Simulator.BotControl
                     //Тут бот выполняет команду по нажатию на кнопку
                     CallbackQuery callbackQuery = update.CallbackQuery;
                     userId = callbackQuery.Message.Chat.Id;
-                    await commandsDictionary[accordanceDictionaryButtonCommand[callbackQuery.Data]].Execute(
+                    string data = callbackQuery.Data;
+                    string commandWord = callbackQuery.Data.Split('|')[0];
+                    string param = Checker.GetParam(data);
+                    await commandsDictionary[accordanceDictionaryButtonCommand[commandWord]].Execute(
                         userId,
-                        botClient);
+                        botClient,
+                        param);
                 }
             }
             catch (Exception ex)
@@ -93,6 +97,6 @@ namespace Simulator.BotControl
             //Все исключения обработаны так, что возвращают в сообщении также userId
             long userId = long.Parse(exception.Message.Split(' ')[0]);
             await botClient.SendTextMessageAsync(userId, exception.Message.Remove(0, userId.ToString().Length).Trim());
-        }        
+        }
     }
 }

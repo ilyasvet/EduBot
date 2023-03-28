@@ -1,6 +1,7 @@
 ﻿using Simulator.Models;
 using Simulator.TelegramBotLibrary;
 using System.Collections.Generic;
+using System.Linq;
 using Telegram.Bot.Types.ReplyMarkups;
 
 namespace Simulator.BotControl
@@ -53,11 +54,21 @@ namespace Simulator.BotControl
                 InlineKeyboardButton.WithCallbackData("Карточка пользователя", "UserCard")
             },
         });
+        public static InlineKeyboardMarkup BackToLists = new(new[]
+        {
+            new[]
+            {
+                InlineKeyboardButton.WithCallbackData("К спискам", "ListGroups"),
+            },
+        });
         public static InlineKeyboardMarkup GroupsList;
-
         public static void MakeGroupList()
         {
-
+            List<Group> groups = GroupTableCommand.GetAllGroups();
+            InlineKeyboardButton[][] inlineKeyboardButtons = groups.Select(g => new[]
+            {
+                new InlineKeyboardButton.("","")
+            }).ToArray();
         }
     }
    

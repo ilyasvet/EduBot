@@ -14,7 +14,7 @@ namespace Simulator.Commands
                 CommandKeyboard.MakeGroupList();
                 botClient.SendTextMessageAsync(
                             chatId: userId,
-                            text: $"{Resources.ShowGroups}\n{Resources.ShowGroupsFormat}",
+                            text: Resources.ShowGroups,
                             replyMarkup: CommandKeyboard.GroupsList);
             });
         }

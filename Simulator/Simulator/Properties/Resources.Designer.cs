@@ -88,6 +88,15 @@ namespace Simulator.Properties {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на Пароль для группы:.
+        /// </summary>
+        internal static string GroupPassword {
+            get {
+                return ResourceManager.GetString("GroupPassword", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на Вход совершён успешно, переходим в главное меню.
         /// </summary>
         internal static string RightPassword {
@@ -106,16 +115,7 @@ namespace Simulator.Properties {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Number === Password.
-        /// </summary>
-        internal static string ShowGroupsFormat {
-            get {
-                return ResourceManager.GetString("ShowGroupsFormat", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Ищет локализованную строку, похожую на Список пользователей, добавленных на курс.
+        ///   Ищет локализованную строку, похожую на Список пользователей группы.
         /// </summary>
         internal static string ShowUsers {
             get {

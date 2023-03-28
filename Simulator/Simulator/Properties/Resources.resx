@@ -127,7 +127,7 @@
     <value>Вход совершён успешно, переходим в главное меню</value>
   </data>
   <data name="ShowUsers" xml:space="preserve">
-    <value>Список пользователей, добавленных на курс</value>
+    <value>Список пользователей группы</value>
   </data>
   <data name="UserCard" xml:space="preserve">
     <value>Это ваша персональная карточка</value>
@@ -156,7 +156,7 @@
   <data name="ShowGroups" xml:space="preserve">
     <value>Список групп, добавленных на курс</value>
   </data>
-  <data name="ShowGroupsFormat" xml:space="preserve">
-    <value>Number === Password</value>
+  <data name="GroupPassword" xml:space="preserve">
+    <value>Пароль для группы:</value>
   </data>
 </root>
