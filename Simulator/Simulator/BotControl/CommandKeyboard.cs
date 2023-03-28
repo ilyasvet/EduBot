@@ -1,4 +1,7 @@
-﻿using Telegram.Bot.Types.ReplyMarkups;
+﻿using Simulator.Models;
+using Simulator.TelegramBotLibrary;
+using System.Collections.Generic;
+using Telegram.Bot.Types.ReplyMarkups;
 
 namespace Simulator.BotControl
 {
@@ -29,12 +32,18 @@ namespace Simulator.BotControl
         {
             new[]
             {
-                InlineKeyboardButton.WithCallbackData("Список пользователей", "ListUsers"),
-                InlineKeyboardButton.WithCallbackData("Список групп", "ListGroups"),
+                InlineKeyboardButton.WithCallbackData("Списки", "ListGroups"),
             },
             new[]
             {
-                InlineKeyboardButton.WithCallbackData("Добавить новую группу", "AddGroupAdmin"),
+                InlineKeyboardButton.WithCallbackData("Добавить группу", "AddUsersAdmin"),
+            },
+        });
+        public static InlineKeyboardMarkup AddUsers = new(new[]
+        {
+            new[]
+            {
+                InlineKeyboardButton.WithCallbackData("Добавить пользователей", "AddUsersAdmin")
             },
         });
         public static InlineKeyboardMarkup UserMenu = new(new[]
@@ -44,6 +53,12 @@ namespace Simulator.BotControl
                 InlineKeyboardButton.WithCallbackData("Карточка пользователя", "UserCard")
             },
         });
+        public static InlineKeyboardMarkup GroupsList;
+
+        public static void MakeGroupList()
+        {
+
+        }
     }
    
 }

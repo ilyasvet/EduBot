@@ -5,7 +5,7 @@
         public long UserID { get; private set; }
         public string Name { get; private set; }
         public string Surname { get; private set; }
-        public int GroupId { get; set; }
+        public string GroupNumber { get; set; }
         public bool IsAdmin { get; set; }
         public object FirstAttempt { get; set; }
         public object SecondAttempt { get; set; }

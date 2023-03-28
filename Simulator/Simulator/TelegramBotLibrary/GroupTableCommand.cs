@@ -18,9 +18,9 @@ namespace Simulator.TelegramBotLibrary
             command.Dispose();
         }
         
-        public static string GetPassword(int groupId)
+        public static string GetPassword(string groupNumber)
         {
-            string commandText = $"select * from groups where ID = {groupId}";
+            string commandText = $"select * from groups where GroupNumber = {groupNumber}";
             command.CommandText = commandText;
             using (SqlDataReader reader = command.ExecuteReader())
             {
@@ -31,23 +31,19 @@ namespace Simulator.TelegramBotLibrary
                 throw new ArgumentNullException();
             }
         }
-        public static int GetGroupId(string groupNumber)
+        public static bool HasGroup(string groupNumber)
         {
-            string commandText = $"select * from groups where GroupNumber = {groupNumber}";
+            string commandText = $"select * from groups where GroupNumber = '{groupNumber}'";
             command.CommandText = commandText;
             using (SqlDataReader reader = command.ExecuteReader())
             {
-                if (reader.Read())
-                {
-                    return (int)reader["ID"];
-                }
-                throw new ArgumentNullException();
+                return reader.HasRows;
             }
         }
 
-        public static void SetPassword(int groupId, string password)
+        public static void SetPassword(string groupNumber, string password)
         {
-            string commandText = $"update Groups set Password = '{password}' where ID = '{groupId}'";
+            string commandText = $"update Groups set Password = '{password}' where GroupNumber = '{groupNumber}'";
             ExecuteNonQueryCommand(commandText);
         }
 
@@ -58,9 +54,9 @@ namespace Simulator.TelegramBotLibrary
             ExecuteNonQueryCommand(commandText);
         }
 
-        public static Models.Group GetGroup(int groupId)
+        public static Models.Group GetGroup(string groupNumber)
         {
-            string commandText = $"select * from groups where ID = {groupId}";
+            string commandText = $"select * from groups where GroupNumber = {groupNumber}";
             command.CommandText = commandText;
             using (SqlDataReader reader = command.ExecuteReader())
             {
@@ -83,9 +79,9 @@ namespace Simulator.TelegramBotLibrary
             }
         }
 
-        public static void DeleteGroup(int groupId)
+        public static void DeleteGroup(string groupNumber)
         {
-            string commandText = $"delete from Groups where ID = '{groupId}'";
+            string commandText = $"delete from Groups where GroupNumber = '{groupNumber}'";
             ExecuteNonQueryCommand(commandText);
         }
         
@@ -95,7 +91,6 @@ namespace Simulator.TelegramBotLibrary
             if (reader.Read())
             {
                 group = new Models.Group((string)reader["GroupNumber"]);
-                group.Id = (int)reader["ID"];
                 group.Password = (string)reader["Password"];
                 return true;
             }

@@ -1,4 +1,5 @@
 ﻿using Simulator.Commands;
+using Simulator.Services;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -39,63 +40,62 @@ namespace Simulator.BotControl
 
         private async Task Update(ITelegramBotClient botClient, Update update, CancellationToken token)
         {
-            if (update.Message?.Text != null)
+            long userId = 0;
+            try
             {
-                string messageText = update.Message.Text;
-                long userId = update.Message.Chat.Id;
-                if(TextIsCommand(messageText))
+                if (update.Message?.Text != null)
                 {
-                    //Тут бот выполняет команду, введённую пользователем
-                    await commandsDictionary[accordanceDictionaryTextCommand[messageText]].Execute(userId, botClient);
+                    string messageText = update.Message.Text;
+                    userId = update.Message.Chat.Id;
+                    if (Checker.TextIsCommand(commandsDictionary, messageText))
+                    {
+                        //Тут бот выполняет команду, введённую пользователем
+                        await commandsDictionary[accordanceDictionaryTextCommand[messageText]].Execute(userId, botClient);
+                    }
+                    else
+                    {
+                        //Тут бот принимает от пользователя какие-то данные
+                        await CommandExecuteExtensionText.Execute(userId, botClient, messageText);
+                    }
                 }
-                else
+                else if (update.Message?.Document != null)
                 {
-                    //Тут бот принимает от пользователя какие-то данные
-                    await CommandExecuteExtensionText.Execute(userId, botClient, messageText);
-                }
-            }
-            else if (update.Message?.Document != null)
-            {
-                //Тут бот принимает от пользователя файл
-                long userId = update.Message.Chat.Id;
-                Document messageDocument = update.Message.Document;
-                var file = await botClient.GetFileAsync(messageDocument.FileId);
-                
-                //все файлы, посланные боту, хранятся в папке temp
-                string path = $"{AppDomain.CurrentDomain.BaseDirectory}temp\\{messageDocument.FileName}";
-                FileStream fs = new FileStream(path, FileMode.Create);
-                await botClient.DownloadFileAsync(file.FilePath, fs);
-                fs.Dispose();
+                    //Тут бот принимает от пользователя файл
+                    userId = update.Message.Chat.Id;
+                    Document messageDocument = update.Message.Document;
+                    var file = await botClient.GetFileAsync(messageDocument.FileId);
 
-                await CommandExecuteExtensionFile.Execute(userId, botClient, path);
-                System.IO.File.Delete(path);
-                //После обработки файл удаляется
+                    //все файлы, посланные боту, хранятся в папке temp
+                    string path = $"{AppDomain.CurrentDomain.BaseDirectory}temp\\{messageDocument.FileName}";
+                    FileStream fs = new FileStream(path, FileMode.Create);
+                    await botClient.DownloadFileAsync(file.FilePath, fs);
+                    fs.Dispose();
+
+                    await CommandExecuteExtensionFile.Execute(userId, botClient, path);
+                    System.IO.File.Delete(path);
+                    //После обработки файл удаляется
+                }
+                else if (update.Type == UpdateType.CallbackQuery)
+                {
+                    //Тут бот выполняет команду по нажатию на кнопку
+                    CallbackQuery callbackQuery = update.CallbackQuery;
+                    userId = callbackQuery.Message.Chat.Id;
+                    await commandsDictionary[accordanceDictionaryButtonCommand[callbackQuery.Data]].Execute(
+                        userId,
+                        botClient);
+                }
             }
-            else if (update.Type == UpdateType.CallbackQuery)
+            catch (Exception ex)
             {
-                //Тут бот выполняет команду по нажатию на кнопку
-                CallbackQuery callbackQuery = update.CallbackQuery;
-                await commandsDictionary[accordanceDictionaryButtonCommand[callbackQuery.Data]].Execute(
-                    callbackQuery.Message.Chat.Id,
-                    botClient);
+                throw new Exception($"{userId} {ex.Message}");
             }
         }
         private async Task Error(ITelegramBotClient botClient, Exception exception, CancellationToken token)
         {
-            //await botClient.SendTextMessageAsync(long.Parse(exception.Data["userId"].ToString()), exception.Message);
-        }
-
-        private bool TextIsCommand(string text)
-        {
-            if (text.StartsWith("/"))
-            {
-                if (accordanceDictionaryTextCommand.ContainsKey(text))
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
+            //Все исключения обработаны так, что возвращают в сообщении также userId
+            long userId = long.Parse(exception.Message.Split(' ')[0]);
+            await botClient.SendTextMessageAsync(userId, exception.Message.Remove(0, userId.ToString().Length).Trim());
+        }        
         private static void FillCommandDictionary()
         {
             commandsDictionary = new Dictionary<string, Command>();

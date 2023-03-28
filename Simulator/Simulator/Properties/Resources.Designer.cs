@@ -106,7 +106,7 @@ namespace Simulator.Properties {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на ID === Number === Password.
+        ///   Ищет локализованную строку, похожую на Number === Password.
         /// </summary>
         internal static string ShowGroupsFormat {
             get {

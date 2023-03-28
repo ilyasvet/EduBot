@@ -22,8 +22,8 @@ namespace Simulator.TelegramBotLibrary
 
         public static void AddUser(User user)
         {
-            string commandText = $"insert into Users (UserId, Name, Surname, IsAdmin, DialogState, GroupID)" +
-                $" values ('{user.UserID}','{user.Name}','{user.Surname}','{false}','{0}','{user.GroupId}')";
+            string commandText = $"insert into Users (UserId, Name, Surname, IsAdmin, DialogState, GroupNumber)" +
+                $" values ('{user.UserID}','{user.Name}','{user.Surname}','{false}','{0}','{user.GroupNumber}')";
             //Добавлять пользователя (если его нет в базе)
             ExecuteNonQueryCommand(commandText);
         }
@@ -85,9 +85,9 @@ namespace Simulator.TelegramBotLibrary
             //Назначить пользователя администратором
             ExecuteNonQueryCommand(commandText);
         }
-        public static List<User> GetListUsers()
+        public static List<User> GetGroupUsers(string groupNumber)
         {
-            command.CommandText = $"select * from users";
+            command.CommandText = $"select * from users where GroupNumber = '{groupNumber}'";
             using (SqlDataReader reader = command.ExecuteReader())
             {
                 List<User> registeredUsers = new List<User>();
@@ -105,7 +105,7 @@ namespace Simulator.TelegramBotLibrary
             {
                 user = new User((int)reader["UserID"], (string)reader["Name"], (string)reader["Surname"]);
                 user.IsAdmin = (bool)reader["IsAdmin"];
-                user.GroupId = (int)reader["GroupId"];
+                user.GroupNumber = (string)reader["GroupNumber"];
                 return true;
             }
             return false;

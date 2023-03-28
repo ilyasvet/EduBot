@@ -12,7 +12,7 @@ namespace Simulator.Commands
         {
             return Task.Run(() =>
             {
-				UserTableCommand.SetDialogState(userId, DialogState.SendingGroupFile);
+				UserTableCommand.SetDialogState(userId, DialogState.AddingUsersToGroup);
                 botClient.SendTextMessageAsync(userId, Resources.AddNewGroupOfUsers);
             });
         }

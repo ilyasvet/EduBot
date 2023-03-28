@@ -157,6 +157,6 @@
     <value>Список групп, добавленных на курс</value>
   </data>
   <data name="ShowGroupsFormat" xml:space="preserve">
-    <value>ID === Number === Password</value>
+    <value>Number === Password</value>
   </data>
 </root>
