@@ -1,4 +1,6 @@
-﻿namespace Simulator.Models
+﻿using System;
+
+namespace Simulator.Models
 {
     public class User
     {
@@ -10,12 +12,20 @@
             {
                 if(value < 0)
                 {
-                    throw new ArgumentException("TelegramID должен быть положительным");
+                    throw new ArgumentException("TelegramID должен быть положительным числом");
                 }
                 _userID = value;
             }
         }
-        public string Name { get; private set; }
+        private string _name;
+        public string Name
+        {
+            get => _name;
+            private set
+            {
+                _name = value;
+            }
+        }
         public string Surname { get; private set; }
         public string GroupNumber { get; set; }
         public bool IsAdmin { get; set; }

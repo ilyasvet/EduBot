@@ -5,9 +5,9 @@ using Excel = Microsoft.Office.Interop.Excel;
 
 namespace Simulator.Services
 {
-    internal static class ExcelWorker
+    internal static class ExcelHandler
     {
-        public static int AddUsers(string path, string groupNumber)
+        public static int AddUsersFromExcel(string path, string groupNumber)
         {
             Excel.Application excelApp = new Excel.Application();
             Excel.Workbooks workbooks = null;

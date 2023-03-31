@@ -40,7 +40,7 @@ namespace Simulator.BotControl
                     AddGroup(groupNumber);
                     callBackMessage += $"\nГруппа \"{groupNumber}\" была добавлена";
                 }
-                int count = ExcelWorker.AddUsersFromExcel(path, groupNumber);
+                int count = ExcelHandler.AddUsersFromExcel(path, groupNumber);
                 callBackMessage += $"\nДобавлено пользователей в группу \"{groupNumber}\": {count}\n";
                 BotCallBack(userId, botClient, callBackMessage);
             }
