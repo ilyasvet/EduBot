@@ -33,7 +33,7 @@ namespace Simulator.BotControl
             {
                 if (!Checker.IsCorrectFileExtension(path, FileType.ExcelTable)) throw new ArgumentException("Файл должен быть exel");
                 string groupNumber = GroupHandler.GetGroupNumberFromPath(path);
-                if (!Checker.IsCorrectGroupNumber(groupNumber)) throw new ArgumentException("Неверный формат номера группы");
+                if (!GroupHandler.IsCorrectGroupNumber(groupNumber)) throw new ArgumentException("Неверный формат номера группы");
                 string callBackMessage = Resources.SuccessAddGroup;
                 if (!GroupTableCommand.HasGroup(groupNumber))
                 {

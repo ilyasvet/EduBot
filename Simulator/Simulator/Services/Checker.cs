@@ -26,11 +26,7 @@ namespace Simulator.Services
             }
             return "";
         }
-        public static bool IsCorrectGroupNumber(string groupNumber)
-        {
-            Regex regex = new Regex("^[0-9]{7}-[0-9]{5}$");
-            return regex.IsMatch(groupNumber);
-        }
+        
         public static bool IsCorrectFileExtension(string path, FileType fileType)
         {
             string extension = path.Split('.').Last();

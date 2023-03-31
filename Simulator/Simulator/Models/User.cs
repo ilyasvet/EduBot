@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Simulator.Services;
+using System;
 
 namespace Simulator.Models
 {
@@ -11,9 +12,7 @@ namespace Simulator.Models
             private set
             {
                 if(value < 0)
-                {
-                    throw new ArgumentException("TelegramID должен быть положительным числом");
-                }
+                    throw new ArgumentException("TelegramID должен быть положительным числом.");
                 _userID = value;
             }
         }
@@ -23,11 +22,22 @@ namespace Simulator.Models
             get => _name;
             private set
             {
-
+                if (!UserHandler.IsCorrectName(value))
+                    throw new ArgumentException("Неверный формат имени.");
                 _name = value;
             }
         }
-        public string Surname { get; private set; }
+        private string _surname;
+        public string Surname
+        {
+            get => _surname;
+            private set
+            {
+                if (!UserHandler.IsCorrectName(value))
+                    throw new ArgumentException("Неверный формат фамилии.");
+                _surname = value;
+            }
+        }
         public string GroupNumber { get; set; }
         public bool IsAdmin { get; set; }
 
