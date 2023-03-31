@@ -17,7 +17,7 @@ namespace Simulator.Services
             }
             return false;
         }
-        public static string GetParam(string data)
+        public static string GetCommandCallbackQueryParam(string data)
         {
             string[] parameters = data.Split('|');
             if (parameters.Length > 1)

@@ -91,6 +91,8 @@
     <Compile Include="Services\ExcelHandler.cs" />
     <Compile Include="Services\FileType.cs" />
     <Compile Include="Services\Filler.cs" />
+    <Compile Include="Services\GroupHandler.cs" />
+    <Compile Include="Services\UserHandler.cs" />
     <Compile Include="TelegramBotLibrary\GroupTableCommand.cs" />
     <Compile Include="TelegramBotLibrary\LocalSqlDbConnection.cs" />
     <Compile Include="TelegramBotLibrary\UserTableCommand.cs" />

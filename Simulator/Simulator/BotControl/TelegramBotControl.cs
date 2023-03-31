@@ -80,7 +80,7 @@ namespace Simulator.BotControl
                     userId = callbackQuery.Message.Chat.Id;
                     string data = callbackQuery.Data;
                     string commandWord = callbackQuery.Data.Split('|')[0];
-                    string param = Checker.GetParam(data);
+                    string param = Checker.GetCommandCallbackQueryParam(data);
                     await commandsDictionary[accordanceDictionaryButtonCommand[commandWord]].Execute(
                         userId,
                         botClient,

@@ -32,12 +32,12 @@ namespace Simulator.BotControl
             try
             {
                 if (!Checker.IsCorrectFileExtension(path, FileType.ExcelTable)) throw new ArgumentException("Файл должен быть exel");
-                string groupNumber = GetGroupNumber(path);
+                string groupNumber = GroupHandler.GetGroupNumberFromPath(path);
                 if (!Checker.IsCorrectGroupNumber(groupNumber)) throw new ArgumentException("Неверный формат номера группы");
                 string callBackMessage = Resources.SuccessAddGroup;
                 if (!GroupTableCommand.HasGroup(groupNumber))
                 {
-                    AddGroup(groupNumber);
+                    GroupHandler.AddGroup(groupNumber);
                     callBackMessage += $"\nГруппа \"{groupNumber}\" была добавлена";
                 }
                 int count = ExcelHandler.AddUsersFromExcel(path, groupNumber);
@@ -59,16 +59,6 @@ namespace Simulator.BotControl
                        chatId: userId,
                        text: message,
                        replyMarkup: CommandKeyboard.ToMainMenuAdmin);
-        }
-        private static void AddGroup(string groupNumber)
-        {
-            Models.Group group = new Models.Group(groupNumber);
-            group.SetPassword();
-            GroupTableCommand.AddGroup(group);
-        }
-        private static string GetGroupNumber(string path)
-        {
-            return path.Substring(path.LastIndexOf('\\') + 1).Split('.')[0];
         }
     }
 }

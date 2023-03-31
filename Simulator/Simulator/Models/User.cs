@@ -23,6 +23,7 @@ namespace Simulator.Models
             get => _name;
             private set
             {
+
                 _name = value;
             }
         }
