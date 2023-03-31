@@ -84,7 +84,6 @@ namespace Simulator.TelegramBotLibrary
             string commandText = $"delete from Groups where GroupNumber = '{groupNumber}'";
             ExecuteNonQueryCommand(commandText);
         }
-        
         private static bool GetGroupFromReader(SqlDataReader reader, out Models.Group group)
         {
             group = null;
@@ -96,7 +95,6 @@ namespace Simulator.TelegramBotLibrary
             }
             return false;
         }
-        
         private static void ExecuteNonQueryCommand(string commandText)
         {
             command.CommandText = commandText;

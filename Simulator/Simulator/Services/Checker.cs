@@ -1,5 +1,5 @@
-﻿using Simulator.Commands;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace Simulator.Services
@@ -30,6 +30,17 @@ namespace Simulator.Services
         {
             Regex regex = new Regex("^[0-9]{7}-[0-9]{5}$");
             return regex.IsMatch(groupNumber);
+        }
+        public static bool IsCorrectFileExtension(string path, FileType fileType)
+        {
+            string extension = path.Split('.').Last();
+            switch (fileType)
+            {
+                case FileType.ExcelTable:
+                    return extension.Contains("xls");
+                default:
+                    return false;
+            }
         }
     }
 }

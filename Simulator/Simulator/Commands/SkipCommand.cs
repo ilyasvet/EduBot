@@ -11,20 +11,20 @@ namespace Simulator.Commands
         public override Task Execute(long userId, ITelegramBotClient botClient, string param = "")
         {
             return Task.Run(() =>
-            {
+            {     
                 UserTableCommand.SetDialogState(userId, BotControl.State.DialogState.None);
                 if (UserTableCommand.IsAdmin(userId))
                 {
                     botClient.SendTextMessageAsync(
                                 chatId: userId,
-                                text: Resources.AdminMenu,
+                                text: param,
                                 replyMarkup: CommandKeyboard.AdminMenu);
                 }
                 else
                 {
                     botClient.SendTextMessageAsync(
                                    chatId: userId,
-                                   text: Resources.UserMenu,
+                                   text: param,
                                    replyMarkup: CommandKeyboard.UserMenu);
                 }
             });

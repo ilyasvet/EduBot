@@ -86,10 +86,10 @@ namespace Simulator.BotControl
                         botClient,
                         param);
                 }
-                int messageId = update.CallbackQuery != null ?
-                    update.CallbackQuery.Message.MessageId :
-                    update.Message.MessageId;
-                await botClient.DeleteMessageAsync(userId, messageId);
+                //int messageId = update.CallbackQuery != null ?
+                //    update.CallbackQuery.Message.MessageId :
+                //    update.Message.MessageId;
+                //await botClient.DeleteMessageAsync(userId, messageId);
             }
             catch (Exception ex)
             {

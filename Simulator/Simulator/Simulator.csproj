@@ -87,6 +87,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Services\Checker.cs" />
+    <Compile Include="Services\ControlSystem.cs" />
+    <Compile Include="Services\ExcelHandler.cs" />
+    <Compile Include="Services\FileType.cs" />
     <Compile Include="Services\Filler.cs" />
     <Compile Include="TelegramBotLibrary\GroupTableCommand.cs" />
     <Compile Include="TelegramBotLibrary\LocalSqlDbConnection.cs" />
