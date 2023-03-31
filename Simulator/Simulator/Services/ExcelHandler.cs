@@ -55,7 +55,7 @@ namespace Simulator.Services
                 }
                 catch
                 {
-                    throw new ArgumentException("TelegramId должен быть целым числом");
+                    throw new ArgumentException("TelegramId должен быть целым числом. Строка " + i);
                 }
                 if (UserTableCommand.HasUser(userTelegramId))
                 {
@@ -64,7 +64,15 @@ namespace Simulator.Services
                 string userName = worksheet.Cells[i, 1].Value;
                 string userSurname = worksheet.Cells[i, 2].Value;
 
-                Models.User user = new Models.User(userTelegramId, userName, userSurname);
+                Models.User user;
+                try
+                {
+                    user = new Models.User(userTelegramId, userName, userSurname);
+                }
+                catch (Exception ex)
+                {
+                    throw new ArgumentException(ex.Message + " Строка " + i);
+                }
                 user.GroupNumber = groupNumber;
                 UserTableCommand.AddUser(user);
                 count++;
