@@ -9,9 +9,9 @@ namespace Simulator.Commands
 {
     public class UserCardCommand : Command
     {
-        public override Task Execute(long userId, ITelegramBotClient botClient, string param = "")
+        public override async Task Execute(long userId, ITelegramBotClient botClient, string param = "")
         {
-            return Task.Run(() =>
+            await Task.Run(() =>
             {
                 string userCardString = Resources.UserCard;
                 User user = UserTableCommand.GetUserById(userId);

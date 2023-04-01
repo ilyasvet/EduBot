@@ -11,7 +11,7 @@ namespace Simulator.BotControl
             TelegramBotControl telegramBotControl = new TelegramBotControl(
                 ConfigurationManager.AppSettings["BotToken"]
                 );
-            telegramBotControl.ManagementTelegramBot();
+            telegramBotControl.ManageTelegramBot();
             Console.ReadLine();
         }
     }

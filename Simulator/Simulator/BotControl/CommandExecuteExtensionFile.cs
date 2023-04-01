@@ -10,9 +10,9 @@ namespace Simulator.BotControl
 {
     public static class CommandExecuteExtensionFile
     {
-        public static Task Execute(long userId, ITelegramBotClient botClient, string path)
+        public static async Task Execute(long userId, ITelegramBotClient botClient, string path)
         {
-            return Task.Run(() =>
+            await Task.Run(async() =>
             {
                 DialogState state = UserTableCommand.GetDialogState(userId);
                 switch (state)
@@ -20,14 +20,14 @@ namespace Simulator.BotControl
                     case DialogState.None:
                         break;
                     case DialogState.AddingUsersToGroup:
-                        AddNewUsersTable(userId, botClient, path);
+                        await AddNewUsersTable(userId, botClient, path);
                         break;
                     default:
                         break;
                 }
             });
         }
-        private static void AddNewUsersTable(long userId, ITelegramBotClient botClient, string path)
+        private async static Task AddNewUsersTable(long userId, ITelegramBotClient botClient, string path)
         {
             try
             {
@@ -42,7 +42,7 @@ namespace Simulator.BotControl
                 }
                 int count = ExcelHandler.AddUsersFromExcel(path, groupNumber);
                 callBackMessage += $"\nДобавлено пользователей в группу \"{groupNumber}\": {count}\n";
-                BotCallBack(userId, botClient, callBackMessage);
+                await BotCallBack(userId, botClient, callBackMessage);
             }
             catch
             {
@@ -51,11 +51,13 @@ namespace Simulator.BotControl
             finally
             {
                 UserTableCommand.SetDialogState(userId, DialogState.None);
+                System.IO.File.Delete(path);
+                //После обработки файл удаляется
             }
         }
-        private static void BotCallBack(long userId, ITelegramBotClient botClient, string message)
+        private async static Task BotCallBack(long userId, ITelegramBotClient botClient, string message)
         {
-            botClient.SendTextMessageAsync(
+            await botClient.SendTextMessageAsync(
                        chatId: userId,
                        text: message,
                        replyMarkup: CommandKeyboard.ToMainMenuAdmin);

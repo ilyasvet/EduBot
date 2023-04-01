@@ -28,7 +28,7 @@ namespace Simulator.BotControl
         {
             botClient = new TelegramBotClient(token);
         }
-        public void ManagementTelegramBot()
+        public void ManageTelegramBot()
         {
             botClient.StartReceiving(
                 Update,
@@ -41,69 +41,84 @@ namespace Simulator.BotControl
             long userId = 0;
             try
             {
-                if (update.Message?.Text != null)
+                if (update.Message != null)
                 {
-                    string messageText = update.Message.Text;
-                    userId = update.Message.Chat.Id;
-                    if (Checker.TextIsCommand(accordanceDictionaryTextCommand, messageText))
+                    int messageId = update.Message.MessageId;
+                    try
                     {
-                        //Тут бот выполняет команду, введённую пользователем
-                        await commandsDictionary[accordanceDictionaryTextCommand[messageText]].Execute(userId, botClient);
+                        if (update.Message.Text != null)
+                        {
+                            string messageText = update.Message.Text;
+                            userId = update.Message.Chat.Id;
+                            if (Checker.TextIsCommand(accordanceDictionaryTextCommand, messageText))
+                            {
+                                //Тут бот выполняет команду, введённую пользователем
+                                await commandsDictionary[accordanceDictionaryTextCommand[messageText]].Execute(userId, botClient);
+                            }
+                            else
+                            {
+                                //Тут бот принимает от пользователя какие-то данные
+                                await CommandExecuteExtensionText.Execute(userId, botClient, messageText);
+                            }
+                        }
+                        else if (update.Message.Document != null)
+                        {
+                            //Тут бот принимает от пользователя файл
+                            userId = update.Message.Chat.Id;
+                            Document messageDocument = update.Message.Document;
+
+                            string path = await BotHandler.FileHandle(botClient, messageDocument);
+
+                            await CommandExecuteExtensionFile.Execute(userId, botClient, path);
+                        }
                     }
-                    else
+                    finally
                     {
-                        //Тут бот принимает от пользователя какие-то данные
-                        await CommandExecuteExtensionText.Execute(userId, botClient, messageText);
+                        try
+                        {
+                            await botClient.DeleteMessageAsync(userId, messageId - 1);
+                            await botClient.DeleteMessageAsync(userId, messageId);
+                        }
+                        catch { }
                     }
-                }
-                else if (update.Message?.Document != null)
-                {
-                    //Тут бот принимает от пользователя файл
-                    userId = update.Message.Chat.Id;
-                    Document messageDocument = update.Message.Document;
-                    var file = await botClient.GetFileAsync(messageDocument.FileId);
-
-                    //все файлы, посланные боту, хранятся в папке temp
-                    string path = $"{AppDomain.CurrentDomain.BaseDirectory}temp\\{messageDocument.FileName}";
-                    FileStream fs = new FileStream(path, FileMode.Create);
-                    await botClient.DownloadFileAsync(file.FilePath, fs);
-                    fs.Dispose();
-
-                    await CommandExecuteExtensionFile.Execute(userId, botClient, path);
-                    System.IO.File.Delete(path);
-                    //После обработки файл удаляется
                 }
                 else if (update.Type == UpdateType.CallbackQuery)
                 {
-                    //Тут бот выполняет команду по нажатию на кнопку
                     CallbackQuery callbackQuery = update.CallbackQuery;
-                    userId = callbackQuery.Message.Chat.Id;
-                    string data = callbackQuery.Data;
-                    string commandWord = callbackQuery.Data.Split('|')[0];
-                    string param = Checker.GetCommandCallbackQueryParam(data);
-                    await commandsDictionary[accordanceDictionaryButtonCommand[commandWord]].Execute(
-                        userId,
-                        botClient,
-                        param);
+                    try
+                    {
+                        //Тут бот выполняет команду по нажатию на кнопку
+                        userId = callbackQuery.Message.Chat.Id;
+                        string data = callbackQuery.Data;
+                        string commandWord = callbackQuery.Data.Split('|')[0];
+                        string param = Checker.GetCommandCallbackQueryParam(data);
+                        await commandsDictionary[accordanceDictionaryButtonCommand[commandWord]].Execute(
+                            userId,
+                            botClient,
+                            param);
+                    }
+                    finally
+                    {
+                        try
+                        {
+                            await botClient.DeleteMessageAsync(userId, callbackQuery.Message.MessageId);
+                        }
+                        catch { }
+                    }
                 }
-                //int messageId = update.CallbackQuery != null ?
-                //    update.CallbackQuery.Message.MessageId :
-                //    update.Message.MessageId;
-                //await botClient.DeleteMessageAsync(userId, messageId);
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
-                throw new Exception($"{userId} {ex.Message}");
+                //Все исключения обработаны так, что возвращают в сообщении также userId
+                await commandsDictionary[accordanceDictionaryTextCommand["/skip"]].Execute(
+                            userId,
+                            botClient,
+                            ex.Message + "\nПереход в меню...");
             }
         }
         private async Task Error(ITelegramBotClient botClient, Exception exception, CancellationToken token)
         {
-            //Все исключения обработаны так, что возвращают в сообщении также userId
-            long userId = long.Parse(exception.Message.Split(' ')[0]);
-            await commandsDictionary[accordanceDictionaryTextCommand["/skip"]].Execute(
-                        userId,
-                        botClient,
-                        exception.Message.Remove(0, userId.ToString().Length).Trim());
+
         }
     }
 }

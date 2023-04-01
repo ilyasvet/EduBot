@@ -8,9 +8,9 @@ namespace Simulator.Commands
 {
     public class LogInCommand : Command
     {
-        public override Task Execute(long userId, ITelegramBotClient botClient, string param = "")
+        public override async Task Execute(long userId, ITelegramBotClient botClient, string param = "")
         {
-            return Task.Run(() =>
+            await Task.Run(() =>
             {
                 UserTableCommand.SetDialogState(userId, DialogState.EnterPassword);
                 botClient.SendTextMessageAsync(userId, Resources.EnterPassword);

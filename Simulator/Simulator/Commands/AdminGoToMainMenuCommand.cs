@@ -7,9 +7,9 @@ namespace Simulator.Commands
 {
     public class AdminGoToMainMenuCommand : Command
     {
-        public override Task Execute(long userId, ITelegramBotClient botClient, string param = "")
+        public async override Task Execute(long userId, ITelegramBotClient botClient, string param = "")
         {
-            return Task.Run(() =>
+            await Task.Run(() =>
             {
                 botClient.SendTextMessageAsync(
                             chatId: userId,
