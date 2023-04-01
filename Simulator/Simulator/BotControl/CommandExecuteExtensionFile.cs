@@ -29,12 +29,12 @@ namespace Simulator.BotControl
         }
         private async static Task AddNewUsersTable(long userId, ITelegramBotClient botClient, string path)
         {
+            string callBackMessage = "";
             try
             {
                 if (!Checker.IsCorrectFileExtension(path, FileType.ExcelTable)) throw new ArgumentException("Файл должен быть exel");
                 string groupNumber = GroupHandler.GetGroupNumberFromPath(path);
                 if (!GroupHandler.IsCorrectGroupNumber(groupNumber)) throw new ArgumentException("Неверный формат номера группы");
-                string callBackMessage = Resources.SuccessAddGroup;
                 if (!GroupTableCommand.HasGroup(groupNumber))
                 {
                     GroupHandler.AddGroup(groupNumber);
@@ -42,11 +42,11 @@ namespace Simulator.BotControl
                 }
                 int count = ExcelHandler.AddUsersFromExcel(path, groupNumber);
                 callBackMessage += $"\nДобавлено пользователей в группу \"{groupNumber}\": {count}\n";
-                await BotCallBack(userId, botClient, callBackMessage);
+                await BotCallBack(userId, botClient, callBackMessage.Insert(0, Resources.SuccessAddGroup));
             }
-            catch
+            catch(Exception ex)
             {
-                throw;
+                throw new Exception(ex.Message + callBackMessage);
             }
             finally
             {
