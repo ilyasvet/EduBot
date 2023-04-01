@@ -15,9 +15,9 @@ namespace Simulator.Services
             int count = 0;
             try
             {
-                workbooks = excelApp.Workbooks;
-                workbook = excelApp.Workbooks.Open(path);
-                Excel.Worksheet worksheet = workbook.Worksheets[1];
+                workbooks = excelApp.Workbooks; //это хранилище наших файлов, с которыми мы работаем
+                workbook = workbooks.Open(path); //открываем файл excel
+                Excel.Worksheet worksheet = workbook.Worksheets[1]; //берём 1 страницу (счёт с 1)
 
                 // Получаем диапазон используемых на странице ячеек
                 Excel.Range usedRange = worksheet.UsedRange;
@@ -28,7 +28,7 @@ namespace Simulator.Services
 
                 if (urColums.Count != 3) throw new ArgumentException("В таблице должно быть только 3 столбца!");
 
-                count = AddUsersIterative(worksheet, urRows.Count, groupNumber);
+                count = AddUsersIterative(worksheet, urRows.Count, groupNumber); //построчно добавляем пользователей
             }
             catch
             {
@@ -36,10 +36,10 @@ namespace Simulator.Services
             }
             finally
             {
-                workbook.Close();
+                workbook.Close(); //освобождаем неуправляемые ресурсы
                 workbooks.Close();
                 excelApp.Quit();
-                ControlSystem.KillProcess("EXCEL");
+                ControlSystem.KillProcess("EXCEL"); //и завершаем процесс, чтобы он не висел
             }
             return count;
         }
@@ -51,31 +51,31 @@ namespace Simulator.Services
                 long userTelegramId;
                 try
                 {
-                    userTelegramId = (long)worksheet.Cells[i, 3].Value;
-                }
+                    userTelegramId = (long)worksheet.Cells[i, 3].Value; //берём из 3 столбца Id
+                } // сеlls это матрица всех ячеек ячейки
                 catch
                 {
                     throw new ArgumentException("TelegramId должен быть целым числом. Строка " + i);
                 }
                 if (UserTableCommand.HasUser(userTelegramId))
                 {
-                    continue;
+                    continue; //Если пользователь уже есть, повторно не добавляем его
                 }
-                string userName = worksheet.Cells[i, 1].Value;
-                string userSurname = worksheet.Cells[i, 2].Value;
+                string userName = worksheet.Cells[i, 1].Value; //Берём имя из 1 столбца
+                string userSurname = worksheet.Cells[i, 2].Value; //Фамилию из 2 столбца
 
-                Models.User user;
+                Models.User user; //Создаём пользователя. И свойства проверяют входные данные
                 try
                 {
                     user = new Models.User(userTelegramId, userName, userSurname);
                 }
-                catch (Exception ex)
+                catch (Exception ex) //При неправильных данных выдаётся исключение с номером строки с ошибкой
                 {
                     throw new ArgumentException(ex.Message + " Строка " + i);
                 }
-                user.GroupNumber = groupNumber;
+                user.GroupNumber = groupNumber; //Номер группы мы уже проверяли ранее
                 UserTableCommand.AddUser(user);
-                count++;
+                count++; //Увеличили счётчик добавленных пользователей
             }
             return count;
         }

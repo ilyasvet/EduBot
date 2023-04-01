@@ -33,16 +33,16 @@ namespace Simulator.BotControl
             try
             {
                 if (!Checker.IsCorrectFileExtension(path, FileType.ExcelTable)) throw new ArgumentException("Файл должен быть exel");
-                string groupNumber = GroupHandler.GetGroupNumberFromPath(path);
+                string groupNumber = GroupHandler.GetGroupNumberFromPath(path); //Получаем номер группы из названия файла
                 if (!GroupHandler.IsCorrectGroupNumber(groupNumber)) throw new ArgumentException("Неверный формат номера группы");
-                if (!GroupTableCommand.HasGroup(groupNumber))
+                if (!GroupTableCommand.HasGroup(groupNumber)) //Проверяем, есть ли такая группа
                 {
-                    GroupHandler.AddGroup(groupNumber);
+                    GroupHandler.AddGroup(groupNumber); //Если нет, то создаём её
                     callBackMessage += $"\nГруппа \"{groupNumber}\" была добавлена";
                 }
-                int count = ExcelHandler.AddUsersFromExcel(path, groupNumber);
+                int count = ExcelHandler.AddUsersFromExcel(path, groupNumber); //Добавляем пользователей из файла в группу
                 callBackMessage += $"\nДобавлено пользователей в группу \"{groupNumber}\": {count}\n";
-                await BotCallBack(userId, botClient, callBackMessage.Insert(0, Resources.SuccessAddGroup));
+                await BotCallBack(userId, botClient, callBackMessage.Insert(0, Resources.SuccessAddGroup)); //сообщение об успехе операции
             }
             catch(Exception ex)
             {
@@ -50,9 +50,8 @@ namespace Simulator.BotControl
             }
             finally
             {
-                UserTableCommand.SetDialogState(userId, DialogState.None);
-                System.IO.File.Delete(path);
-                //После обработки файл удаляется
+                UserTableCommand.SetDialogState(userId, DialogState.None); //в любом случае скипаем стадию отправки файла
+                System.IO.File.Delete(path); // и удаляем файл
             }
         }
         private async static Task BotCallBack(long userId, ITelegramBotClient botClient, string message)
