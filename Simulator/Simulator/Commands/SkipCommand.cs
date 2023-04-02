@@ -24,7 +24,7 @@ namespace Simulator.Commands
                     botClient.SendTextMessageAsync(
                                    chatId: userId,
                                    text: param,
-                                   replyMarkup: CommandKeyboard.UserMenu);
+                                   replyMarkup: CommandKeyboard.LogIn);
                 }
             });
         }
