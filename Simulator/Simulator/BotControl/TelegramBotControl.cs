@@ -38,14 +38,14 @@ namespace Simulator.BotControl
         private async Task Update(ITelegramBotClient botClient, Update update, CancellationToken token)
         {
             long userId = 0;
-            try
+            try //все исключения по итогу ловятся в этом блоке и выдают сообщение об ошибке
             {
                 if (update.Message != null)
                 {
                     int messageId = update.Message.MessageId;
                     try
                     {
-                        if (update.Message.Text != null)
+                        if (update.Message.Text != null) //Бот принимает сообщение от пользователя
                         {
                             string messageText = update.Message.Text;
                             userId = update.Message.Chat.Id;
@@ -57,6 +57,7 @@ namespace Simulator.BotControl
                             else
                             {
                                 //Тут бот принимает от пользователя какие-то данные
+                                //Обработка идёт на основе DialogState отправителя
                                 await CommandExecuteExtensionText.Execute(userId, botClient, messageText);
                             }
                         }
@@ -66,12 +67,14 @@ namespace Simulator.BotControl
                             userId = update.Message.Chat.Id;
                             Document messageDocument = update.Message.Document;
 
+                            //скачивается файл на сервер и выдаётся путь к нему
                             string path = await BotHandler.FileHandle(botClient, messageDocument);
 
+                            //Обработка идёт на основе DialogState отправителя
                             await CommandExecuteExtensionFile.Execute(userId, botClient, path);
                         }
                     }
-                    finally
+                    finally //Удаляется 2 сообщения (бота и пользователя)
                     {
                         try
                         {
@@ -81,12 +84,12 @@ namespace Simulator.BotControl
                         catch { }
                     }
                 }
-                else if (update.Type == UpdateType.CallbackQuery)
+                else if (update.Type == UpdateType.CallbackQuery) //Обработка нажатия на конпку
                 {
                     CallbackQuery callbackQuery = update.CallbackQuery;
                     try
                     {
-                        //Тут бот выполняет команду по нажатию на кнопку
+                        //Если есть параметр, то он стоит после | в свойстве кнопки CallBackData
                         userId = callbackQuery.Message.Chat.Id;
                         string data = callbackQuery.Data;
                         string commandWord = callbackQuery.Data.Split('|')[0];
@@ -96,7 +99,7 @@ namespace Simulator.BotControl
                             botClient,
                             param);
                     }
-                    finally
+                    finally //Удаляется только сообщение бота
                     {
                         try
                         {
