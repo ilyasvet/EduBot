@@ -1,4 +1,5 @@
-﻿using Simulator.Commands;
+﻿using Simulator.Case;
+using Simulator.Commands;
 using Simulator.Services;
 using System;
 using System.Collections.Generic;
@@ -38,8 +39,14 @@ namespace Simulator.BotControl
         private async Task Update(ITelegramBotClient botClient, Update update, CancellationToken token)
         {
             long userId = 0;
+            
             try //все исключения по итогу ловятся в этом блоке и выдают сообщение об ошибке
             {
+                if(UserCaseTableCommand.IsOnCourse(userId)) //выносим обработку кейса, чтобы не громоздить код
+                {
+                    await CaseControl.CaseCallback(userId, update, botClient); //основной метод обработки в кейсе
+                    return;
+                }
                 if (update.Message != null)
                 {
                     int messageId = update.Message.MessageId;
