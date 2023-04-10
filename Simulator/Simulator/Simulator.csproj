@@ -62,13 +62,15 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BotControl\CommandExecuteExtensionFile.cs" />
-    <Compile Include="BotControl\CommandExecuteExtensionText.cs" />
-    <Compile Include="BotControl\CommandKeyboard.cs" />
-    <Compile Include="BotControl\DialogState.cs" />
+    <Compile Include="BotControl\MenuControl\CommandExecuteExtensionFile.cs" />
+    <Compile Include="BotControl\MenuControl\CommandExecuteExtensionText.cs" />
+    <Compile Include="BotControl\MenuControl\CommandKeyboard.cs" />
+    <Compile Include="BotControl\MenuControl\DialogState.cs" />
     <Compile Include="BotControl\Program.cs" />
     <Compile Include="BotControl\TelegramBotControl.cs" />
-    <Compile Include="Case\CaseControl.cs" />
+    <Compile Include="BotControl\MenuControl\UpdateControlMenu.cs" />
+    <Compile Include="BotControl\UpdateControl.cs" />
+    <Compile Include="Case\UpdateControlCase.cs" />
     <Compile Include="Commands\AdminAddNewUsersCommand.cs" />
     <Compile Include="Commands\AdminShowGroupsInfoCommand.cs" />
     <Compile Include="Commands\Command.cs" />
