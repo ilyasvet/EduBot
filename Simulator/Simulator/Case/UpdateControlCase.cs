@@ -25,7 +25,7 @@ namespace Simulator.Case
             long userId = answer.User.Id;
             int point = UserCaseTableCommand.GetPoint(userId);
             CaseStage thisStage = StagesControl.Stages[point];
-            StagesControl.CalculateRate(thisStage, answer.OptionIds);
+            double rate = StagesControl.CalculateRate(thisStage, answer.OptionIds);
             
         }
         

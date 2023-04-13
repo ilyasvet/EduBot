@@ -70,7 +70,6 @@
     <Compile Include="BotControl\TelegramBotControl.cs" />
     <Compile Include="BotControl\MenuControl\UpdateControlMenu.cs" />
     <Compile Include="BotControl\UpdateControl.cs" />
-    <Compile Include="Case\AnswerType.cs" />
     <Compile Include="Case\StagesControl.cs" />
     <Compile Include="Case\UpdateControlCase.cs" />
     <Compile Include="Commands\AdminAddNewUsersCommand.cs" />
@@ -84,6 +83,7 @@
     <Compile Include="Commands\UserCardCommand.cs" />
     <Compile Include="Commands\WelcomeCommand.cs" />
     <Compile Include="Models\CaseStage.cs" />
+    <Compile Include="Models\CaseStagePoll.cs" />
     <Compile Include="Models\Group.cs" />
     <Compile Include="Models\StageList.cs" />
     <Compile Include="Models\User.cs" />
