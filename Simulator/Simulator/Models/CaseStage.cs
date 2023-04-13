@@ -1,6 +1,4 @@
-﻿using Simulator.Case;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Simulator.Models
 {
