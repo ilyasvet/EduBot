@@ -65,6 +65,18 @@ namespace Simulator.BotControl
                 catch { }
             }
         }
+        public static async Task PollAnswerHandling(PollAnswer answer, ITelegramBotClient botClient)
+        {
+            long userId = answer.User.Id;
+            try
+            {     
+                await UpdateControlCase.PollAnswerHandlingCase(answer, botClient);
+            }
+            catch (Exception ex)
+            {
+                await ErrorHandling(userId, botClient, ex);
+            }
+        }
         private static async Task ErrorHandling(long userId, ITelegramBotClient botClient, Exception ex)
         {
             SkipCommand skip = new SkipCommand();

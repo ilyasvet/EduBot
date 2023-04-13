@@ -32,6 +32,9 @@ namespace Simulator.BotControl
                     case UpdateType.CallbackQuery:
                         await UpdateControl.CallbackQueryHandling(update.CallbackQuery, botClient);
                         break;
+                    case UpdateType.PollAnswer:
+                        await UpdateControl.PollAnswerHandling(update.PollAnswer, botClient);
+                        break;
                     default:
                         break;
                 }
