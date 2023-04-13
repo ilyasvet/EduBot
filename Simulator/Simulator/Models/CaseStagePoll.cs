@@ -6,9 +6,11 @@ namespace Simulator.Models
     {
         public bool ManyAnswers { get; set; }
         public string[] Options { get; set; }
+        public bool ConditionalMove { get; set; }
+
         public Dictionary<int, double> PossibleRate { get; set; }
 
-        public CaseStagePoll(int number, bool conditionalMove, string text)
-            : base(number, conditionalMove, text){}
+        public CaseStagePoll(int number, string textBefore, string textAfter)
+            : base(number, textBefore, textAfter) {}
     }
 }
