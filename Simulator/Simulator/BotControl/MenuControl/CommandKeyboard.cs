@@ -32,7 +32,7 @@ namespace Simulator.BotControl
             new[]
             {
                 ToMenuAdmin,
-            },
+            },  
         });
         public static InlineKeyboardMarkup AdminMenu = new(new[]
         {
@@ -81,5 +81,4 @@ namespace Simulator.BotControl
             GroupsList = new InlineKeyboardMarkup(inlineKeyboardButtons);
         }
     }
-   
 }

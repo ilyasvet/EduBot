@@ -10,7 +10,13 @@ namespace Simulator.Models
 
         public Dictionary<int, double> PossibleRate { get; set; }
 
-        public CaseStagePoll(int number, string textBefore, string textAfter)
-            : base(number, textBefore, textAfter) {}
+        public CaseStagePoll(int number,
+            string textBefore,
+            string textAfter,
+            bool isEndOfModule,
+            bool isEndOfCase,
+            int moduleNumber
+            )
+            : base(number, textBefore, textAfter, isEndOfModule, moduleNumber, isEndOfCase) {}
     }
 }
