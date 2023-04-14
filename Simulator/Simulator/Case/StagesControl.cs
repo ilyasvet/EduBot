@@ -11,6 +11,10 @@ namespace Simulator.Case
 {
     internal static class StagesControl
     {
+
+        private static InlineKeyboardButton ToFinishButton = InlineKeyboardButton.WithCallbackData("Выйти", "ToOut");
+        private static InlineKeyboardButton NextButton = InlineKeyboardButton.WithCallbackData("Далее", "MoveNext");
+
         public static StageList Stages { get; set; }
         
         public static double CalculateRatePoll(CaseStagePoll stage, int[] answers)
@@ -43,12 +47,10 @@ namespace Simulator.Case
             }
             if (thisStage.IsEndOfCase)
             {
-                InlineKeyboardButton ToFinishButton = InlineKeyboardButton.WithCallbackData("К завершению", "ToEnd");
                 inlineKeyboardCallBack.Add(new[] { ToFinishButton });
             }
             else
             {
-                InlineKeyboardButton NextButton = InlineKeyboardButton.WithCallbackData("Далее", "MoveNext");
                 inlineKeyboardCallBack.Add(new[] { NextButton });
             }
             await botClient.SendTextMessageAsync(
@@ -69,9 +71,9 @@ namespace Simulator.Case
             {
                 return Stages.Stages.Where(s => s.ModuleNumber == current.ModuleNumber).Min();
             }
-            else if(query.Data == "ToEnd")
+            else if(query.Data == "ToOut")
             {
-                return Stages[-1]; //-1 - номер этапа заключения
+                return null;
             }
             throw new ArgumentException();
             //Если пользователь нажал далее, то переходим через свойство NextStage, которое либо было изначально
@@ -79,7 +81,7 @@ namespace Simulator.Case
             //Если пользователь нажал вернуться в начало модуля, то возвращаем первый этап текущего модуля 
             //TODO придумать, что делать с его очками во 2 случае
         }
-        public static async Task MoveNext(long userId, CaseStage nextStage, ITelegramBotClient botClient)
+        public static async Task Move(long userId, CaseStage nextStage, ITelegramBotClient botClient)
         {
             switch (nextStage)
             {
@@ -90,6 +92,14 @@ namespace Simulator.Case
                         options: poll.Options,
                         isAnonymous: false,
                         allowsMultipleAnswers: poll.ManyAnswers);
+                    break;
+                case CaseStageNone none:
+                    List<InlineKeyboardButton[]> inlineKeyboardCallBack = new List<InlineKeyboardButton[]>();
+                    inlineKeyboardCallBack.Add(new[] { NextButton });
+                    inlineKeyboardCallBack.Add(new[] { ToFinishButton });
+                    await botClient.SendTextMessageAsync(userId,
+                        none.TextBefore,
+                        replyMarkup: new InlineKeyboardMarkup(inlineKeyboardCallBack));
                     break;
                 default:
                     break;

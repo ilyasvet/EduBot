@@ -83,6 +83,8 @@
     <Compile Include="Commands\UserCardCommand.cs" />
     <Compile Include="Commands\WelcomeCommand.cs" />
     <Compile Include="Models\CaseStage.cs" />
+    <Compile Include="Models\CaseStageMessage.cs" />
+    <Compile Include="Models\CaseStageNone.cs" />
     <Compile Include="Models\CaseStagePoll.cs" />
     <Compile Include="Models\Group.cs" />
     <Compile Include="Models\StageList.cs" />
