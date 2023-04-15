@@ -81,6 +81,7 @@
     <Compile Include="Commands\AdminShowUsersInfoCommand.cs" />
     <Compile Include="Commands\SkipCommand.cs" />
     <Compile Include="Commands\UserCardCommand.cs" />
+    <Compile Include="Commands\UserGoToCaseCommand.cs" />
     <Compile Include="Commands\WelcomeCommand.cs" />
     <Compile Include="Models\CaseStage.cs" />
     <Compile Include="Models\CaseStageMessage.cs" />

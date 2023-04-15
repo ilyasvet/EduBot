@@ -65,7 +65,6 @@ namespace Simulator.Case
         }
         private static async Task GoOut(long userId, ITelegramBotClient botClient)
         {
-            UserCaseTableCommand.SetPoint(userId, 0);
             UserCaseTableCommand.SetOnCourse(userId, false);
             var outCommand = new GoToMainMenuUserCommand();
             await outCommand.Execute(userId, botClient);

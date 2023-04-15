@@ -5,3 +5,4 @@ UserCard UserCardCommand
 ShowUsersInfo AdminShowUsersInfoCommand
 ListGroups AdminShowGroupsInfoCommand
 AddUsersAdmin AdminAddNewUsersCommand
+ToCase UserGoToCaseCommand

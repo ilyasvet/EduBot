@@ -14,6 +14,11 @@ namespace Simulator.Case
 
         private static InlineKeyboardButton ToFinishButton = InlineKeyboardButton.WithCallbackData("Выйти", "ToOut");
         private static InlineKeyboardButton NextButton = InlineKeyboardButton.WithCallbackData("Далее", "MoveNext");
+        private static InlineKeyboardMarkup StageMenu = new(new List<InlineKeyboardButton[]>
+        {
+            new[] { ToFinishButton },
+            new[] { NextButton }
+        });
 
         public static StageList Stages { get; set; }
         
@@ -45,14 +50,12 @@ namespace Simulator.Case
                 InlineKeyboardButton ToBeginButton = InlineKeyboardButton.WithCallbackData("В начало модуля", "ToBegin");
                 inlineKeyboardCallBack.Add(new[] { ToBeginButton });
             }
-            if (thisStage.IsEndOfCase)
-            {
-                inlineKeyboardCallBack.Add(new[] { ToFinishButton });
-            }
-            else
+            if (!thisStage.IsEndOfCase)
             {
                 inlineKeyboardCallBack.Add(new[] { NextButton });
             }
+            inlineKeyboardCallBack.Add(new[] { ToFinishButton });
+            
             await botClient.SendTextMessageAsync(
                 chatId: userId,
                 text:thisStage.TextAfter,
@@ -94,12 +97,9 @@ namespace Simulator.Case
                         allowsMultipleAnswers: poll.ManyAnswers);
                     break;
                 case CaseStageNone none:
-                    List<InlineKeyboardButton[]> inlineKeyboardCallBack = new List<InlineKeyboardButton[]>();
-                    inlineKeyboardCallBack.Add(new[] { NextButton });
-                    inlineKeyboardCallBack.Add(new[] { ToFinishButton });
                     await botClient.SendTextMessageAsync(userId,
                         none.TextBefore,
-                        replyMarkup: new InlineKeyboardMarkup(inlineKeyboardCallBack));
+                        replyMarkup: StageMenu);
                     break;
                 default:
                     break;
