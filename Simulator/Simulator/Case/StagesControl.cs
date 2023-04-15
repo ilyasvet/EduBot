@@ -43,7 +43,6 @@ namespace Simulator.Case
         public static async Task AlertNextButton(long userId, CaseStage thisStage, ITelegramBotClient botClient)
         {
             //Всегда, кроме последнего вопроса
-
             List<InlineKeyboardButton[]> inlineKeyboardCallBack = new List<InlineKeyboardButton[]>();
             if (thisStage.IsEndOfModule)
             {
@@ -54,7 +53,6 @@ namespace Simulator.Case
             {
                 inlineKeyboardCallBack.Add(new[] { NextButton });
             }
-            inlineKeyboardCallBack.Add(new[] { ToFinishButton });
             
             await botClient.SendTextMessageAsync(
                 chatId: userId,
@@ -94,7 +92,8 @@ namespace Simulator.Case
                         question: poll.TextBefore,
                         options: poll.Options,
                         isAnonymous: false,
-                        allowsMultipleAnswers: poll.ManyAnswers);
+                        allowsMultipleAnswers: poll.ManyAnswers,
+                        replyMarkup: new InlineKeyboardMarkup(ToFinishButton));
                     break;
                 case CaseStageNone none:
                     await botClient.SendTextMessageAsync(userId,
