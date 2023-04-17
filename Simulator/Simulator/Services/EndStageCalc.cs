@@ -31,7 +31,7 @@ namespace Simulator.Services
                 }
                 else
                 {
-                    int ratePlace = 1;
+                    int ratePlace = 2;
                     return GetResult(attemptNumber, descriptor, buttons, ratePlace);
                 }
             }
@@ -50,12 +50,14 @@ namespace Simulator.Services
             if (attemptNumber == 1)
             {
                 result.Item1 = descriptor.Texts[ratePlace];
+                result.Item1 += descriptor.TextBefore;
                 buttons.Add(new[] { CommandKeyboard.ToBeginButton });
                 result.Item2 = new InlineKeyboardMarkup(buttons);
             }
             else
             {
-                result.Item1 = descriptor.Texts[ratePlace+1];
+                result.Item1 = descriptor.Texts[ratePlace];
+                result.Item1 += descriptor.TextAfter;
             }
             return result;
         }
