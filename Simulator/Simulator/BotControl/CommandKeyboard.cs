@@ -1,6 +1,5 @@
 ﻿using Simulator.Models;
 using Simulator.TelegramBotLibrary;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Telegram.Bot.Types.ReplyMarkups;
@@ -15,7 +14,17 @@ namespace Simulator.BotControl
         private static InlineKeyboardButton AddUsers = InlineKeyboardButton.WithCallbackData("Добавить пользователей", "AddUsersAdmin");
         private static InlineKeyboardButton GoToCase = InlineKeyboardButton.WithCallbackData("Перейти в курсу", "ToCase");
         private static InlineKeyboardButton UserCard = InlineKeyboardButton.WithCallbackData("Карточка пользователя", "UserCard");
-        
+
+        public static InlineKeyboardButton ToFinishButton = InlineKeyboardButton.WithCallbackData("Выйти", "ToOut");
+        public static InlineKeyboardButton NextButton = InlineKeyboardButton.WithCallbackData("Далее", "MoveNext");
+        public static InlineKeyboardButton ToBeginButton = InlineKeyboardButton.WithCallbackData("Сначала", "ToBegin");
+
+        public static InlineKeyboardMarkup StageMenu = new(new List<InlineKeyboardButton[]>
+        {
+            new[] { ToFinishButton },
+            new[] { NextButton }
+        });
+
         public static InlineKeyboardMarkup LogIn = new(new[]
         {
             new[]

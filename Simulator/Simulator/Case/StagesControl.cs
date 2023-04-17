@@ -1,6 +1,7 @@
-﻿using Simulator.Models;
+﻿using Simulator.BotControl;
+using Simulator.Models;
+using Simulator.Services;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Telegram.Bot;
@@ -11,15 +12,6 @@ namespace Simulator.Case
 {
     internal static class StagesControl
     {
-
-        private static InlineKeyboardButton ToFinishButton = InlineKeyboardButton.WithCallbackData("Выйти", "ToOut");
-        private static InlineKeyboardButton NextButton = InlineKeyboardButton.WithCallbackData("Далее", "MoveNext");
-        private static InlineKeyboardMarkup StageMenu = new(new List<InlineKeyboardButton[]>
-        {
-            new[] { ToFinishButton },
-            new[] { NextButton }
-        });
-
         public static StageList Stages { get; set; }
         
         public static double CalculateRatePoll(CaseStagePoll stage, int[] answers)
@@ -45,7 +37,7 @@ namespace Simulator.Case
             await botClient.SendTextMessageAsync(
                 chatId: userId,
                 text:thisStage.TextAfter,
-                replyMarkup: new InlineKeyboardMarkup(NextButton));
+                replyMarkup: new InlineKeyboardMarkup(CommandKeyboard.NextButton));
         }
         public static CaseStage GetNextStage(CaseStage current, CallbackQuery query)
         {
@@ -78,15 +70,20 @@ namespace Simulator.Case
                         options: poll.Options,
                         isAnonymous: false,
                         allowsMultipleAnswers: poll.ManyAnswers,
-                        replyMarkup: new InlineKeyboardMarkup(ToFinishButton));
+                        replyMarkup: new InlineKeyboardMarkup(CommandKeyboard.ToFinishButton));
                     break;
                 case CaseStageNone none:
                     await botClient.SendTextMessageAsync(userId,
                         none.TextBefore,
-                        replyMarkup: StageMenu);
+                        replyMarkup: CommandKeyboard.StageMenu);
                     break;
                 case CaseStageEndModule endStage:
+                    var resultsCallback = EndStageCalc.GetResultOfModule(endStage, userId);
+                    await botClient.SendTextMessageAsync(userId,
+                        resultsCallback.Item1,
+                        replyMarkup: resultsCallback.Item2);
 
+                    break;
                 default:
                     break;
             }
