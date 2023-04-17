@@ -42,25 +42,10 @@ namespace Simulator.Case
         }
         public static async Task AlertNextButton(long userId, CaseStage thisStage, ITelegramBotClient botClient)
         {
-            //Всегда, кроме последнего вопроса
-            List<InlineKeyboardButton[]> inlineKeyboardCallBack = new List<InlineKeyboardButton[]>();
-            if (thisStage.IsEndOfModule)
-            {
-                InlineKeyboardButton ToBeginButton = InlineKeyboardButton.WithCallbackData("В начало модуля", "ToBegin");
-                inlineKeyboardCallBack.Add(new[] { ToBeginButton });
-            }
-            if (!thisStage.IsEndOfCase)
-            {
-                inlineKeyboardCallBack.Add(new[] { NextButton });
-            }
-            
             await botClient.SendTextMessageAsync(
                 chatId: userId,
                 text:thisStage.TextAfter,
-                replyMarkup: new InlineKeyboardMarkup(inlineKeyboardCallBack));
-            //Если конец модуля, есть возможность вернуться в его начало и пройти заново
-            //Если конец кейса, то переход к заключению
-            //Если не конец, то переход к следующему этапу
+                replyMarkup: new InlineKeyboardMarkup(NextButton));
         }
         public static CaseStage GetNextStage(CaseStage current, CallbackQuery query)
         {
@@ -70,7 +55,7 @@ namespace Simulator.Case
             }
             else if(query.Data == "ToBegin")
             {
-                return Stages.Stages.Where(s => s.ModuleNumber == current.ModuleNumber).Min();
+                return Stages.Stages.Min();
             }
             else if(query.Data == "ToOut")
             {
@@ -100,6 +85,8 @@ namespace Simulator.Case
                         none.TextBefore,
                         replyMarkup: StageMenu);
                     break;
+                case CaseStageEndModule endStage:
+
                 default:
                     break;
             }

@@ -6,11 +6,9 @@
             int number,
             string textBefore,
             string textAfter,
-            bool isEndOfModule,
-            int moduleNumber,
-            bool isEndOfCase
+            int moduleNumber
             )
-            : base(number, textBefore, textAfter, isEndOfModule, moduleNumber, isEndOfCase)
+            : base(number, textBefore, textAfter, moduleNumber)
         {}
     }
 }
