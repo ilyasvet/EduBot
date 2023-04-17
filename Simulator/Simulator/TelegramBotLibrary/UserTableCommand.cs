@@ -29,7 +29,7 @@ namespace Simulator.TelegramBotLibrary
         }
         public static DialogState GetDialogState(long userId)
         {
-            string commandText = $"select * from users where UserId = {userId}";
+            string commandText = $"select * from Users where UserId = {userId}";
             //Искать по уникальному идентификтаору, есть ли такой пользователь
             command.CommandText = commandText;
             using (SqlDataReader reader = command.ExecuteReader())
@@ -43,12 +43,12 @@ namespace Simulator.TelegramBotLibrary
         }
         public static void SetDialogState(long userId, DialogState state)
         {
-            string commandText = $"update users set DialogState = '{(int)state}' where UserId = {userId}";
+            string commandText = $"update Users set DialogState = '{(int)state}' where UserId = {userId}";
             ExecuteNonQueryCommand(commandText);
         }
         public static bool HasUser(long userId)
         {
-            string commandText = $"select * from users where UserId = {userId}";
+            string commandText = $"select * from Users where UserId = {userId}";
             //Искать по уникальному идентификтаору, есть ли такой пользователь
             command.CommandText = commandText;
             using (SqlDataReader reader = command.ExecuteReader())
@@ -58,7 +58,7 @@ namespace Simulator.TelegramBotLibrary
         }
         public static bool IsAdmin(long userId)
         {
-            string commandText = $"select * from users where UserId = {userId}";
+            string commandText = $"select * from Users where UserId = {userId}";
             command.CommandText = commandText;
             using (SqlDataReader reader = command.ExecuteReader())
             {
@@ -71,7 +71,7 @@ namespace Simulator.TelegramBotLibrary
         }
         public static User GetUserById(long userId)
         {
-            string commandText = $"select * from users where UserId = {userId}";
+            string commandText = $"select * from Users where UserId = {userId}";
             command.CommandText = commandText;
             using (SqlDataReader reader = command.ExecuteReader())
             {
@@ -81,13 +81,13 @@ namespace Simulator.TelegramBotLibrary
         }
         public static void SetAccess(long userId, bool up)
         {
-            string commandText = $"update users set IsAdmin = '{up}' where UserId = {userId}";
+            string commandText = $"update Users set IsAdmin = '{up}' where UserId = {userId}";
             //Назначить пользователя администратором
             ExecuteNonQueryCommand(commandText);
         }
         public static List<User> GetGroupUsers(string groupNumber)
         {
-            command.CommandText = $"select * from users where GroupNumber = '{groupNumber}'";
+            command.CommandText = $"select * from Users where GroupNumber = '{groupNumber}'";
             using (SqlDataReader reader = command.ExecuteReader())
             {
                 List<User> registeredUsers = new List<User>();
