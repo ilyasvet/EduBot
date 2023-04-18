@@ -90,6 +90,12 @@ namespace Simulator.Case
         private static void MakeStagePoll(CaseStagePoll stage, string[] stageParameters)
         {
             stage.ManyAnswers = bool.Parse(stageParameters[3].Trim());
+
+            if(stage.ManyAnswers)
+            {
+                stage.Limit = int.Parse(stageParameters[8].Trim());
+                stage.Fine = int.Parse(stageParameters[8].Trim());
+            }
             
             foreach (var option in stageParameters[4].Split('^'))
             {

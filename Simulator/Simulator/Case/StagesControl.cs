@@ -21,6 +21,11 @@ namespace Simulator.Case
             {
                 rate += stage.PossibleRate[answer];
             }
+            if(stage.Limit != 0)
+            {
+                rate -= stage.Fine * (answers.Length - stage.Limit);
+                //Штраф за превышение кол-ва ответов
+            }
             return rate;
         }
         public static void SetStageForMove(CaseStagePoll stage, int[] answers)

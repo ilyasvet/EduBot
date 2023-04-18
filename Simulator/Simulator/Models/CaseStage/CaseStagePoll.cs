@@ -9,6 +9,8 @@ namespace Simulator.Models
         public bool ConditionalMove { get; set; }
         public Dictionary<int, int> MovingNumbers { get; set; }
         public Dictionary<int, double> PossibleRate { get; set; }
+        public int Limit { get; set; }
+        public double Fine { get; set; }
 
         public CaseStagePoll(int number,
             string textBefore
