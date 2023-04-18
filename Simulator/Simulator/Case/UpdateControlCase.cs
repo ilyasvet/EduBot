@@ -23,11 +23,7 @@ namespace Simulator.Case
                 return;
             }
 
-            UserCaseTableCommand.SetPoint(userId, nextStage.Number);
-            //Ставим в базе для пользователя следующий его этап
-
-            await StagesControl.Move(userId, nextStage, botClient);
-            //Выдаём пользователю следующий этап
+            await SetAndMovePoint(userId, nextStage, botClient);
         }
         public static async Task PollAnswerHandlingCase(PollAnswer answer, ITelegramBotClient botClient)
         {
@@ -46,8 +42,8 @@ namespace Simulator.Case
             //TODO сделать строковое поле, которое будет показывать количество баллов каждого этапа в модуле.
             //Либо чтобы баллы сразу показывались.
 
-            await StagesControl.AlertNextButton(userId, currentStage, botClient);
-            //кнопка для перехода к следующему этапу
+            var nextStage = StagesControl.Stages[currentStage.NextStage]; //next уже установлено
+            await SetAndMovePoint(userId, nextStage, botClient);
         }
         public static async Task MessageHandlingCase(Message message, ITelegramBotClient botClient)
         {
@@ -68,6 +64,14 @@ namespace Simulator.Case
             UserCaseTableCommand.SetOnCourse(userId, false);
             var outCommand = new GoToMainMenuUserCommand();
             await outCommand.Execute(userId, botClient);
+        }
+        private async static Task SetAndMovePoint(long userId, CaseStage nextStage, ITelegramBotClient botClient)
+        {
+            UserCaseTableCommand.SetPoint(userId, nextStage.Number);
+            //Ставим в базе для пользователя следующий его этап
+
+            await StagesControl.Move(userId, nextStage, botClient);
+            //Выдаём пользователю следующий этап
         }
     }
 }
