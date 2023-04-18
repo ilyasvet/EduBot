@@ -26,7 +26,7 @@ namespace Simulator.Services
             var result = new ValueTuple<string, InlineKeyboardMarkup>();
             
             currentRate = UserCaseTableCommand.GetRate(userId);
-            int attemptNumber = UserCaseTableCommand.HPoints(userId) > 1 ? 1 : 2;
+            int attemptNumber = UserCaseTableCommand.GetHealthPoints(userId) > 1 ? 1 : 2;
             //Если жизней больше, чем 1, то это первая попытка, иначе 2.
             
             if(descriptor.IsEndOfCase)
@@ -46,22 +46,22 @@ namespace Simulator.Services
                     int ratePlace = 2;
                     result = GetResultEnd(attemptNumber, descriptor, buttons, ratePlace);
                 }
-                UserCaseTableCommand.SetHPoints(userId, 2-attemptNumber);
+                UserCaseTableCommand.SetHealthPoints(userId, 2-attemptNumber);
                 //Если была первая попытка, то поставится 1, если вторая, то 0
             }
             else if(currentRate < descriptor.Rates[0])
             {
                 if(descriptor.ModuleNumber == 1 &&
-                    UserCaseTableCommand.HPoints(userId)==3)
+                    UserCaseTableCommand.GetHealthPoints(userId)==3)
                 {
                     result = GetResult(buttons, descriptor, ResultType.SafeFirst);
-                    UserCaseTableCommand.SetHPoints(userId, 2);
+                    UserCaseTableCommand.SetHealthPoints(userId, 2);
                     //Снимается дополнительная попытка на 1 модуль
                 }
                 else if(attemptNumber == 1)
                 {
                     result = GetResult(buttons, descriptor, ResultType.FirstFail);
-                    UserCaseTableCommand.SetHPoints(userId, 1);
+                    UserCaseTableCommand.SetHealthPoints(userId, 1);
                 }
                 else if(attemptNumber == 2)
                 {
