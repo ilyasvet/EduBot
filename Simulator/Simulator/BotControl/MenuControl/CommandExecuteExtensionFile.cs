@@ -5,6 +5,7 @@ using Simulator.BotControl.State;
 using System;
 using Simulator.Properties;
 using Simulator.Services;
+using Simulator.Case;
 
 namespace Simulator.BotControl
 {
@@ -15,18 +16,38 @@ namespace Simulator.BotControl
             await Task.Run(async() =>
             {
                 DialogState state = UserTableCommand.GetDialogState(userId);
-                switch (state)
+                try
                 {
-                    case DialogState.None:
-                        break;
-                    case DialogState.AddingUsersToGroup:
-                        await AddNewUsersTable(userId, botClient, path);
-                        break;
-                    default:
-                        break;
+                    switch (state)
+                    {
+                        case DialogState.None:
+                            break;
+                        case DialogState.AddingUsersToGroup:
+                            await AddNewUsersTable(userId, botClient, path);
+                            break;
+                        case DialogState.AddingCase:
+                            await AddCase(userId, botClient, path);
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                finally
+                {
+                    UserTableCommand.SetDialogState(userId, DialogState.None); //в любом случае скипаем стадию отправки файла
+                    System.IO.File.Delete(path); // и удаляем файл
                 }
             });
         }
+
+        private async static Task AddCase(long userId, ITelegramBotClient botClient, string path)
+        {
+            if (!Checker.IsCorrectFileExtension(path, FileType.Case))
+                throw new ArgumentException("Файл должен быть .case");
+            CaseConverter.FromFile(path);
+            await BotCallBack(userId, botClient, Resources.AddCaseSuccess); //сообщение об успехе операции
+        }
+
         private async static Task AddNewUsersTable(long userId, ITelegramBotClient botClient, string path)
         {
             string callBackMessage = "";
@@ -47,11 +68,6 @@ namespace Simulator.BotControl
             catch(Exception ex)
             {
                 throw new Exception(ex.Message + callBackMessage);
-            }
-            finally
-            {
-                UserTableCommand.SetDialogState(userId, DialogState.None); //в любом случае скипаем стадию отправки файла
-                System.IO.File.Delete(path); // и удаляем файл
             }
         }
         private async static Task BotCallBack(long userId, ITelegramBotClient botClient, string message)

@@ -61,6 +61,33 @@ namespace Simulator.Properties {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на Отправьте файл *.case.
+        /// </summary>
+        internal static string AddCase {
+            get {
+                return ResourceManager.GetString("AddCase", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Ошибка при загрузке кейса.
+        /// </summary>
+        internal static string AddCaseFail {
+            get {
+                return ResourceManager.GetString("AddCaseFail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Кейс успешно загружен.
+        /// </summary>
+        internal static string AddCaseSuccess {
+            get {
+                return ResourceManager.GetString("AddCaseSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на Отправтье файл excel. Формат названия &lt;1ч.группы&gt;-&lt;2ч.группы&gt;. Таблица имеет 3 столбца (Имя, фамилия, telegramID).
         /// </summary>
         internal static string AddNewGroupOfUsers {

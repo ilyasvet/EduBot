@@ -8,13 +8,9 @@ namespace Simulator.Models
 
         public CaseStageText(
             int number,
-            string textBefore,
-            string textAfter,
-            bool isEndOfModule,
-            int moduleNumber,
-            bool isEndOfCase
+            string textBefore
             )
-            : base(number, textBefore, textAfter, isEndOfModule, moduleNumber, isEndOfCase)
+            : base(number, textBefore)
         {}
     }
 }
