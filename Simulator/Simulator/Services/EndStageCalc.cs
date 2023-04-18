@@ -46,7 +46,7 @@ namespace Simulator.Services
                     int ratePlace = 2;
                     result = GetResultEnd(attemptNumber, descriptor, buttons, ratePlace);
                 }
-                UserCaseTableCommand.SetPoints(userId, 2-attemptNumber);
+                UserCaseTableCommand.SetHPoints(userId, 2-attemptNumber);
                 //Если была первая попытка, то поставится 1, если вторая, то 0
             }
             else if(currentRate < descriptor.Rates[0])
@@ -55,13 +55,13 @@ namespace Simulator.Services
                     UserCaseTableCommand.HPoints(userId)==3)
                 {
                     result = GetResult(buttons, descriptor, ResultType.SafeFirst);
-                    UserCaseTableCommand.SetPoints(userId, 2);
+                    UserCaseTableCommand.SetHPoints(userId, 2);
                     //Снимается дополнительная попытка на 1 модуль
                 }
                 else if(attemptNumber == 1)
                 {
                     result = GetResult(buttons, descriptor, ResultType.FirstFail);
-                    UserCaseTableCommand.SetPoints(userId, 1);
+                    UserCaseTableCommand.SetHPoints(userId, 1);
                 }
                 else if(attemptNumber == 2)
                 {

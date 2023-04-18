@@ -82,7 +82,6 @@ namespace Simulator.Case
                     await botClient.SendTextMessageAsync(userId,
                         resultsCallback.Item1,
                         replyMarkup: resultsCallback.Item2);
-
                     break;
                 default:
                     break;
