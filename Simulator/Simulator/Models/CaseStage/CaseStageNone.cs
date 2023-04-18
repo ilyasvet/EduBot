@@ -4,11 +4,9 @@
     {
         public CaseStageNone(
             int number,
-            string textBefore,
-            string textAfter,
-            int moduleNumber
+            string textBefore
             )
-            : base(number, textBefore, textAfter, moduleNumber)
+            : base(number, textBefore)
         {}
     }
 }

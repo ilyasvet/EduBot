@@ -91,7 +91,7 @@ namespace Simulator.Services
             else
             {
                 result.Item1 = descriptor.Texts[ratePlace];
-                result.Item1 += descriptor.TextAfter; //Сказать, что попыток больше нет
+                result.Item1 += descriptor.Texts[3]; //Сказать, что попыток больше нет
             }
             return result;
         }

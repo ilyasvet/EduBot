@@ -70,8 +70,10 @@
     <Compile Include="BotControl\TelegramBotControl.cs" />
     <Compile Include="BotControl\MenuControl\UpdateControlMenu.cs" />
     <Compile Include="BotControl\UpdateControl.cs" />
+    <Compile Include="Case\CaseConverter.cs" />
     <Compile Include="Case\StagesControl.cs" />
     <Compile Include="Case\UpdateControlCase.cs" />
+    <Compile Include="Commands\AdminAddCaseCommand.cs" />
     <Compile Include="Commands\AdminAddNewUsersCommand.cs" />
     <Compile Include="Commands\AdminShowGroupsInfoCommand.cs" />
     <Compile Include="Commands\Command.cs" />

@@ -7,23 +7,17 @@ namespace Simulator.Models
     {
         public int Number { get; private set; } 
         public string TextBefore { get; private set; }
-        public string TextAfter { get; private set; }
         public int NextStage { get; set; }
-        public int ModuleNumber { get; private set; }
         //Словарь пар (номер варианта ответа - номер этапа для перехода)
         //Используется когда ConditionalMove = true
         public Dictionary<int, int> MovingNumbers { get; set; }
         public CaseStage(
             int number,
-            string textBefore,
-            string textAfter,
-            int moduleNumber
+            string textBefore
             )
         {
             Number = number;
             TextBefore = textBefore;
-            TextAfter = textAfter;
-            ModuleNumber = moduleNumber;
         }
 
         public int CompareTo(object obj)

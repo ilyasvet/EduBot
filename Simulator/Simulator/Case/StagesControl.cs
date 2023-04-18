@@ -32,13 +32,6 @@ namespace Simulator.Case
             //Если переход безусловный, то NextStage уже установлено
             //Если нет, то на основе свойств и ответа выбираем NextStage
         }
-        public static async Task AlertNextButton(long userId, CaseStage thisStage, ITelegramBotClient botClient)
-        {
-            await botClient.SendTextMessageAsync(
-                chatId: userId,
-                text:thisStage.TextAfter,
-                replyMarkup: new InlineKeyboardMarkup(CommandKeyboard.NextButton));
-        }
         public static CaseStage GetNextStage(CaseStage current, CallbackQuery query)
         {
             if (query.Data == "MoveNext")
