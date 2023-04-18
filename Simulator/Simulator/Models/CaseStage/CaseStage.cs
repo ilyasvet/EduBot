@@ -8,9 +8,6 @@ namespace Simulator.Models
         public int Number { get; private set; } 
         public string TextBefore { get; private set; }
         public int NextStage { get; set; }
-        //Словарь пар (номер варианта ответа - номер этапа для перехода)
-        //Используется когда ConditionalMove = true
-        public Dictionary<int, int> MovingNumbers { get; set; }
         public CaseStage(
             int number,
             string textBefore
