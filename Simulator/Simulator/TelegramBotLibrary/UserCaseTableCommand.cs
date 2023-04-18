@@ -81,6 +81,26 @@ namespace Simulator.TelegramBotLibrary
             ExecuteNonQueryCommand(commandText);
         }
 
+        public static void SetHealthPoints(long userId, int healthPoints = 3)
+        {
+            string commandText = $"update UserCase set HealthPoints = {healthPoints} where userId = {userId}";
+            ExecuteNonQueryCommand(commandText);
+        }
+
+        public static int GetHealthPoints(long userId)
+        {
+            string commantText = $"select * from UserCase where UserId = {userId}";
+            command.CommandText = commantText;
+            using (SqlDataReader reader = command.ExecuteReader())
+            {
+                if (reader.Read())
+                {
+                    return (int)reader["HealthPoints"];
+                }
+            }
+            throw new ArgumentException();
+        }
+
         private static void ExecuteNonQueryCommand(string commandText)
         {
             command.CommandText = commandText;
