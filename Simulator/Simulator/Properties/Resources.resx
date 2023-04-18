@@ -159,4 +159,13 @@
   <data name="GroupPassword" xml:space="preserve">
     <value>Пароль для группы:</value>
   </data>
+  <data name="AddCase" xml:space="preserve">
+    <value>Отправьте файл *.case</value>
+  </data>
+  <data name="AddCaseFail" xml:space="preserve">
+    <value>Ошибка при загрузке кейса</value>
+  </data>
+  <data name="AddCaseSuccess" xml:space="preserve">
+    <value>Кейс успешно загружен</value>
+  </data>
 </root>

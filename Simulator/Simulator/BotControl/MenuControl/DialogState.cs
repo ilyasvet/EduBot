@@ -5,5 +5,6 @@ namespace Simulator.BotControl.State
         None,
         EnterPassword,
         AddingUsersToGroup,
+        AddingCase,
     }
 }

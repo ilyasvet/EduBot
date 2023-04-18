@@ -1,6 +1,7 @@
-﻿using Simulator.Models;
+﻿using Simulator.BotControl;
+using Simulator.Models;
+using Simulator.Services;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Telegram.Bot;
@@ -11,15 +12,6 @@ namespace Simulator.Case
 {
     internal static class StagesControl
     {
-
-        private static InlineKeyboardButton ToFinishButton = InlineKeyboardButton.WithCallbackData("Выйти", "ToOut");
-        private static InlineKeyboardButton NextButton = InlineKeyboardButton.WithCallbackData("Далее", "MoveNext");
-        private static InlineKeyboardMarkup StageMenu = new(new List<InlineKeyboardButton[]>
-        {
-            new[] { ToFinishButton },
-            new[] { NextButton }
-        });
-
         public static StageList Stages { get; set; }
         
         public static double CalculateRatePoll(CaseStagePoll stage, int[] answers)
@@ -28,6 +20,11 @@ namespace Simulator.Case
             foreach (var answer in answers)
             {
                 rate += stage.PossibleRate[answer];
+            }
+            if(stage.Limit != 0)
+            {
+                rate -= stage.Fine * (answers.Length - stage.Limit);
+                //Штраф за превышение кол-ва ответов
             }
             return rate;
         }
@@ -40,28 +37,6 @@ namespace Simulator.Case
             //Если переход безусловный, то NextStage уже установлено
             //Если нет, то на основе свойств и ответа выбираем NextStage
         }
-        public static async Task AlertNextButton(long userId, CaseStage thisStage, ITelegramBotClient botClient)
-        {
-            //Всегда, кроме последнего вопроса
-            List<InlineKeyboardButton[]> inlineKeyboardCallBack = new List<InlineKeyboardButton[]>();
-            if (thisStage.IsEndOfModule)
-            {
-                InlineKeyboardButton ToBeginButton = InlineKeyboardButton.WithCallbackData("В начало модуля", "ToBegin");
-                inlineKeyboardCallBack.Add(new[] { ToBeginButton });
-            }
-            if (!thisStage.IsEndOfCase)
-            {
-                inlineKeyboardCallBack.Add(new[] { NextButton });
-            }
-            
-            await botClient.SendTextMessageAsync(
-                chatId: userId,
-                text:thisStage.TextAfter,
-                replyMarkup: new InlineKeyboardMarkup(inlineKeyboardCallBack));
-            //Если конец модуля, есть возможность вернуться в его начало и пройти заново
-            //Если конец кейса, то переход к заключению
-            //Если не конец, то переход к следующему этапу
-        }
         public static CaseStage GetNextStage(CaseStage current, CallbackQuery query)
         {
             if (query.Data == "MoveNext")
@@ -70,7 +45,7 @@ namespace Simulator.Case
             }
             else if(query.Data == "ToBegin")
             {
-                return Stages.Stages.Where(s => s.ModuleNumber == current.ModuleNumber).Min();
+                return Stages.Stages.Min();
             }
             else if(query.Data == "ToOut")
             {
@@ -93,12 +68,18 @@ namespace Simulator.Case
                         options: poll.Options,
                         isAnonymous: false,
                         allowsMultipleAnswers: poll.ManyAnswers,
-                        replyMarkup: new InlineKeyboardMarkup(ToFinishButton));
+                        replyMarkup: new InlineKeyboardMarkup(CommandKeyboard.ToFinishButton));
                     break;
                 case CaseStageNone none:
                     await botClient.SendTextMessageAsync(userId,
                         none.TextBefore,
-                        replyMarkup: StageMenu);
+                        replyMarkup: CommandKeyboard.StageMenu);
+                    break;
+                case CaseStageEndModule endStage:
+                    var resultsCallback = EndStageCalc.GetResultOfModule(endStage, userId);
+                    await botClient.SendTextMessageAsync(userId,
+                        resultsCallback.Item1,
+                        replyMarkup: resultsCallback.Item2);
                     break;
                 default:
                     break;
