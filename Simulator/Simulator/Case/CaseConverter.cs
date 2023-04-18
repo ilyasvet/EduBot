@@ -115,7 +115,7 @@ namespace Simulator.Case
             foreach (var option in stageParameters[7].Split('^'))
             {
                 string[] rates = option.Trim().Split('-');
-                stage.PossibleRate.Add(int.Parse(rates[0]), int.Parse(rates[1]));
+                stage.PossibleRate.Add(int.Parse(rates[0]), double.Parse(rates[1]));
             }
         }
     }
