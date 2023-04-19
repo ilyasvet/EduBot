@@ -44,6 +44,7 @@ namespace Simulator.Case
             //Либо чтобы баллы сразу показывались.
 
             var nextStage = StagesControl.Stages[currentStage.NextStage]; //next уже установлено
+            //await botClient.message
             await SetAndMovePoint(userId, nextStage, botClient);
         }
         public static async Task MessageHandlingCase(Message message, ITelegramBotClient botClient)

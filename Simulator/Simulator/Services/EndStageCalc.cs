@@ -20,10 +20,7 @@ namespace Simulator.Services
         public static ValueTuple<string, InlineKeyboardMarkup> GetResultOfModule(CaseStageEndModule descriptor, long userId)
         {
             double currentRate = 0;
-            List<InlineKeyboardButton[]> buttons = new List<InlineKeyboardButton[]>()
-            {
-                new[]{ CommandKeyboard.ToFinishButton },
-            };
+            List<InlineKeyboardButton[]> buttons = new List<InlineKeyboardButton[]>();
             var result = new ValueTuple<string, InlineKeyboardMarkup>();
             
             currentRate = UserCaseTableCommand.GetRate(userId);
@@ -32,7 +29,8 @@ namespace Simulator.Services
             
             if(descriptor.IsEndOfCase)
             {
-                if(currentRate < descriptor.Rates[0])
+                buttons.Add(new[] { CommandKeyboard.ToFinishButton });
+                if (currentRate < descriptor.Rates[0])
                 {
                     int ratePlace = 0;
                     result = GetResultEnd(attemptNumber, descriptor, buttons, ratePlace); 
@@ -67,6 +65,7 @@ namespace Simulator.Services
                 else if(attemptNumber == 2)
                 {
                     result = GetResult(buttons, descriptor, ResultType.SecondFail);
+                    UserCaseTableCommand.SetHealthPoints(userId, 0);
                 }
             }
             else
@@ -93,6 +92,8 @@ namespace Simulator.Services
             {
                 result.Item1 = descriptor.Texts[ratePlace];
                 result.Item1 += descriptor.Texts[3]; //Сказать, что попыток больше нет
+                buttons.Add(new[] { CommandKeyboard.ToFinishButton });
+                result.Item2 = new InlineKeyboardMarkup(buttons);
             }
             return result;
         }

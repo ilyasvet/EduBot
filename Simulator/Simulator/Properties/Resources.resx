@@ -171,4 +171,7 @@
   <data name="ThereIsNotCase" xml:space="preserve">
     <value>Кейс ещё не был загружен</value>
   </data>
+  <data name="ThereIsNotAttempts" xml:space="preserve">
+    <value>У вас больше нет попыток</value>
+  </data>
 </root>

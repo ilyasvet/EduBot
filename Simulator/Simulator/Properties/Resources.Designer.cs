@@ -160,6 +160,15 @@ namespace Simulator.Properties {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на У вас больше нет попыток.
+        /// </summary>
+        internal static string ThereIsNotAttempts {
+            get {
+                return ResourceManager.GetString("ThereIsNotAttempts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на Кейс ещё не был загружен.
         /// </summary>
         internal static string ThereIsNotCase {

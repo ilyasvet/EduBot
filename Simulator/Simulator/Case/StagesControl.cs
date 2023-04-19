@@ -1,6 +1,7 @@
 ﻿using Simulator.BotControl;
 using Simulator.Models;
 using Simulator.Services;
+using Simulator.TelegramBotLibrary;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -28,11 +29,11 @@ namespace Simulator.Case
             double rate = 0;
             
             int count = answers.Length;
-            if(stage.Limit != 0)
+            if(stage.Limit < count && stage.Limit != 0)
             {
-                rate -= stage.Fine * (answers.Length - stage.Limit);
-                //Штраф за превышение кол-ва ответов
                 count = stage.Limit;
+                //Штраф за превышение кол-ва ответов
+                rate -= stage.Fine * (count - stage.Limit);
             }
             for (int i = 0; i < count;i++)
             {
@@ -57,6 +58,7 @@ namespace Simulator.Case
             }
             else if(query.Data == "ToBegin")
             {
+                UserCaseTableCommand.SetRate(query.From.Id, 0);
                 return Stages.Stages.Min();
             }
             else if(query.Data == "ToOut")

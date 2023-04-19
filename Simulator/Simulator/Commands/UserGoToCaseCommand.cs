@@ -14,18 +14,25 @@ namespace Simulator.Commands
         {
             if (StagesControl.Stages == null)
             {
-                if(!StagesControl.Make())
-                {
-                    await botClient.SendTextMessageAsync(
-                    userId,
-                    Resources.ThereIsNotCase,
-                    replyMarkup: CommandKeyboard.UserMenu);
-                    return;
-                }
+                await botClient.SendTextMessageAsync(
+                userId,
+                Resources.ThereIsNotCase,
+                replyMarkup: CommandKeyboard.UserMenu);
+
             }
-            UserCaseTableCommand.SetOnCourse(userId, true);
-            CaseStage currentStage = StagesControl.Stages[UserCaseTableCommand.GetPoint(userId)];
-            await StagesControl.Move(userId, currentStage, botClient);
+            else if (UserCaseTableCommand.GetHealthPoints(userId) == 0)
+            {
+                await botClient.SendTextMessageAsync(
+                userId,
+                Resources.ThereIsNotAttempts,
+                replyMarkup: CommandKeyboard.UserMenu);
+            }
+            else
+            {
+                UserCaseTableCommand.SetOnCourse(userId, true);
+                CaseStage currentStage = StagesControl.Stages[UserCaseTableCommand.GetPoint(userId)];
+                await StagesControl.Move(userId, currentStage, botClient);
+            }
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Simulator.Case;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot;
@@ -16,6 +17,7 @@ namespace Simulator.BotControl
         }
         public void ManageTelegramBot()
         {
+            StagesControl.Make();
             botClient.StartReceiving(
                 Update,
                 Error
