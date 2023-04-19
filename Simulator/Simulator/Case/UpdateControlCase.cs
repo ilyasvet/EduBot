@@ -3,6 +3,7 @@ using Simulator.Models;
 using System.Threading.Tasks;
 using Telegram.Bot;
 using Telegram.Bot.Types;
+using Simulator.TelegramBotLibrary;
 
 namespace Simulator.Case
 {
@@ -28,7 +29,7 @@ namespace Simulator.Case
         public static async Task PollAnswerHandlingCase(PollAnswer answer, ITelegramBotClient botClient)
         {
             long userId = answer.User.Id;
-            CaseStagePoll currentStage = StagesControl.Stages[UserCaseTableCommand.GetPoint(userId)];
+            CaseStagePoll currentStage = (CaseStagePoll)StagesControl.Stages[UserCaseTableCommand.GetPoint(userId)];
             //Так как мы получаем PollAnswer, то очевидно, что текущий этап - опросник
 
             StagesControl.SetStageForMove(currentStage, answer.OptionIds);
@@ -48,7 +49,7 @@ namespace Simulator.Case
         public static async Task MessageHandlingCase(Message message, ITelegramBotClient botClient)
         {
             long userId = message.Chat.Id;
-            CaseStageText currentStage = StagesControl.Stages[UserCaseTableCommand.GetPoint(userId)];
+            CaseStageText currentStage = (CaseStageText)StagesControl.Stages[UserCaseTableCommand.GetPoint(userId)];
             switch (currentStage.MessageTypeAnswer)
             {
                 case Telegram.Bot.Types.Enums.MessageType.Video:

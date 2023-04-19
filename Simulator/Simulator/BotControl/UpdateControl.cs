@@ -3,6 +3,7 @@ using Simulator.Commands;
 using System;
 using System.Threading.Tasks;
 using Telegram.Bot;
+using Simulator.TelegramBotLibrary;
 using Telegram.Bot.Types;
 
 namespace Simulator.BotControl
