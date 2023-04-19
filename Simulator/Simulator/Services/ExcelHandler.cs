@@ -75,6 +75,7 @@ namespace Simulator.Services
                 }
                 user.GroupNumber = groupNumber; //Номер группы мы уже проверяли ранее
                 UserTableCommand.AddUser(user);
+                UserCaseTableCommand.AddUser(userTelegramId);
                 count++; //Увеличили счётчик добавленных пользователей
             }
             return count;

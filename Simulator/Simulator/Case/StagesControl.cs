@@ -13,18 +13,30 @@ namespace Simulator.Case
     internal static class StagesControl
     {
         public static StageList Stages { get; set; }
-        
+        public static bool Make()
+        {
+            string path = $"{AppDomain.CurrentDomain.BaseDirectory}temp\\caseinfo.case";
+            if (System.IO.File.Exists(path))
+            {
+                CaseConverter.FromFile(path);
+                return true;
+            }
+            return false;
+        }
         public static double CalculateRatePoll(CaseStagePoll stage, int[] answers)
         {
             double rate = 0;
-            foreach (var answer in answers)
-            {
-                rate += stage.PossibleRate[answer];
-            }
+            
+            int count = answers.Length;
             if(stage.Limit != 0)
             {
                 rate -= stage.Fine * (answers.Length - stage.Limit);
                 //Штраф за превышение кол-ва ответов
+                count = stage.Limit;
+            }
+            for (int i = 0; i < count;i++)
+            {
+                rate += stage.PossibleRate[answers[i]];
             }
             return rate;
         }

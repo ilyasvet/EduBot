@@ -16,14 +16,15 @@ namespace Simulator.Commands
                 {
                     botClient.SendTextMessageAsync(
                                 chatId: userId,
-                                text: param,
+                                text: param + "\nПереход в меню",
                                 replyMarkup: CommandKeyboard.AdminMenu);
                 }
                 else
                 {
+                    UserCaseTableCommand.SetOnCourse(userId, false);
                     botClient.SendTextMessageAsync(
                                    chatId: userId,
-                                   text: param,
+                                   text: param + "\nВойдите заново...",
                                    replyMarkup: CommandKeyboard.LogIn);
                 }
             });

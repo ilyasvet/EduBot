@@ -1,5 +1,6 @@
 ﻿using Simulator.BotControl;
 using Simulator.Models;
+using Simulator.TelegramBotLibrary;
 using System;
 using System.Collections.Generic;
 using Telegram.Bot.Types.ReplyMarkups;

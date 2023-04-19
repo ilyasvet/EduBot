@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Configuration;
 
-
 namespace Simulator.BotControl
 {
     internal class Program
@@ -11,6 +10,7 @@ namespace Simulator.BotControl
             TelegramBotControl telegramBotControl = new TelegramBotControl(
                 ConfigurationManager.AppSettings["BotToken"]
                 );
+            
             telegramBotControl.ManageTelegramBot();
             Console.ReadLine();
         }

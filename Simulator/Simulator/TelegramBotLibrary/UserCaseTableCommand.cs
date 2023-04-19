@@ -1,8 +1,4 @@
-﻿using Simulator.BotControl.State;
-using Simulator.Models;
-using System;
-using System.Collections.Generic;
-using System.Configuration;
+﻿using System;
 using System.Data.SqlClient;
 
 namespace Simulator.TelegramBotLibrary
@@ -21,6 +17,13 @@ namespace Simulator.TelegramBotLibrary
             command.Dispose();
         }
 
+        public static void AddUser(long userId)
+        {
+            string commandText = $"insert into UserCase (UserId, OnCourse, Rate, Point, HealthPoints)" +
+                $" values ('{userId}','{false}','{0}','{0}','{3}')";
+            //Добавлять пользователя (если его нет в базе)
+            ExecuteNonQueryCommand(commandText);
+        }
         public static bool IsOnCourse(long userId)
         {
             string commandText = $"select * from UserCase where UserId = {userId}";
@@ -77,13 +80,13 @@ namespace Simulator.TelegramBotLibrary
 
         public static void SetOnCourse(long userId, bool boolOnCourse)
         {
-            string commandText = $"update UserCase set OnCourse = {boolOnCourse} where userId = {userId}";
+            string commandText = $"update UserCase set OnCourse = '{boolOnCourse}' where userId = {userId}";
             ExecuteNonQueryCommand(commandText);
         }
 
         public static void SetHealthPoints(long userId, int healthPoints = 3)
         {
-            string commandText = $"update UserCase set HealthPoints = {healthPoints} where userId = {userId}";
+            string commandText = $"update UserCase set HealthPoints = '{healthPoints}' where userId = {userId}";
             ExecuteNonQueryCommand(commandText);
         }
 

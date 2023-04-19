@@ -61,7 +61,7 @@ namespace Simulator.Properties {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Отправьте файл *.case.
+        ///   Ищет локализованную строку, похожую на Отправьте файл caseinfo.case.
         /// </summary>
         internal static string AddCase {
             get {
@@ -156,6 +156,15 @@ namespace Simulator.Properties {
         internal static string SuccessAddGroup {
             get {
                 return ResourceManager.GetString("SuccessAddGroup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Кейс ещё не был загружен.
+        /// </summary>
+        internal static string ThereIsNotCase {
+            get {
+                return ResourceManager.GetString("ThereIsNotCase", resourceCulture);
             }
         }
         

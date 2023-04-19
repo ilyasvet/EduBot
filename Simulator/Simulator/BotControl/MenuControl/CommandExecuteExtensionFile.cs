@@ -35,17 +35,24 @@ namespace Simulator.BotControl
                 finally
                 {
                     UserTableCommand.SetDialogState(userId, DialogState.None); //в любом случае скипаем стадию отправки файла
-                    System.IO.File.Delete(path); // и удаляем файл
                 }
             });
         }
 
         private async static Task AddCase(long userId, ITelegramBotClient botClient, string path)
         {
-            if (!Checker.IsCorrectFileExtension(path, FileType.Case))
-                throw new ArgumentException("Файл должен быть .case");
-            CaseConverter.FromFile(path);
-            await BotCallBack(userId, botClient, Resources.AddCaseSuccess); //сообщение об успехе операции
+            try
+            {
+                if (!Checker.IsCorrectFileExtension(path, FileType.Case))
+                    throw new ArgumentException("Файл должен быть caseinfo.case");
+                CaseConverter.FromFile(path);
+                await BotCallBack(userId, botClient, Resources.AddCaseSuccess); //сообщение об успехе операции
+            }
+            catch
+            {
+                System.IO.File.Delete(path);
+                throw;
+            }
         }
 
         private async static Task AddNewUsersTable(long userId, ITelegramBotClient botClient, string path)
@@ -68,6 +75,10 @@ namespace Simulator.BotControl
             catch(Exception ex)
             {
                 throw new Exception(ex.Message + callBackMessage);
+            }
+            finally
+            {
+                System.IO.File.Delete(path);
             }
         }
         private async static Task BotCallBack(long userId, ITelegramBotClient botClient, string message)

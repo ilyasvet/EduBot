@@ -15,6 +15,7 @@ namespace Simulator.Case
                 {
                     string[] stageStrings = reader.ReadToEnd().Split('$');
                     //Вопросы разделяются знаком $
+                    StagesControl.Stages = new StageList() { Stages = new List<CaseStage>() };
                     foreach (string stageString in stageStrings)
                     {
                         StagesControl.Stages.Stages.Add(StringToStage(stageString));
@@ -94,7 +95,7 @@ namespace Simulator.Case
             if(stage.ManyAnswers)
             {
                 stage.Limit = int.Parse(stageParameters[8].Trim());
-                stage.Fine = int.Parse(stageParameters[8].Trim());
+                stage.Fine = double.Parse(stageParameters[9].Trim());
             }
             
             foreach (var option in stageParameters[4].Split('^'))

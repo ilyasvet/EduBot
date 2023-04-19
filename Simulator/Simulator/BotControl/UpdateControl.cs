@@ -84,7 +84,7 @@ namespace Simulator.BotControl
             await skip.Execute(
                             userId,
                             botClient,
-                            ex.Message + "\nПереход в меню...");
+                            ex.Message);
         }
     }
 }

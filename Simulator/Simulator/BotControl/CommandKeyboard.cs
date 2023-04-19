@@ -14,6 +14,7 @@ namespace Simulator.BotControl
         private static InlineKeyboardButton AddUsers = InlineKeyboardButton.WithCallbackData("Добавить пользователей", "AddUsersAdmin");
         private static InlineKeyboardButton GoToCase = InlineKeyboardButton.WithCallbackData("Перейти в курсу", "ToCase");
         private static InlineKeyboardButton UserCard = InlineKeyboardButton.WithCallbackData("Карточка пользователя", "UserCard");
+        private static InlineKeyboardButton AddCase = InlineKeyboardButton.WithCallbackData("Добавить кейс", "AddCase");
 
         public static InlineKeyboardButton ToFinishButton = InlineKeyboardButton.WithCallbackData("Выйти", "ToOut");
         public static InlineKeyboardButton NextButton = InlineKeyboardButton.WithCallbackData("Далее", "MoveNext");
@@ -27,61 +28,32 @@ namespace Simulator.BotControl
 
         public static InlineKeyboardMarkup LogIn = new(new[]
         {
-            new[]
-            {
-                InlineKeyboardButton.WithCallbackData("Войти", "Login")
-            },
+            new[] { InlineKeyboardButton.WithCallbackData("Войти", "Login") },
         });
         public static InlineKeyboardMarkup ToMainMenuUser = new(new[]
         {
-            new[]
-            {
-                ToMenuUser
-            },
+            new[] { ToMenuUser },
         });
         public static InlineKeyboardMarkup ToMainMenuAdmin = new(new[]
         {
-            new[]
-            {
-                ToMenuAdmin,
-            },  
+            new[] { ToMenuAdmin },  
         });
         public static InlineKeyboardMarkup AdminMenu = new(new[]
         {
-            new[]
-            {
-                ListGroups
-            },
-            new[]
-            {
-                InlineKeyboardButton.WithCallbackData("Добавить группу", "AddUsersAdmin"),
-            },
+            new[] { ListGroups },
+            new[] { InlineKeyboardButton.WithCallbackData("Добавить группу", "AddUsersAdmin") },
+            new[] { AddCase }
         });
         public static InlineKeyboardMarkup GroupListUsers = new(new[]
         {
-            new[]
-            {
-                AddUsers,
-            },
-            new[]
-            {
-                ListGroups,
-            },
-            new[]
-            {
-                ToMenuAdmin,
-            },
+            new[] { AddUsers },
+            new[] { ListGroups },
+            new[] { ToMenuAdmin },
         });
         public static InlineKeyboardMarkup UserMenu = new(new[]
         {
-            new[]
-            {
-                UserCard,
-            },
-            new[]
-            {
-                GoToCase
-            },
+            new[] { UserCard },
+            new[] { GoToCase }
         });
         public static InlineKeyboardMarkup GroupsList;
         public static void MakeGroupList()

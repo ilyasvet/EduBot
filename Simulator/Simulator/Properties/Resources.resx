@@ -160,12 +160,15 @@
     <value>Пароль для группы:</value>
   </data>
   <data name="AddCase" xml:space="preserve">
-    <value>Отправьте файл *.case</value>
+    <value>Отправьте файл caseinfo.case</value>
   </data>
   <data name="AddCaseFail" xml:space="preserve">
     <value>Ошибка при загрузке кейса</value>
   </data>
   <data name="AddCaseSuccess" xml:space="preserve">
     <value>Кейс успешно загружен</value>
+  </data>
+  <data name="ThereIsNotCase" xml:space="preserve">
+    <value>Кейс ещё не был загружен</value>
   </data>
 </root>
