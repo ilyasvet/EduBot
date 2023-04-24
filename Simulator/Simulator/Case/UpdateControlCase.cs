@@ -41,7 +41,10 @@ namespace Simulator.Case
             UserCaseTableCommand.SetRate(userId, currentUserRate);
             //Считаем на основе ответа очки пользователя и добавляем их к общим
             //TODO сделать строковое поле, которое будет показывать количество баллов каждого этапа в модуле.
-            //Либо чтобы баллы сразу показывались.
+            //Statistics.writeRate(userId, currentStage, rate);
+
+            //time = DateTime.Now - UserCaseTableCommand.GetStartTime(userId);
+            //Statistics.wrireTime(userId, currentStage, time);
 
             var nextStage = StagesControl.Stages[currentStage.NextStage]; //next уже установлено
             //await botClient.message

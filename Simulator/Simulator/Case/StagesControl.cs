@@ -99,6 +99,7 @@ namespace Simulator.Case
                     break;
             }
             //В зависимости от типа этапа, бот выдаёт определённый тип сообщения
+            //UserCaseTableCommand.SetStartTime(userId, DateTime.Now);
         }
     }
 }
