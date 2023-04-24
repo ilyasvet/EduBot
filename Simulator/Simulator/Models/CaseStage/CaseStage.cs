@@ -7,6 +7,7 @@ namespace Simulator.Models
         public int Number { get; private set; } 
         public string TextBefore { get; private set; }
         public int NextStage { get; set; }
+        public int ModuleNumber { get; set; }
         public CaseStage(
             int number,
             string textBefore

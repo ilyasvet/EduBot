@@ -7,7 +7,6 @@ namespace Simulator.Models
         public bool IsEndOfCase { get; set; }
         public List<double> Rates { get; set; }
         public List<string> Texts { get; set; }
-        public int ModuleNumber { get; set; }
         public CaseStageEndModule(
             int number,
             string textBefore
