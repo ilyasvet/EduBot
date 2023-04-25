@@ -20,6 +20,13 @@ namespace Simulator.Case
 
             if(nextStage == null)
             {
+                if (currentStage is CaseStageEndModule endModule)
+                {
+                    if(!endModule.IsEndOfCase)
+                    {
+                        return;
+                    }
+                }
                 await GoOut(userId, botClient);
                 return;
             }

@@ -26,20 +26,20 @@ namespace Simulator.BotControl
 
         private async Task Update(ITelegramBotClient botClient, Update update, CancellationToken token)
         {
-                switch (update.Type)
-                {
-                    case UpdateType.Message:
-                        await UpdateControl.MessageHandling(update.Message, botClient);               
-                        break;
-                    case UpdateType.CallbackQuery:
-                        await UpdateControl.CallbackQueryHandling(update.CallbackQuery, botClient);
-                        break;
-                    case UpdateType.PollAnswer:
-                        await UpdateControl.PollAnswerHandling(update.PollAnswer, botClient);
-                        break;
-                    default:
-                        break;
-                }
+            switch (update.Type)
+            {
+                case UpdateType.Message:
+                    await UpdateControl.MessageHandling(update.Message, botClient);
+                    break;
+                case UpdateType.CallbackQuery:
+                    await UpdateControl.CallbackQueryHandling(update.CallbackQuery, botClient);
+                    break;
+                case UpdateType.PollAnswer:
+                    await UpdateControl.PollAnswerHandling(update.PollAnswer, botClient);
+                    break;
+                default:
+                    break;
+            }
         }
         private async Task Error(ITelegramBotClient botClient, Exception exception, CancellationToken token)
         {

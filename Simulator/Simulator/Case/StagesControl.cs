@@ -66,10 +66,6 @@ namespace Simulator.Case
                 return null;
             }
             throw new ArgumentException();
-            //Если пользователь нажал далее, то переходим через свойство NextStage, которое либо было изначально
-            //установлено, либо установлено вследствие условного перехода.
-            //Если пользователь нажал вернуться в начало модуля, то возвращаем первый этап текущего модуля 
-            //TODO придумать, что делать с его очками во 2 случае
         }
         public static async Task Move(long userId, CaseStage nextStage, ITelegramBotClient botClient)
         {
