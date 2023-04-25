@@ -53,7 +53,7 @@ namespace Simulator.Models
             string result = Name + " " + Surname;
             if(IsAdmin)
             {
-                result += " (Администратор)";
+                result += " (А)";
             }
             return result;
         }

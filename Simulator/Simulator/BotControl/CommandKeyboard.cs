@@ -42,13 +42,7 @@ namespace Simulator.BotControl
         {
             new[] { ListGroups },
             new[] { InlineKeyboardButton.WithCallbackData("Добавить группу", "AddUsersAdmin") },
-            new[] { AddCase }
-        });
-        public static InlineKeyboardMarkup GroupListUsers = new(new[]
-        {
-            new[] { AddUsers },
-            new[] { ListGroups },
-            new[] { ToMenuAdmin },
+            new[] { AddCase }, 
         });
         public static InlineKeyboardMarkup UserMenu = new(new[]
         {
@@ -56,17 +50,36 @@ namespace Simulator.BotControl
             new[] { GoToCase }
         });
         public static InlineKeyboardMarkup GroupsList;
+        public static InlineKeyboardMarkup UsersList;
+        public static InlineKeyboardMarkup MakeBackGroup(long userId)
+        {
+            List<InlineKeyboardButton[]> inlineKeyboardButtons = new List<InlineKeyboardButton[]>();
+            string groupNumber = UserTableCommand.GetGroupNumber(userId);
+            inlineKeyboardButtons.Add(
+                new[] { InlineKeyboardButton.WithCallbackData(groupNumber, $"ShowUsersInfo|{groupNumber}") }
+                ); 
+            return new InlineKeyboardMarkup(inlineKeyboardButtons);
+        }
         public static void MakeGroupList()
         {
             List<Group> groups = GroupTableCommand.GetAllGroups();
-            InlineKeyboardButton[][] inlineKeyboardButtons = groups.Select(g => new[]
+            List<InlineKeyboardButton[]> inlineKeyboardButtons = groups.Select(g => new[]
             {
                 InlineKeyboardButton.WithCallbackData(g.GroupNumber, $"ShowUsersInfo|{g.GroupNumber}")
-            }).ToArray();
-            var temp = inlineKeyboardButtons.ToList();
-            temp.Add(new[] { ToMenuAdmin });
-            inlineKeyboardButtons = temp.ToArray();
+            }).ToList();
+            inlineKeyboardButtons.Add(new[] { ToMenuAdmin });
             GroupsList = new InlineKeyboardMarkup(inlineKeyboardButtons);
+        }
+        public static void MakeUserList(string groupNumber)
+        {
+            List<User> users = UserTableCommand.GetGroupUsers(groupNumber);
+            List<InlineKeyboardButton[]> inlineKeyboardButtons = users.Select(u => new[]
+            {
+                InlineKeyboardButton.WithCallbackData(u.ToString(), $"ShowStatistics|{u.UserID}")
+            }).ToList();
+            inlineKeyboardButtons.Add(new[] { ListGroups });
+            inlineKeyboardButtons.Add(new[] { AddUsers });
+            UsersList = new InlineKeyboardMarkup(inlineKeyboardButtons);
         }
     }
 }

@@ -75,6 +75,7 @@
     <Compile Include="Case\UpdateControlCase.cs" />
     <Compile Include="Commands\AdminAddCaseCommand.cs" />
     <Compile Include="Commands\AdminAddNewUsersCommand.cs" />
+    <Compile Include="Commands\AdminShowUserStatisticsCommand.cs" />
     <Compile Include="Commands\AdminShowGroupsInfoCommand.cs" />
     <Compile Include="Commands\Command.cs" />
     <Compile Include="Commands\AdminGoToMainMenuCommand.cs" />

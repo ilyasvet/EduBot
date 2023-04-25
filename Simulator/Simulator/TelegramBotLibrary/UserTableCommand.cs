@@ -98,6 +98,18 @@ namespace Simulator.TelegramBotLibrary
                 return registeredUsers;
             }
         }
+        public static string GetGroupNumber(long userId)
+        {
+            command.CommandText = $"select * from Users where UserId = {userId}";
+            using (SqlDataReader reader = command.ExecuteReader())
+            {
+                if(reader.Read())
+                {
+                    return (string)reader["GroupNumber"];
+                }
+                return null;
+            }
+        }
         private static bool GetUserFromReader(SqlDataReader reader, out User user)
         {
             user = null;

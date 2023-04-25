@@ -14,17 +14,15 @@ namespace Simulator.Commands
         {
             await Task.Run(() =>
             {
-                List<User> users = UserTableCommand.GetGroupUsers(param);
+                CommandKeyboard.MakeUserList(param);
+                // TODO Добавить статистику по группе
                 string messageWithList = $"{Resources.ShowUsers} {param}\n" +
                 $"{Resources.GroupPassword} {GroupTableCommand.GetPassword(param)}\n";
-                foreach (User user in users)
-                {
-                    messageWithList += $"{user}\n";
-                }
+
                 botClient.SendTextMessageAsync(
                             chatId: userId,
                             text: messageWithList,
-                            replyMarkup: CommandKeyboard.GroupListUsers);
+                            replyMarkup: CommandKeyboard.UsersList);
             });
         }
     }
