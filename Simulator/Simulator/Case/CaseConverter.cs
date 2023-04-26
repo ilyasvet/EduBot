@@ -96,6 +96,12 @@ namespace Simulator.Case
             {
                 stage.Limit = int.Parse(stageParameters[9].Trim());
                 stage.Fine = double.Parse(stageParameters[10].Trim());
+                stage.WatchNonAnswer = bool.Parse(stageParameters[11]);
+                foreach (var option in stageParameters[12].Split('^'))
+                {
+                    string[] rates = option.Trim().Split('-');
+                    stage.NonAnswers.Add(int.Parse(rates[0]), double.Parse(rates[1]));
+                }
             }
             
             foreach (var option in stageParameters[5].Split('^'))

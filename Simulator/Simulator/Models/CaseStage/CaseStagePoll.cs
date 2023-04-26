@@ -9,6 +9,8 @@ namespace Simulator.Models
         public bool ConditionalMove { get; set; }
         public Dictionary<int, int> MovingNumbers { get; set; }
         public Dictionary<int, double> PossibleRate { get; set; }
+        public Dictionary<int, double> NonAnswers { get; set; }
+        public bool WatchNonAnswer { get; set; }
         public int Limit { get; set; }
         public double Fine { get; set; }
 

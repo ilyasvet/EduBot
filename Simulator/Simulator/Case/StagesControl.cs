@@ -39,6 +39,16 @@ namespace Simulator.Case
             {
                 rate += stage.PossibleRate[answers[i]];
             }
+            if(stage.WatchNonAnswer)
+            {
+                foreach (var opt in stage.NonAnswers)
+                {
+                    if(!answers.Contains(opt.Key))
+                    {
+                        rate -= opt.Value;
+                    }
+                }
+            }
             return rate;
         }
         public static void SetStageForMove(CaseStagePoll stage, int[] answers)
