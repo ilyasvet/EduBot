@@ -2,7 +2,6 @@ using Simulator.BotControl;
 using Simulator.Models;
 using Simulator.Properties;
 using Simulator.TelegramBotLibrary;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Telegram.Bot;
 

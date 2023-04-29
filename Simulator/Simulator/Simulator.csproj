@@ -110,6 +110,7 @@
     <Compile Include="Services\GroupHandler.cs" />
     <Compile Include="Services\UserHandler.cs" />
     <Compile Include="TelegramBotLibrary\GroupTableCommand.cs" />
+    <Compile Include="TelegramBotLibrary\JsonUserStats\UserCaseJsonCommand.cs" />
     <Compile Include="TelegramBotLibrary\LocalSqlDbConnection.cs" />
     <Compile Include="TelegramBotLibrary\UserCaseTableCommand.cs" />
     <Compile Include="TelegramBotLibrary\UserTableCommand.cs" />

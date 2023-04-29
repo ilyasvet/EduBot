@@ -13,7 +13,7 @@ namespace Simulator.TelegramBotLibrary
 
             if (File.Exists(fileName))
             {
-                string json = await File.ReadAllTextAsync(fileName);
+                string json = File.ReadAllText(fileName);
                 JObject jsonObject = JsonConvert.DeserializeObject<JObject>(json);
 
                 jsonObject[key] = value;

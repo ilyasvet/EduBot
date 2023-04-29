@@ -16,7 +16,7 @@ namespace Simulator.Commands
                 botClient.SendTextMessageAsync(
                             chatId: userId,
                             text: Resources.AdminMenu,
-                            replyMarkup: CommandKeyboard.MakeBackGroup(wachedUserId));
+                            replyMarkup: CommandKeyboard.UsersList);
             });
         }
     }

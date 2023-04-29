@@ -90,46 +90,50 @@ namespace Simulator.Case
 
         private static void MakeStagePoll(CaseStagePoll stage, string[] stageParameters)
         {
-            stage.ManyAnswers = bool.Parse(stageParameters[5].Trim());
+            stage.ManyAnswers = bool.Parse(stageParameters[4].Trim());
 
-            if(stage.ManyAnswers)
-            {
-                stage.Limit = int.Parse(stageParameters[9].Trim());
-                stage.Fine = double.Parse(stageParameters[10].Trim());
-                stage.WatchNonAnswer = bool.Parse(stageParameters[11]);
-                foreach (var option in stageParameters[12].Split('^'))
-                {
-                    string[] rates = option.Trim().Split('-');
-                    stage.NonAnswers.Add(int.Parse(rates[0]), double.Parse(rates[1]));
-                }
-            }
-            
             foreach (var option in stageParameters[5].Split('^'))
             {
                 stage.Options.Add(option.Trim());
             }
-            
+
             stage.ConditionalMove = bool.Parse(stageParameters[6]);
-            
-            if(stage.ConditionalMove)
-            {
-                stage.MovingNumbers = new Dictionary<int, int>();
-                foreach (var option in stageParameters[7].Split('^'))
-                {
-                    string[] numbers = option.Trim().Split('-');
-                    stage.MovingNumbers.Add(int.Parse(numbers[0]), int.Parse(numbers[1]));
-                }
-            }
-            else
-            {
-                stage.NextStage = int.Parse(stageParameters[7].Trim());
-            }
-            
-            foreach (var option in stageParameters[8].Split('^'))
+
+            foreach (var option in stageParameters[7].Split('^'))
             {
                 string[] rates = option.Trim().Split('-');
                 stage.PossibleRate.Add(int.Parse(rates[0]), double.Parse(rates[1]));
             }
+
+            if (!stage.ManyAnswers)
+            {
+                if (stage.ConditionalMove)
+                {
+                    stage.MovingNumbers = new Dictionary<int, int>();
+                    foreach (var option in stageParameters[8].Split('^'))
+                    {
+                        string[] numbers = option.Trim().Split('-');
+                        stage.MovingNumbers.Add(int.Parse(numbers[0]), int.Parse(numbers[1]));
+                    }
+                }
+                else
+                {
+                    stage.NextStage = int.Parse(stageParameters[8].Trim());
+                }
+            }
+            else
+            {
+                stage.Limit = int.Parse(stageParameters[8].Trim());
+                stage.Fine = double.Parse(stageParameters[9].Trim());
+                stage.WatchNonAnswer = bool.Parse(stageParameters[10]);
+                foreach (var option in stageParameters[11].Split('^'))
+                {
+                    string[] rates = option.Trim().Split('-');
+                    stage.NonAnswers.Add(int.Parse(rates[0]), double.Parse(rates[1]));
+                }
+            }        
+            
+            
         }
     }
 }
