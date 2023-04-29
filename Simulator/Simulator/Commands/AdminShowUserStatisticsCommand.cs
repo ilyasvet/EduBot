@@ -15,7 +15,7 @@ namespace Simulator.Commands
                 // TODO статистика пользователя
                 botClient.SendTextMessageAsync(
                             chatId: userId,
-                            text: Resources.AdminMenu,
+                            text: "",
                             replyMarkup: CommandKeyboard.UsersList);
             });
         }
