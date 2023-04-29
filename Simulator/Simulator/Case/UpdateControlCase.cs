@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Simulator.TelegramBotLibrary;
+using System;
 
 namespace Simulator.Case
 {
@@ -47,16 +48,14 @@ namespace Simulator.Case
             currentUserRate += rate;
             UserCaseTableCommand.SetRate(userId, currentUserRate);
             //Считаем на основе ответа очки пользователя и добавляем их к общим
-            //TODO сделать строковое поле, которое будет показывать количество баллов каждого этапа в модуле.
-            //Statistics.writeRate(userId, currentStage, rate);
-
-            //time = DateTime.Now - UserCaseTableCommand.GetStartTime(userId);
-            //Statistics.wrireTime(userId, currentStage, time);
+            
+            await SetStatistics(userId, currentStage, rate);
 
             var nextStage = StagesControl.Stages[currentStage.NextStage]; //next уже установлено
             //await botClient.message
             await SetAndMovePoint(userId, nextStage, botClient);
         }
+
         public static async Task MessageHandlingCase(Message message, ITelegramBotClient botClient)
         {
             long userId = message.Chat.Id;
@@ -71,6 +70,17 @@ namespace Simulator.Case
                     break;
             }
         }
+
+        private static async Task SetStatistics(long userId, CaseStagePoll currentStage, double rate)
+        {
+            int moduleNumber = currentStage.ModuleNumber;
+            int questionNumber = currentStage.Number;
+            //TimeSpan time = DateTime.Now - UserCaseTableCommand.GetTime(userId);
+
+            await UserCaseJsonCommand.AddValueToJsonFile(userId, $"б-{moduleNumber}-{questionNumber}", rate.ToString());
+            //await UserCaseJsonCommand.AddValueToJsonFile(userId, $"т-{moduleNumber}-{questionNumber}", time);
+        }
+
         private static async Task GoOut(long userId, ITelegramBotClient botClient)
         {
             UserCaseTableCommand.SetOnCourse(userId, false);

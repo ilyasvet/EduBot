@@ -19,6 +19,7 @@ namespace Simulator.BotControl
         public static InlineKeyboardButton ToFinishButton = InlineKeyboardButton.WithCallbackData("Выйти", "ToOut");
         public static InlineKeyboardButton NextButton = InlineKeyboardButton.WithCallbackData("Далее", "MoveNext");
         public static InlineKeyboardButton ToBeginButton = InlineKeyboardButton.WithCallbackData("Сначала", "ToBegin");
+        public static InlineKeyboardButton LogInButton = InlineKeyboardButton.WithCallbackData("Войти", "Login");
 
         public static InlineKeyboardMarkup StageMenu = new(new List<InlineKeyboardButton[]>
         {
@@ -28,7 +29,7 @@ namespace Simulator.BotControl
 
         public static InlineKeyboardMarkup LogIn = new(new[]
         {
-            new[] { InlineKeyboardButton.WithCallbackData("Войти", "Login") },
+            new[] { LogInButton },
         });
         public static InlineKeyboardMarkup ToMainMenuUser = new(new[]
         {
@@ -38,10 +39,14 @@ namespace Simulator.BotControl
         {
             new[] { ToMenuAdmin },  
         });
+        public static InlineKeyboardMarkup ToGroups = new(new[]
+        {
+            new[] { ListGroups },
+        });
         public static InlineKeyboardMarkup AdminMenu = new(new[]
         {
             new[] { ListGroups },
-            new[] { InlineKeyboardButton.WithCallbackData("Добавить группу", "AddUsersAdmin") },
+            new[] { AddUsers },
             new[] { AddCase }, 
         });
         public static InlineKeyboardMarkup UserMenu = new(new[]
@@ -50,16 +55,6 @@ namespace Simulator.BotControl
             new[] { GoToCase }
         });
         public static InlineKeyboardMarkup GroupsList;
-        public static InlineKeyboardMarkup UsersList;
-        public static InlineKeyboardMarkup MakeBackGroup(long userId)
-        {
-            List<InlineKeyboardButton[]> inlineKeyboardButtons = new List<InlineKeyboardButton[]>();
-            string groupNumber = UserTableCommand.GetGroupNumber(userId);
-            inlineKeyboardButtons.Add(
-                new[] { InlineKeyboardButton.WithCallbackData(groupNumber, $"ShowUsersInfo|{groupNumber}") }
-                ); 
-            return new InlineKeyboardMarkup(inlineKeyboardButtons);
-        }
         public static void MakeGroupList()
         {
             List<Group> groups = GroupTableCommand.GetAllGroups();
@@ -69,17 +64,6 @@ namespace Simulator.BotControl
             }).ToList();
             inlineKeyboardButtons.Add(new[] { ToMenuAdmin });
             GroupsList = new InlineKeyboardMarkup(inlineKeyboardButtons);
-        }
-        public static void MakeUserList(string groupNumber)
-        {
-            List<User> users = UserTableCommand.GetGroupUsers(groupNumber);
-            List<InlineKeyboardButton[]> inlineKeyboardButtons = users.Select(u => new[]
-            {
-                InlineKeyboardButton.WithCallbackData(u.ToString(), $"ShowStatistics|{u.UserID}")
-            }).ToList();
-            inlineKeyboardButtons.Add(new[] { ListGroups });
-            inlineKeyboardButtons.Add(new[] { AddUsers });
-            UsersList = new InlineKeyboardMarkup(inlineKeyboardButtons);
         }
     }
 }

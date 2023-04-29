@@ -5,9 +5,9 @@ using Newtonsoft.Json.Linq;
 
 namespace Simulator.TelegramBotLibrary
 {
-    public class UserCaseJsonCommand
+    public static class UserCaseJsonCommand
     {
-        public async Task AddValueToJsonFile(long userId, string key, string value)
+        public static async Task AddValueToJsonFile(long userId, string key, string value)
         {
             string fileName = $"{userId}.json";
 
@@ -29,7 +29,7 @@ namespace Simulator.TelegramBotLibrary
             }
         }
 
-        public async Task CheckAndCreateJsonFile(long userId)
+        public static async Task CheckAndCreateJsonFile(long userId)
         {
             string fileName = $"{userId}.json";
 
