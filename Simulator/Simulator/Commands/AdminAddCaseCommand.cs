@@ -1,4 +1,5 @@
-﻿using Simulator.BotControl.State;
+﻿using Simulator.BotControl;
+using Simulator.BotControl.State;
 using Simulator.Properties;
 using Simulator.TelegramBotLibrary;
 using System.Threading.Tasks;
@@ -13,7 +14,10 @@ namespace Simulator.Commands
             await Task.Run(() =>
             {
                 UserTableCommand.SetDialogState(userId, DialogState.AddingCase);
-                botClient.SendTextMessageAsync(userId, Resources.AddCase);
+                botClient.SendTextMessageAsync(
+                    chatId: userId,
+                    text: Resources.AddCase,
+                    replyMarkup: CommandKeyboard.ToMainMenuAdmin);
             });
         }
     }
