@@ -29,7 +29,6 @@ namespace Simulator.Services
             
             if(descriptor.IsEndOfCase)
             {
-                buttons.Add(new[] { CommandKeyboard.ToFinishButton });
                 if (currentRate < descriptor.Rates[0])
                 {
                     int ratePlace = 0;
@@ -91,7 +90,7 @@ namespace Simulator.Services
             else
             {
                 result.Item1 = descriptor.Texts[ratePlace];
-                result.Item1 += descriptor.Texts[3]; //Сказать, что попыток больше нет
+                result.Item1 += "\n" + descriptor.Texts[3]; //Сказать, что попыток больше нет
                 buttons.Add(new[] { CommandKeyboard.ToFinishButton });
                 result.Item2 = new InlineKeyboardMarkup(buttons);
             }

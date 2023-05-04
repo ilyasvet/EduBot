@@ -49,7 +49,7 @@ namespace Simulator.Case
             UserCaseTableCommand.SetRate(userId, currentUserRate);
             //Считаем на основе ответа очки пользователя и добавляем их к общим
             
-            await SetStatistics(userId, currentStage, rate);
+            //await SetStatistics(userId, currentStage, rate);
 
             var nextStage = StagesControl.Stages[currentStage.NextStage]; //next уже установлено
             //await botClient.message

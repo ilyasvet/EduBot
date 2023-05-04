@@ -29,6 +29,7 @@ namespace Simulator.BotControl
             switch (update.Type)
             {
                 case UpdateType.Message:
+                    await botClient.DeleteMessageAsync(update.Message.Chat.Id, update.Message.MessageId);
                     await UpdateControl.MessageHandling(update.Message, botClient);
                     break;
                 case UpdateType.CallbackQuery:
