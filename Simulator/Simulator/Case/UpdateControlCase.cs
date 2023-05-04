@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Simulator.TelegramBotLibrary;
-using System;
 
 namespace Simulator.Case
 {
@@ -26,6 +25,13 @@ namespace Simulator.Case
                     if(!endModule.IsEndOfCase)
                     {
                         return;
+                    }
+                    else
+                    {
+                        if (UserCaseTableCommand.GetHealthPoints(userId) != 0)
+                        {
+                            return;
+                        }
                     }
                 }
                 await GoOut(userId, botClient);

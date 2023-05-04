@@ -80,20 +80,18 @@ namespace Simulator.Services
             int ratePlace)
         {
             var result = new ValueTuple<string, InlineKeyboardMarkup>();
+            result.Item1 = descriptor.Texts[ratePlace] + "\n"; //Информация о результате
             if (attemptNumber == 1)
             {
-                result.Item1 = descriptor.Texts[ratePlace]; //Информация о результате
                 result.Item1 += descriptor.TextBefore; //Сказать, что есть ещё попытка
                 buttons.Add(new[] { CommandKeyboard.ToBeginButton });
-                result.Item2 = new InlineKeyboardMarkup(buttons);
             }
             else
             {
-                result.Item1 = descriptor.Texts[ratePlace];
-                result.Item1 += "\n" + descriptor.Texts[3]; //Сказать, что попыток больше нет
+                result.Item1 += descriptor.Texts[3]; //Сказать, что попыток больше нет
                 buttons.Add(new[] { CommandKeyboard.ToFinishButton });
-                result.Item2 = new InlineKeyboardMarkup(buttons);
             }
+            result.Item2 = new InlineKeyboardMarkup(buttons);
             return result;
         }
         private static ValueTuple<string, InlineKeyboardMarkup> GetResult(

@@ -1,5 +1,6 @@
 ﻿using Simulator.BotControl;
 using Simulator.Properties;
+using Simulator.TelegramBotLibrary;
 using System.Threading.Tasks;
 using Telegram.Bot;
 
@@ -11,6 +12,7 @@ namespace Simulator.Commands
         {
             await Task.Run(() =>
             {
+                UserTableCommand.SetDialogState(userId, BotControl.State.DialogState.None);
                 botClient.SendTextMessageAsync(
                             chatId: userId,
                             text: Resources.AdminMenu,

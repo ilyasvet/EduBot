@@ -47,12 +47,10 @@ namespace Simulator.BotControl
         public static async Task CallbackQueryHandling(CallbackQuery query, ITelegramBotClient botClient)
         {
             long userId = query.Message.Chat.Id;
-            bool onCourse = false;
             try
             {
                 if (UserCaseTableCommand.IsOnCourse(userId))
                 {
-                    onCourse = true;
                     await UpdateControlCase.CallbackQueryHandlingCase(query, botClient);
                 }
                 else
@@ -68,10 +66,7 @@ namespace Simulator.BotControl
             {
                 try
                 {
-                    if (!onCourse)
-                    {
-                        await botClient.DeleteMessageAsync(userId, query.Message.MessageId);
-                    }
+                    await botClient.DeleteMessageAsync(userId, query.Message.MessageId);
                 }
                 catch { }
             }
@@ -80,8 +75,11 @@ namespace Simulator.BotControl
         {
             long userId = answer.User.Id;
             try
-            {     
-                await UpdateControlCase.PollAnswerHandlingCase(answer, botClient);
+            {
+                if(UserCaseTableCommand.IsOnCourse(userId))
+                {
+                    await UpdateControlCase.PollAnswerHandlingCase(answer, botClient);
+                }
             }
             catch (Exception ex)
             {
