@@ -6,6 +6,9 @@ using System.IO;
 using Excel = Microsoft.Office.Interop.Excel;
 using System.Collections.Generic;
 using System.Linq;
+using System.Collections;
+using System.Security.Cryptography;
+using System;
 
 namespace Simulator.TelegramBotLibrary.JsonUserStats
 {
@@ -106,17 +109,76 @@ namespace Simulator.TelegramBotLibrary.JsonUserStats
             range = worksheet.Range["E1:E3"];
             range.Merge();
             worksheet.Cells[1, 8] = "Баллы за 2 попытку";
-            // Время прохождения за 1 попытку
-            range = worksheet.Range["I2:I3"];
-            range.Merge();
-            worksheet.Cells[2, 9] = "Время прохождения 1 попытки";
-            // Время прохождения за 1 попытку
-            range = worksheet.Range["J2:J3"];
-            range.Merge();
-            worksheet.Cells[2, 10] = "Время прохождения 2 попытки";
+            
+
+            // введем стартовую переменную по левому краю эксель таблицы, начиная от которой будем
+            // объединять ячейки таблицы (последний столбец, который во всех таблицах будет одинаковый - 8)
+            int startFromToMerge = 9;
+
+            // этапы
+            int cellsTimeStages = 2;
+            int cellsSummPtsStages = 2;
+            var countTasks = new Dictionary<int, int>();
+            foreach (var keyValuePair in countTasks)
+            {
+                // высчитываем ширину текущего этапа по клеточкам
+                int rangeToMergeCells = cellsTimeStages + cellsSummPtsStages + (keyValuePair.Value * 5);
+                // смотрим конец объединенной ячейки
+                int endToMerge = startFromToMerge + rangeToMergeCells;
+                // длинная ячейка с номером этапа
+                range = worksheet.Range[
+                    worksheet.Cells[1, startFromToMerge],
+                    worksheet.Cells[1, endToMerge]
+                    ];
+                range.Merge();
+                worksheet.Cells[1, startFromToMerge] = $"Этап {keyValuePair.Key}";
+
+
+                // в каждом этапе есть 7 больших блоков текста. Формируем их
+                // Время прохождения за 1 попытку
+                range = worksheet.Range[
+                    worksheet.Cells[2, startFromToMerge],
+                    worksheet.Cells[3, startFromToMerge]
+                ];
+                range.Merge();
+                worksheet.Cells[2, startFromToMerge] = "Время прохождения 1 попытки";
+                startFromToMerge += 1;
+                // Время прохождения за 2 попытку
+                range = worksheet.Range[
+                    worksheet.Cells[2, startFromToMerge],
+                    worksheet.Cells[3, startFromToMerge]
+                ];
+                range.Merge();
+                worksheet.Cells[2, startFromToMerge] = "Время прохождения 2 попытки";
+                startFromToMerge += 1;
+                // Среднее время за все попытки
+                range = worksheet.Range[
+                    worksheet.Cells[2, startFromToMerge],
+                    worksheet.Cells[2, startFromToMerge + keyValuePair.Key]
+                ];
+                range.Merge();
+                worksheet.Cells[2, startFromToMerge] = "Среднее время за все попытки";
+                startFromToMerge += 1 + keyValuePair.Key;
+                // Баллы за 1 попытку
+                range = worksheet.Range[
+                    worksheet.Cells[2, startFromToMerge],
+                    worksheet.Cells[2, startFromToMerge + cellsSummPtsStages / 2]
+                ];
+                range.Merge();
+                worksheet.Cells[2, startFromToMerge] = "Баллы, набранные за 1 попытку";
+                // надо дописать... Ну и проверить, верный ли алгоритм, без дебага нету смысла сейчас дописывать
+
+
+                /*тута нада брать данные с жсон строки
+                 * и вставлять их по столбцам*/
+
+
+                // сдвигаем начало следующей клетки для объединения
+                startFromToMerge += rangeToMergeCells + 1;
+            }
         }
 
-        private static void CountTasksInEachStage(string courseJsonName)
+        private static Dictionary<int, int> CountTasksInEachStage(string courseJsonName)
         {
             string fileName = $"{courseJsonName}.json";
 
@@ -142,6 +204,7 @@ namespace Simulator.TelegramBotLibrary.JsonUserStats
             {
                 throw new FileNotFoundException($"Json course file does not exist. File {fileName} not found");
             }
+            return countTasks;
         }
     }
 }
