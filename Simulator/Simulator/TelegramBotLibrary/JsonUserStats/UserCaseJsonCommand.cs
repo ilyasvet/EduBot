@@ -17,28 +17,45 @@ namespace Simulator.TelegramBotLibrary
                 string json = File.ReadAllText(fileName);
                 JObject jsonObject = JsonConvert.DeserializeObject<JObject>(json);
 
-                // формируем ключ, который будем искать в json строке
-                string keyToSeatchFor = GetKeyForJsonObject(StageNotaskNo, value);
+                string stageKey = StageNotaskNo.Item1.ToString();
 
-                bool foundKey = false;
-                foreach (var keyValuePair in jsonObject)
+                // создаем отдельный абзац для статистики определенном этапе
+                if (!jsonObject.ContainsKey(StageNotaskNo.Item1.ToString()))
                 {
-                    if (keyValuePair.Key == keyToSeatchFor)
-                    {
-                        // нашли ключ - модифицируем старое value. Сепаратор - это |
-                        string newValue = GetValueForJsonObject(keyValuePair.Value.ToObject<string>(), value, attemptNo);
-                        jsonObject.Remove(keyValuePair.Key);
-                        jsonObject.Add(keyValuePair.Key, newValue);
-                        foundKey = true;
-                        break;
-                    }
+                    JObject newJsonObject = new JObject();
+                    jsonObject.Add(stageKey, newJsonObject);
                 }
 
-                // не нашли в строке ключ - создаем с нуля
-                if (!foundKey)
+                // ищем абзац с текущего этапа
+                foreach (var stage in jsonObject)
                 {
-                    string newValue = GetValueForJsonObject(null, value, attemptNo);
-                    jsonObject.Add(keyToSeatchFor, newValue);
+                    if (stage.Key == stageKey)
+                    {
+                        // формируем ключ, который будем искать в json строке
+                        string keyToSeatchFor = GetKeyForJsonObject(StageNotaskNo, value);
+
+                        bool foundKey = false;
+                        foreach (var keyValuePair in (JObject)stage.Value)
+                        {
+                            if (keyValuePair.Key == keyToSeatchFor)
+                            {
+                                // нашли ключ - модифицируем старое value. Сепаратор - это |
+                                string newValue = GetValueForJsonObject(keyValuePair.Value.ToObject<string>(), value, attemptNo);
+                                ((JObject)stage.Value).Remove(keyValuePair.Key);
+                                ((JObject)stage.Value).Add(keyToSeatchFor, newValue);
+                                foundKey = true;
+                                break;
+                            }
+                        }
+
+                        // не нашли в строке ключ - создаем с нуля
+                        if (!foundKey)
+                        {
+                            string newValue = GetValueForJsonObject(null, value, attemptNo);
+                            ((JObject)stage.Value).Add(keyToSeatchFor, newValue);
+                        }
+                        break;
+                    }
                 }
 
                 using (StreamWriter streamWriter = File.CreateText(fileName))
@@ -97,7 +114,7 @@ namespace Simulator.TelegramBotLibrary
         // (int - баллы, DateTime - время, string - выбранные варианты ответа)
         private static string GetKeyForJsonObject((int, int) StageNotaskNo, object value)
         {
-            string performedKey = $"({StageNotaskNo.Item1}_{StageNotaskNo.Item2})";
+            string performedKey = $"({StageNotaskNo.Item2})";
 
             if (value is double)
             {
