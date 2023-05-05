@@ -2,17 +2,16 @@
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using Simulator.Services;
-using Simulator.TelegramBotLibrary;
-using System;
 using System.IO;
-using System.Threading.Tasks;
 using Excel = Microsoft.Office.Interop.Excel;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Simulator.TelegramBotLibrary.JsonUserStats
 {
     public static class UserCaseJsonExcelHandler
     {
-        public static void CreateAndEditExcelFile(string path, )
+        public static void CreateAndEditExcelFile(string path)
         {
             Excel.Application excelApp = new Excel.Application();
             Excel.Workbook workbook = excelApp.Workbooks.Add();
@@ -53,7 +52,7 @@ namespace Simulator.TelegramBotLibrary.JsonUserStats
                 int summPtsFirstAttempt = 0;
                 int summPtsSecondAttempt = 0;
 
-                bool foundKey = false;
+                /*bool foundKey = false;
                 foreach (var keyValuePair in jsonObject)
                 {
                     if (keyValuePair.Key == keyToSeatchFor)
@@ -65,7 +64,7 @@ namespace Simulator.TelegramBotLibrary.JsonUserStats
                         foundKey = true;
                         break;
                     }
-                }
+                }*/
             }
             else
             {
@@ -73,7 +72,7 @@ namespace Simulator.TelegramBotLibrary.JsonUserStats
             }
         }
 
-        public static void CreateExcelTitle(Excel.Worksheet worksheet)
+        private static void CreateExcelTitle(Excel.Worksheet worksheet)
         {
             // ФИО
             Excel.Range range = worksheet.Range["A1:A3"];
@@ -115,6 +114,34 @@ namespace Simulator.TelegramBotLibrary.JsonUserStats
             range = worksheet.Range["J2:J3"];
             range.Merge();
             worksheet.Cells[2, 10] = "Время прохождения 2 попытки";
+        }
+
+        private static void CountTasksInEachStage(string courseJsonName)
+        {
+            string fileName = $"{courseJsonName}.json";
+
+            string json = File.ReadAllText(fileName);
+            JObject jsonObject = JsonConvert.DeserializeObject<JObject>(json);
+
+            // создаем словарь для хранения кол-ва вопросов в каждом кейсе
+            var countTasks = new Dictionary<int, int>();
+
+            // считаем кол-во вопросов в каждой стадии кейса
+            if (File.Exists(fileName))
+            {
+                foreach (var stage in jsonObject)
+                {
+                    // сохраняем записи текущей стадии во временный лист
+                    var tasksArray = stage.Value.ToObject<List<object>>();
+                    var count = tasksArray.Count;
+
+                    countTasks.Add(int.Parse(stage.Key), count);
+                }
+            }
+            else
+            {
+                throw new FileNotFoundException($"Json course file does not exist. File {fileName} not found");
+            }
         }
     }
 }
