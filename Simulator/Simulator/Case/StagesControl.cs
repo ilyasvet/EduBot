@@ -3,10 +3,13 @@ using Simulator.Models;
 using Simulator.Services;
 using Simulator.TelegramBotLibrary;
 using System;
+using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Telegram.Bot;
 using Telegram.Bot.Types;
+using Telegram.Bot.Types.InputFiles;
 using Telegram.Bot.Types.ReplyMarkups;
 
 namespace Simulator.Case
@@ -82,6 +85,7 @@ namespace Simulator.Case
             switch (nextStage)
             {
                 case CaseStagePoll poll:
+                    await ShowAdditionalInfo(botClient, poll, userId);
                     await botClient.SendPollAsync(
                         chatId: userId,
                         question: poll.TextBefore,
@@ -106,6 +110,36 @@ namespace Simulator.Case
             }
             //В зависимости от типа этапа, бот выдаёт определённый тип сообщения
             //UserCaseTableCommand.SetStartTime(userId, DateTime.Now);
+        }
+
+        private async static Task ShowAdditionalInfo(ITelegramBotClient botClient, CaseStagePoll nextStage, long userId)
+        {
+            foreach (string fileName in nextStage.NamesAdditionalFiles)
+            {
+                using (Stream fs = new FileStream(fileName, FileMode.Open))
+                {
+                    var inputOnlineFile = new InputOnlineFile(fs);
+                    switch (nextStage.AdditionalInfoType)
+                    {
+                        case AdditionalInfo.None:
+                            break;
+                        case AdditionalInfo.Photo:
+                            await botClient.SendPhotoAsync(userId, inputOnlineFile);
+                            break;
+                        case AdditionalInfo.Audio:
+                            await botClient.SendAudioAsync(userId, inputOnlineFile);
+                            break;
+                        case AdditionalInfo.Video:
+                            await botClient.SendVideoAsync(userId, inputOnlineFile);
+                            break;
+                        case AdditionalInfo.Document:
+                            await botClient.SendDocumentAsync(userId, inputOnlineFile);
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }  
         }
     }
 }

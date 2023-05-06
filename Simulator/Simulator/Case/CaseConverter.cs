@@ -118,16 +118,21 @@ namespace Simulator.Case
             {
                 stage.NextStage = int.Parse(stageParameters[8].Trim());
             }
-
+            stage.AdditionalInfoType = (AdditionalInfo)Enum.Parse(typeof(AdditionalInfo), stageParameters[9]);
+            stage.NamesAdditionalFiles = new List<string>();
+            foreach (string fileName in stageParameters[10].Split('^'))
+            {
+                stage.NamesAdditionalFiles.Add(fileName);
+            }
             if (stage.ManyAnswers)
             {
-                stage.Limit = int.Parse(stageParameters[9].Trim());
-                stage.Fine = double.Parse(stageParameters[10].Trim());
-                stage.WatchNonAnswer = bool.Parse(stageParameters[11]);
+                stage.Limit = int.Parse(stageParameters[11].Trim());
+                stage.Fine = double.Parse(stageParameters[12].Trim());
+                stage.WatchNonAnswer = bool.Parse(stageParameters[13]);
                 if(stage.WatchNonAnswer)
                 {
                     stage.NonAnswers = new Dictionary<int, double>();
-                    foreach (var option in stageParameters[12].Split('^'))
+                    foreach (var option in stageParameters[14].Split('^'))
                     {
                         string[] rates = option.Trim().Split('-');
                         stage.NonAnswers.Add(int.Parse(rates[0]), double.Parse(rates[1]));

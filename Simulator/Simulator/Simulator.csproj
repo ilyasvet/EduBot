@@ -85,6 +85,7 @@
     <Compile Include="Commands\UserCardCommand.cs" />
     <Compile Include="Commands\UserGoToCaseCommand.cs" />
     <Compile Include="Commands\WelcomeCommand.cs" />
+    <Compile Include="Models\CaseStage\AdditionalInfo.cs" />
     <Compile Include="Models\CaseStage\CaseStageEndModule.cs" />
     <Compile Include="Models\CaseStage\CaseStage.cs" />
     <Compile Include="Models\CaseStage\CaseStageMessage.cs" />
