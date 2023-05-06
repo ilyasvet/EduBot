@@ -19,6 +19,16 @@ namespace Simulator.TelegramBotLibrary
 
                 string stageKey = StageNotaskNo.Item1.ToString();
 
+                // проверяем, что юзер получил самое первоe задание кейса
+                if (attemptNo == 1 && StageNotaskNo.Item2 == 1 &&
+                    value is DateTime && !jsonObject.ContainsKey("firstLaunchTime")
+                    )
+                {
+                    // value приходит как DateTime т к при отправке задания вызывается метод AddValueToJsonFile
+                    // с аргументом value = DateTime
+                    jsonObject.Add("firstLaunchTime", value.ToString());
+                }
+
                 // создаем отдельный абзац для статистики определенном этапе
                 if (!jsonObject.ContainsKey(StageNotaskNo.Item1.ToString()))
                 {
