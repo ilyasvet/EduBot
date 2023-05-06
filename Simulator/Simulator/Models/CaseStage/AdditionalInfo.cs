@@ -1,4 +1,4 @@
-﻿namespace Simulator.Models.CaseStage
+﻿namespace Simulator.Models
 {
     public enum AdditionalInfo
     {

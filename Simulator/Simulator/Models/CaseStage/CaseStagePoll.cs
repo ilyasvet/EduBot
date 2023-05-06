@@ -13,6 +13,8 @@ namespace Simulator.Models
         public bool WatchNonAnswer { get; set; }
         public int Limit { get; set; }
         public double Fine { get; set; }
+        public AdditionalInfo AdditionalInfoType { get; set; }
+        public List<string> NamesAdditionalFiles { get; set; }
 
         public CaseStagePoll(int number,
             string textBefore
