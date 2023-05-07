@@ -4,6 +4,7 @@ using Simulator.Services;
 using Simulator.TelegramBotLibrary;
 using System;
 using System.Collections.ObjectModel;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -19,10 +20,19 @@ namespace Simulator.Case
         public static StageList Stages { get; set; }
         public static bool Make()
         {
-            string path = $"{AppDomain.CurrentDomain.BaseDirectory}temp\\caseinfo.case";
+            string path = $"{AppDomain.CurrentDomain.BaseDirectory}" +
+                $"{ConfigurationManager.AppSettings["DocumentsDir"]}" +
+                $"\\caseinfo.case";
             if (System.IO.File.Exists(path))
             {
-                CaseConverter.FromFile(path);
+                try
+                {
+                    CaseConverter.FromFile(path);
+                }
+                catch
+                {
+                    return false;
+                }
                 return true;
             }
             return false;

@@ -115,6 +115,15 @@ namespace Simulator.Properties {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на Файл caseinfo.case не найден.
+        /// </summary>
+        internal static string FileCaseNotFound {
+            get {
+                return ResourceManager.GetString("FileCaseNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на Пароль для группы:.
         /// </summary>
         internal static string GroupPassword {

@@ -30,13 +30,12 @@ namespace Simulator.Services
         public static bool IsCorrectFileExtension(string path, FileType fileType)
         {
             string extension = path.Split('.').Last();
-            string fileName = path.Split('\\').Last();
             switch (fileType)
             {
                 case FileType.ExcelTable:
                     return extension.Contains("xls");
                 case FileType.Case:
-                    return fileName == "caseinfo.case";
+                    return extension.Contains("zip");
                 default:
                     return false;
             }

@@ -6,6 +6,7 @@ using System;
 using Simulator.Properties;
 using Simulator.Services;
 using Simulator.Case;
+using System.IO.Compression;
 
 namespace Simulator.BotControl
 {
@@ -44,14 +45,21 @@ namespace Simulator.BotControl
             try
             {
                 if (!Checker.IsCorrectFileExtension(path, FileType.Case))
-                    throw new ArgumentException("Файл должен быть caseinfo.case");
-                CaseConverter.FromFile(path);
-                await BotCallBack(userId, botClient, Resources.AddCaseSuccess); //сообщение об успехе операции
+                    throw new ArgumentException("Файл должен быть .zip");
+                int endDir = path.LastIndexOf('\\');
+                ZipFile.ExtractToDirectory(path, path.Remove(endDir, path.Length - endDir));
+                if (StagesControl.Make())
+                {
+                    await BotCallBack(userId, botClient, Resources.AddCaseSuccess); //сообщение об успехе операции
+                }
+                else
+                {
+                    await BotCallBack(userId, botClient, Resources.FileCaseNotFound);
+                }
             }
-            catch
+            finally
             {
                 System.IO.File.Delete(path);
-                throw;
             }
         }
 

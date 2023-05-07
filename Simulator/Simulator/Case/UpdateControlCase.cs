@@ -83,7 +83,7 @@ namespace Simulator.Case
             int questionNumber = currentStage.Number;
             //TimeSpan time = DateTime.Now - UserCaseTableCommand.GetTime(userId);
 
-            await UserCaseJsonCommand.AddValueToJsonFile(userId, $"б-{moduleNumber}-{questionNumber}", rate.ToString());
+            //await UserCaseJsonCommand.AddValueToJsonFile(userId, $"б-{moduleNumber}-{questionNumber}", rate.ToString());
             //await UserCaseJsonCommand.AddValueToJsonFile(userId, $"т-{moduleNumber}-{questionNumber}", time);
         }
 

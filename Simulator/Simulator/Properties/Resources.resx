@@ -174,4 +174,7 @@
   <data name="ThereIsNotAttempts" xml:space="preserve">
     <value>У вас больше нет попыток</value>
   </data>
+  <data name="FileCaseNotFound" xml:space="preserve">
+    <value>Файл caseinfo.case не найден</value>
+  </data>
 </root>
