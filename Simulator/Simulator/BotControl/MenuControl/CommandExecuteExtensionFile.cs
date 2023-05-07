@@ -7,6 +7,7 @@ using Simulator.Properties;
 using Simulator.Services;
 using Simulator.Case;
 using System.IO.Compression;
+using System.Configuration;
 
 namespace Simulator.BotControl
 {
@@ -46,8 +47,12 @@ namespace Simulator.BotControl
             {
                 if (!Checker.IsCorrectFileExtension(path, FileType.Case))
                     throw new ArgumentException("Файл должен быть .zip");
-                int endDir = path.LastIndexOf('\\');
-                ZipFile.ExtractToDirectory(path, path.Remove(endDir, path.Length - endDir));
+                string dir = $"{AppDomain.CurrentDomain.BaseDirectory}" +
+                    $"{ConfigurationManager.AppSettings["PathCase"]}";
+
+                StagesControl.DeleteCaseFiles(); //Удаляем старые файлы перед добавлением новых
+                ZipFile.ExtractToDirectory(path, dir);
+                
                 if (StagesControl.Make())
                 {
                     await BotCallBack(userId, botClient, Resources.AddCaseSuccess); //сообщение об успехе операции

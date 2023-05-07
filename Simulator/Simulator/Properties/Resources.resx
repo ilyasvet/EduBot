@@ -160,7 +160,7 @@
     <value>Пароль для группы:</value>
   </data>
   <data name="AddCase" xml:space="preserve">
-    <value>Отправьте файл caseinfo.case</value>
+    <value>Отправьте файл .zip</value>
   </data>
   <data name="AddCaseFail" xml:space="preserve">
     <value>Ошибка при загрузке кейса</value>

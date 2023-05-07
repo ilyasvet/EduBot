@@ -3,7 +3,6 @@ using Simulator.Models;
 using Simulator.Services;
 using Simulator.TelegramBotLibrary;
 using System;
-using System.Collections.ObjectModel;
 using System.Configuration;
 using System.IO;
 using System.Linq;
@@ -17,12 +16,13 @@ namespace Simulator.Case
 {
     internal static class StagesControl
     {
+        private readonly static string pathToCase = 
+                $"{AppDomain.CurrentDomain.BaseDirectory}" +
+                $"{ConfigurationManager.AppSettings["PathCase"]}";
         public static StageList Stages { get; set; }
         public static bool Make()
         {
-            string path = $"{AppDomain.CurrentDomain.BaseDirectory}" +
-                $"{ConfigurationManager.AppSettings["DocumentsDir"]}" +
-                $"\\caseinfo.case";
+            string path = pathToCase + "\\caseinfo.case";
             if (System.IO.File.Exists(path))
             {
                 try
@@ -31,12 +31,23 @@ namespace Simulator.Case
                 }
                 catch
                 {
+                    DeleteCaseFiles();
                     return false;
                 }
                 return true;
             }
             return false;
         }
+
+        public static void DeleteCaseFiles()
+        {
+            var files = Directory.GetFiles(pathToCase);
+            foreach (var file in files)
+            {
+                System.IO.File.Delete(file);
+            }
+        }
+
         public static double CalculateRatePoll(CaseStagePoll stage, int[] answers)
         {
             double rate = 0;
@@ -124,15 +135,15 @@ namespace Simulator.Case
 
         private async static Task ShowAdditionalInfo(ITelegramBotClient botClient, CaseStagePoll nextStage, long userId)
         {
+            if (nextStage.AdditionalInfoType == AdditionalInfo.None) return;
             foreach (string fileName in nextStage.NamesAdditionalFiles)
             {
-                using (Stream fs = new FileStream(fileName, FileMode.Open))
+                
+                using (Stream fs = new FileStream(pathToCase + "\\" + fileName.Trim(), FileMode.Open))
                 {
-                    var inputOnlineFile = new InputOnlineFile(fs);
+                    var inputOnlineFile = new InputOnlineFile(fs, fileName.Trim());
                     switch (nextStage.AdditionalInfoType)
                     {
-                        case AdditionalInfo.None:
-                            break;
                         case AdditionalInfo.Photo:
                             await botClient.SendPhotoAsync(userId, inputOnlineFile);
                             break;

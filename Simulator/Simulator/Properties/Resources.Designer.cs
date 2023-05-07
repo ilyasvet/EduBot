@@ -61,7 +61,7 @@ namespace Simulator.Properties {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Отправьте файл caseinfo.case.
+        ///   Ищет локализованную строку, похожую на Отправьте файл .zip.
         /// </summary>
         internal static string AddCase {
             get {
