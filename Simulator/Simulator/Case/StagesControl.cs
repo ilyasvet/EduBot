@@ -137,8 +137,7 @@ namespace Simulator.Case
         {
             if (nextStage.AdditionalInfoType == AdditionalInfo.None) return;
             foreach (string fileName in nextStage.NamesAdditionalFiles)
-            {
-                
+            {   
                 using (Stream fs = new FileStream(pathToCase + "\\" + fileName.Trim(), FileMode.Open))
                 {
                     var inputOnlineFile = new InputOnlineFile(fs, fileName.Trim());
