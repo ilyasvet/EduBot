@@ -15,6 +15,7 @@ namespace Simulator.BotControl
         private static InlineKeyboardButton GoToCase = InlineKeyboardButton.WithCallbackData("Перейти к курсу", "ToCase");
         private static InlineKeyboardButton UserCard = InlineKeyboardButton.WithCallbackData("Карточка пользователя", "UserCard");
         private static InlineKeyboardButton AddCase = InlineKeyboardButton.WithCallbackData("Добавить кейс", "AddCase");
+        private static InlineKeyboardButton GetStatistics = InlineKeyboardButton.WithCallbackData("Сатистика", "GetStatistics");
 
         public static InlineKeyboardButton ToFinishButton = InlineKeyboardButton.WithCallbackData("Выйти", "ToOut");
         public static InlineKeyboardButton NextButton = InlineKeyboardButton.WithCallbackData("Далее", "MoveNext");
@@ -47,7 +48,8 @@ namespace Simulator.BotControl
         {
             new[] { ListGroups },
             new[] { AddUsers },
-            new[] { AddCase }, 
+            new[] { AddCase },
+            new[] { GetStatistics },
         });
         public static InlineKeyboardMarkup UserMenu = new(new[]
         {

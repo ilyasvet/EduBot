@@ -7,4 +7,4 @@ ListGroups AdminShowGroupsInfoCommand
 AddUsersAdmin AdminAddNewUsersCommand
 AddCase AdminAddCaseCommand
 ToCase UserGoToCaseCommand
-ShowStatistics AdminShowUserStatisticsCommand
+GetStatistics AdminGetStatisticsCommand

@@ -76,6 +76,7 @@
     <Compile Include="Case\UpdateControlCase.cs" />
     <Compile Include="Commands\AdminAddCaseCommand.cs" />
     <Compile Include="Commands\AdminAddNewUsersCommand.cs" />
+    <Compile Include="Commands\AdminGetStatisticsCommand.cs" />
     <Compile Include="Commands\AdminShowGroupsInfoCommand.cs" />
     <Compile Include="Commands\Command.cs" />
     <Compile Include="Commands\AdminGoToMainMenuCommand.cs" />
@@ -112,6 +113,7 @@
     <Compile Include="Services\UserHandler.cs" />
     <Compile Include="TelegramBotLibrary\GroupTableCommand.cs" />
     <Compile Include="TelegramBotLibrary\JsonUserStats\UserCaseJsonCommand.cs" />
+    <Compile Include="TelegramBotLibrary\JsonUserStats\UserCaseJsonExcelHandler.cs" />
     <Compile Include="TelegramBotLibrary\LocalSqlDbConnection.cs" />
     <Compile Include="TelegramBotLibrary\UserCaseTableCommand.cs" />
     <Compile Include="TelegramBotLibrary\UserTableCommand.cs" />
