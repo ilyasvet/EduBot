@@ -5,10 +5,6 @@ using Simulator.Services;
 using System.IO;
 using Excel = Microsoft.Office.Interop.Excel;
 using System.Collections.Generic;
-using System.Linq;
-using System.Collections;
-using System.Security.Cryptography;
-using System;
 
 namespace Simulator.TelegramBotLibrary.JsonUserStats
 {

@@ -1,4 +1,5 @@
 ﻿using Simulator.BotControl;
+using Simulator.TelegramBotLibrary.JsonUserStats;
 using System;
 using System.Configuration;
 using System.IO;
@@ -19,7 +20,7 @@ namespace Simulator.Commands
                 string statsFilePath = statsDirectory + "\\" + ConfigurationManager.AppSettings["StatsFileName"];
                 if (!File.Exists(statsFilePath))
                 {
-                    //Создать и сделать шапку
+                    UserCaseJsonExcelHandler.CreateAndEditExcelFile(statsFilePath);
                 }
                 foreach (string statsFileName in Directory.GetFiles(statsDirectory, "*.json"))
                 {
