@@ -18,14 +18,9 @@ namespace Simulator.Commands
                 string statsDirectory = $"{AppDomain.CurrentDomain.BaseDirectory}" +
                     $"{ConfigurationManager.AppSettings["PathStats"]}";
                 string statsFilePath = statsDirectory + "\\" + ConfigurationManager.AppSettings["StatsFileName"];
-                if (!File.Exists(statsFilePath))
-                {
-                    UserCaseJsonExcelHandler.CreateHeadExcelFile(statsFilePath);
-                }
-                foreach (string statsFileName in Directory.GetFiles(statsDirectory, "*.json"))
-                {
-                    //Записать в строку таблицы всю статистику
-                }
+
+                UserCaseJsonExcelHandler.CreateAndEditExcelFile(statsFilePath, File.Exists(statsFilePath), statsDirectory);
+
                 using (Stream fs = new FileStream(statsFilePath, FileMode.Open))
                 {
                     botClient.SendDocumentAsync(

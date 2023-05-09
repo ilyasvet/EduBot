@@ -6,31 +6,50 @@ using System.IO;
 using Excel = Microsoft.Office.Interop.Excel;
 using System.Collections.Generic;
 using Simulator.Case;
+using System.Reflection;
 
 namespace Simulator.TelegramBotLibrary.JsonUserStats
 {
     public static class UserCaseJsonExcelHandler
     {
-        public static void CreateHeadExcelFile(string path)
+        public static void CreateAndEditExcelFile(string path, bool created, string statsDirectory)
         {
             Excel.Application excelApp = new Excel.Application();
-            Excel.Workbook workbook = excelApp.Workbooks.Add();
+            Excel.Workbook workbook = null;
+            Excel.Worksheet worksheet = null;
 
             try
             {
-                Excel.Worksheet worksheet = (Worksheet)workbook.ActiveSheet;
-                worksheet.Name = "Statistics";
-                worksheet.Cells.WrapText = true;
-                worksheet.Columns.ColumnWidth = 15;
+                try
+                {
+                    if (!created)
+                    {
+                        workbook = excelApp.Workbooks.Add();
+                        worksheet = (Worksheet)workbook.ActiveSheet;
+                        worksheet.Name = "Statistics";
+                        worksheet.Cells.WrapText = true;
+                        worksheet.Columns.ColumnWidth = 15;
+                        CreateExcelTitle(worksheet);
+                        workbook.SaveAs(path);
+                        workbook.Close();
+                    }
+                }
+                catch
+                {
+                    File.Delete(path);
+                    throw;
+                }
 
-                CreateExcelTitle(worksheet);
+                workbook = excelApp.Workbooks.Open(path);
+                worksheet = workbook.Worksheets[1];
 
-                workbook.SaveAs(path);
-            }
-            catch
-            {
-                File.Delete(path);
-                throw;
+                ((Range)worksheet.Rows[4, 7]).Delete();
+
+                foreach (string statsFileName in Directory.GetFiles(statsDirectory, "*.json"))
+                {
+                    ParseUserStats(statsFileName, worksheet);
+                    workbook.SaveAs(path);
+                }
             }
             finally
             {
@@ -40,38 +59,28 @@ namespace Simulator.TelegramBotLibrary.JsonUserStats
             }
         }
 
-        public static void ParseUserStats(long userId)
+        public static void ParseUserStats(string statsFileName, Excel.Worksheet worksheet)
         {
-            string fileName = $"{userId}.json";
+            string json = File.ReadAllText(statsFileName);
+            JObject jsonObject = JsonConvert.DeserializeObject<JObject>(json);
 
-            if (File.Exists(fileName))
+            int summPtsFirstAttempt = 0;
+            int summPtsSecondAttempt = 0;
+
+            /*bool foundKey = false;
+            foreach (var stagesCount in jsonObject)
             {
-                string json = File.ReadAllText(fileName);
-                JObject jsonObject = JsonConvert.DeserializeObject<JObject>(json);
-
-                int summPtsFirstAttempt = 0;
-                int summPtsSecondAttempt = 0;
-
-                /*bool foundKey = false;
-                foreach (var stagesCount in jsonObject)
+                if (stagesCount.Key == keyToSeatchFor)
                 {
-                    if (stagesCount.Key == keyToSeatchFor)
-                    {
-                        // нашли ключ - модифицируем старое value. Сепаратор - это _|_. Хехе)0)0)))0)
-                        string newValue = GetValueForJsonObject(stagesCount.Value.ToObject<string>(), value, attemptNo);
-                        jsonObject.Remove(stagesCount.Key);
-                        jsonObject.Add(stagesCount.Key, newValue);
-                        foundKey = true;
-                        break;
-                    }
-                }*/
-            }
-            else
-            {
-                throw new FileNotFoundException($"Error parsing Json stats. File {fileName} not found");
-            }
+                    // нашли ключ - модифицируем старое value. Сепаратор - это _|_. Хехе)0)0)))0)
+                    string newValue = GetValueForJsonObject(stagesCount.Value.ToObject<string>(), value, attemptNo);
+                    jsonObject.Remove(stagesCount.Key);
+                    jsonObject.Add(stagesCount.Key, newValue);
+                    foundKey = true;
+                    break;
+                }
+            }*/
         }
-
         private static void CreateExcelTitle(Excel.Worksheet worksheet)
         {
             // ФИО
@@ -106,7 +115,7 @@ namespace Simulator.TelegramBotLibrary.JsonUserStats
             range = worksheet.Range["H1:H3"];
             range.Merge();
             worksheet.Cells[1, 8] = "Баллы за 2 попытку";
-            
+
 
             // введем стартовую переменную по левому краю эксель таблицы, начиная от которой будем
             // объединять ячейки таблицы (последний столбец, который во всех таблицах будет одинаковый - 8)
@@ -115,10 +124,10 @@ namespace Simulator.TelegramBotLibrary.JsonUserStats
             const int sectionsCount = 5;
             const int cellsTimeStages = 2;
             const int cellsSummPtsStages = 2;
-            
+
             // Номер этапа - количество заданий
             Dictionary<int, int> countTasks = StagesControl.GetTaskCountDictionary();
-            
+
             // Заполняем каждый этап
             foreach (var stagesCount in countTasks)
             {
@@ -171,7 +180,7 @@ namespace Simulator.TelegramBotLibrary.JsonUserStats
                 ];
                     range.Merge();
                     worksheet.Cells[2, startFromToMerge] = dictStatisticsStruct[i].Item1;
-                    List<int> stageNumbersCurrentModule =  StagesControl.GetStageNumbers(stagesCount.Key);
+                    List<int> stageNumbersCurrentModule = StagesControl.GetStageNumbers(stagesCount.Key);
                     for (int j = 0; j < stagesCount.Value; j++)
                     {
                         worksheet.Cells[3, startFromToMerge] = $"П{stageNumbersCurrentModule[j]}";
@@ -185,34 +194,5 @@ namespace Simulator.TelegramBotLibrary.JsonUserStats
                 }
             }
         }
-
-        private static Dictionary<int, int> CountTasksInEachStage(string courseJsonName)
-        {
-            string fileName = $"{courseJsonName}.json";
-
-            string json = File.ReadAllText(fileName);
-            JObject jsonObject = JsonConvert.DeserializeObject<JObject>(json);
-
-            // создаем словарь для хранения кол-ва вопросов в каждом кейсе
-            var countTasks = new Dictionary<int, int>();
-
-            // считаем кол-во вопросов в каждой стадии кейса
-            if (File.Exists(fileName))
-            {
-                foreach (var stage in jsonObject)
-                {
-                    // сохраняем записи текущей стадии во временный лист
-                    var tasksArray = stage.Value.ToObject<List<object>>();
-                    var count = tasksArray.Count;
-
-                    countTasks.Add(int.Parse(stage.Key), count);
-                }
-            }
-            else
-            {
-                throw new FileNotFoundException($"Json course file does not exist. File {fileName} not found");
-            }
-            return countTasks;
-        }
-    }
+    }  
 }
