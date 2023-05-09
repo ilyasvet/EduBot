@@ -3,6 +3,7 @@ using Simulator.Models;
 using Simulator.Services;
 using Simulator.TelegramBotLibrary;
 using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Linq;
@@ -132,7 +133,6 @@ namespace Simulator.Case
             //В зависимости от типа этапа, бот выдаёт определённый тип сообщения
             //UserCaseTableCommand.SetStartTime(userId, DateTime.Now);
         }
-
         private async static Task ShowAdditionalInfo(ITelegramBotClient botClient, CaseStagePoll nextStage, long userId)
         {
             if (nextStage.AdditionalInfoType == AdditionalInfo.None) return;
@@ -160,6 +160,38 @@ namespace Simulator.Case
                     }
                 }
             }  
+        }
+
+        public static Dictionary<int, int> GetTaskCountDictionary()
+        {
+            Dictionary<int, int> result = new Dictionary<int, int>();
+            foreach (CaseStage stage in Stages.Stages)
+            {
+                int moduleNumber = stage.ModuleNumber;
+                if(moduleNumber == 0
+                    || stage is CaseStageEndModule
+                    || stage is CaseStageNone)
+                {
+                    continue;
+                }
+                if(!result.ContainsKey(moduleNumber))
+                {
+                    result.Add(moduleNumber, 1);
+                }
+                else
+                {
+                    result[moduleNumber]++;
+                }
+            }
+            return result;
+        }
+
+        internal static List<int> GetStageNumbers(int moduleNumber)
+        {
+            return Stages.Stages.
+                Where(s=>s.ModuleNumber == moduleNumber).
+                Select(s=>s.Number).
+                ToList();
         }
     }
 }

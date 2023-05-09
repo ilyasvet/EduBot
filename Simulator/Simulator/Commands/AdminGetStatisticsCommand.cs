@@ -20,7 +20,7 @@ namespace Simulator.Commands
                 string statsFilePath = statsDirectory + "\\" + ConfigurationManager.AppSettings["StatsFileName"];
                 if (!File.Exists(statsFilePath))
                 {
-                    UserCaseJsonExcelHandler.CreateAndEditExcelFile(statsFilePath);
+                    UserCaseJsonExcelHandler.CreateHeadExcelFile(statsFilePath);
                 }
                 foreach (string statsFileName in Directory.GetFiles(statsDirectory, "*.json"))
                 {
