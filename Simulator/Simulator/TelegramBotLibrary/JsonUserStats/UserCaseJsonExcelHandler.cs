@@ -6,7 +6,6 @@ using System.IO;
 using Excel = Microsoft.Office.Interop.Excel;
 using System.Collections.Generic;
 using Simulator.Case;
-using System.Reflection;
 
 namespace Simulator.TelegramBotLibrary.JsonUserStats
 {
@@ -43,12 +42,22 @@ namespace Simulator.TelegramBotLibrary.JsonUserStats
                 workbook = excelApp.Workbooks.Open(path);
                 worksheet = workbook.Worksheets[1];
 
-                ((Range)worksheet.Rows[4, 7]).Delete();
+                // Удаляем старые записи
+                int lastRow = worksheet.UsedRange.Rows.Count;
+                int lastColumn = worksheet.UsedRange.Columns.Count;
+                if(lastRow >= 4)
+                {
+                    Range workRange = worksheet.Range[worksheet.Cells[4, 1],
+                    worksheet.Cells[lastRow, lastColumn]];
+                    workRange.Delete();
+                    workbook.Save();
+                }
+                
 
                 foreach (string statsFileName in Directory.GetFiles(statsDirectory, "*.json"))
                 {
                     ParseUserStats(statsFileName, worksheet);
-                    workbook.SaveAs(path);
+                    workbook.Save();
                 }
             }
             finally

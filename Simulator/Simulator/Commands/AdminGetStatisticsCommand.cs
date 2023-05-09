@@ -13,23 +13,20 @@ namespace Simulator.Commands
     {
         public async override Task Execute(long userId, ITelegramBotClient botClient, string param = "")
         {
-            await Task.Run(() =>
+            string statsDirectory = $"{AppDomain.CurrentDomain.BaseDirectory}" +
+                   $"{ConfigurationManager.AppSettings["PathStats"]}";
+            string statsFilePath = statsDirectory + "\\" + ConfigurationManager.AppSettings["StatsFileName"];
+
+            UserCaseJsonExcelHandler.CreateAndEditExcelFile(statsFilePath, File.Exists(statsFilePath), statsDirectory);
+
+            using (Stream fs = new FileStream(statsFilePath, FileMode.Open))
             {
-                string statsDirectory = $"{AppDomain.CurrentDomain.BaseDirectory}" +
-                    $"{ConfigurationManager.AppSettings["PathStats"]}";
-                string statsFilePath = statsDirectory + "\\" + ConfigurationManager.AppSettings["StatsFileName"];
-
-                UserCaseJsonExcelHandler.CreateAndEditExcelFile(statsFilePath, File.Exists(statsFilePath), statsDirectory);
-
-                using (Stream fs = new FileStream(statsFilePath, FileMode.Open))
-                {
-                    botClient.SendDocumentAsync(
-                        chatId: userId,
-                        document: new InputOnlineFile(fs),
-                        replyMarkup: CommandKeyboard.ToMainMenuAdmin
-                        );
-                }
-            });
+                await botClient.SendDocumentAsync(
+                    chatId: userId,
+                    document: new InputOnlineFile(fs, "Statistics.xlsx"),
+                    replyMarkup: CommandKeyboard.ToMainMenuAdmin
+                    );
+            }
         }
     }
 }
