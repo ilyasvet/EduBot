@@ -183,9 +183,11 @@ namespace Simulator.TelegramBotLibrary.JsonUserStats
                 {
                     range = worksheet.Range[
                     worksheet.Cells[2, startFromToMerge],
-                    worksheet.Cells[2, startFromToMerge
+                    worksheet.Cells[
+                        2, startFromToMerge
                         + stagesCount.Value
-                        + dictStatisticsStruct[i].Item2 - 1]
+                        + dictStatisticsStruct[i].Item2 - 1
+                        ]
                 ];
                     range.Merge();
                     worksheet.Cells[2, startFromToMerge] = dictStatisticsStruct[i].Item1;

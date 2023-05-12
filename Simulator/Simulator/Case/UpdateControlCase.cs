@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Simulator.TelegramBotLibrary;
+using System;
 
 namespace Simulator.Case
 {
@@ -43,6 +44,7 @@ namespace Simulator.Case
         public static async Task PollAnswerHandlingCase(PollAnswer answer, ITelegramBotClient botClient)
         {
             long userId = answer.User.Id;
+            int attemptNo = UserCaseTableCommand.GetHealthPoints(userId);
             CaseStagePoll currentStage = (CaseStagePoll)StagesControl.Stages[UserCaseTableCommand.GetPoint(userId)];
             //Так как мы получаем PollAnswer, то очевидно, что текущий этап - опросник
 
@@ -54,8 +56,8 @@ namespace Simulator.Case
             currentUserRate += rate;
             UserCaseTableCommand.SetRate(userId, currentUserRate);
             //Считаем на основе ответа очки пользователя и добавляем их к общим
-            
-            //await SetStatistics(userId, currentStage, rate);
+
+            await SetTimePtsForAnswer(userId, currentStage, rate, attemptNo, answer.OptionIds);
 
             var nextStage = StagesControl.Stages[currentStage.NextStage]; //next уже установлено
             //await botClient.message
@@ -77,14 +79,22 @@ namespace Simulator.Case
             }
         }
 
-        private static async Task SetStatistics(long userId, CaseStagePoll currentStage, double rate)
+        private static async Task SetTimePtsForAnswer(long userId, CaseStagePoll currentStage, double rate, int attemptNo, int[] optionsIds)
         {
             int moduleNumber = currentStage.ModuleNumber;
             int questionNumber = currentStage.Number;
-            //TimeSpan time = DateTime.Now - UserCaseTableCommand.GetTime(userId);
 
-            //await UserCaseJsonCommand.AddValueToJsonFile(userId, $"б-{moduleNumber}-{questionNumber}", rate.ToString());
-            //await UserCaseJsonCommand.AddValueToJsonFile(userId, $"т-{moduleNumber}-{questionNumber}", time);
+            //время и баллы записываем
+            await UserCaseJsonCommand.AddValueToJsonFile(userId, (moduleNumber, questionNumber), rate, attemptNo);
+            await UserCaseJsonCommand.AddValueToJsonFile(userId, (moduleNumber, questionNumber), DateTime.Now, attemptNo);
+
+            //варианты ответа
+            string jsonUserAnswers = "";
+            foreach (int option in optionsIds)
+            {
+                jsonUserAnswers += $"{option};";
+            }
+            await UserCaseJsonCommand.AddValueToJsonFile(userId, (moduleNumber, questionNumber), jsonUserAnswers, attemptNo);
         }
 
         private static async Task GoOut(long userId, ITelegramBotClient botClient)
