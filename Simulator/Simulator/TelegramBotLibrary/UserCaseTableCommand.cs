@@ -103,6 +103,24 @@ namespace Simulator.TelegramBotLibrary
             }
             throw new ArgumentException();
         }
+        public static DateTime GetStartTime(long userId)
+        {
+            string commandText = $"select * from UserCase where UserId = {userId}";
+            command.CommandText = commandText;
+            using (SqlDataReader reader = command.ExecuteReader())
+            {
+                if(reader.Read())
+                {
+                    return (DateTime)reader["StartTime"];
+                }
+            }
+            throw new ArgumentException();
+        }
+        public static void SetStartTime(long userId, DateTime time)
+        {
+            string commandText = $"update UserCase StartTime = {time} where UserId = {userId}";
+            ExecuteNonQueryCommand(commandText);
+        }
 
         private static void ExecuteNonQueryCommand(string commandText)
         {
