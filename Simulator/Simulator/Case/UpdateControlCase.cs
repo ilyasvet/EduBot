@@ -5,6 +5,7 @@ using Telegram.Bot;
 using Telegram.Bot.Types;
 using Simulator.TelegramBotLibrary;
 using System;
+using System.IO;
 
 namespace Simulator.Case
 {
@@ -67,12 +68,32 @@ namespace Simulator.Case
         public static async Task MessageHandlingCase(Message message, ITelegramBotClient botClient)
         {
             long userId = message.Chat.Id;
+            int attemptNo = UserCaseTableCommand.GetHealthPoints(userId);
             CaseStageText currentStage = (CaseStageText)StagesControl.Stages[UserCaseTableCommand.GetPoint(userId)];
+            CaseStagePoll moduleQuestionNumber = (CaseStagePoll)StagesControl.Stages[UserCaseTableCommand.GetPoint(userId)];
             switch (currentStage.MessageTypeAnswer)
             {
                 case Telegram.Bot.Types.Enums.MessageType.Video:
-                    //StagesControl.VideoHandling(message.Video);
-                    //TODO узнать, как обрабатывать видео и ставить баллы
+
+                    // сохраняем видос
+                    var video = message.Video;
+                    string fileName = $"{userId}-{moduleQuestionNumber.Number}.mp4";
+                    string filePath = $"temp/answers/videos/{fileName}";
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await botClient.DownloadFileAsync(video.FileId, stream);
+                    }
+
+                    // добавляем птс за видос
+                    double currentUserRate = UserCaseTableCommand.GetRate(userId);
+                    currentUserRate += 1.0;
+                    UserCaseTableCommand.SetRate(userId, currentUserRate);
+                    //Считаем на основе ответа очки пользователя и добавляем их к общим
+
+                    // юзер прислал видео, вариантов ответа нету
+                    int[] emptyArray = new int[0];
+
+                    await UserCaseJsonCommand.AddValueToJsonFile(userId, (moduleQuestionNumber.ModuleNumber, moduleQuestionNumber.Number), 1.0, attemptNo);
                     break;
                 default:
                     break;
