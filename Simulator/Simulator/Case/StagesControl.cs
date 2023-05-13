@@ -104,7 +104,7 @@ namespace Simulator.Case
         }
         public static async Task Move(long userId, CaseStage nextStage, ITelegramBotClient botClient)
         {
-            int attemptNo = UserCaseTableCommand.GetHealthPoints(userId);
+            int hp = UserCaseTableCommand.GetHealthPoints(userId);
 
             switch (nextStage)
             {
@@ -121,12 +121,20 @@ namespace Simulator.Case
                         );
                     break;
                 case CaseStageNone none:
+                    if(hp == 3) // начальное значение
+                    {
+                        UserCaseTableCommand.SetStartCaseTime(userId, DateTime.Now);
+                    }
                     await botClient.SendTextMessageAsync(userId,
                         none.TextBefore,
                         replyMarkup: CommandKeyboard.StageMenu);
                     break;
                 case CaseStageEndModule endStage:
                     var resultsCallback = EndStageCalc.GetResultOfModule(endStage, userId);
+                    if(endStage.IsEndOfCase && hp == 0)
+                    {
+                        UserCaseTableCommand.SetEndCaseTime(userId, DateTime.Now);
+                    }
                     await botClient.SendTextMessageAsync(userId,
                         resultsCallback.Item1,
                         replyMarkup: resultsCallback.Item2);
@@ -134,13 +142,6 @@ namespace Simulator.Case
                 default:
                     break;
             }
-            //В зависимости от типа этапа, бот выдаёт определённый тип сообщения
-            // записываем время выдачи сообщения юзеру
-            //await UserCaseJsonCommand.AddValueToJsonFile(
-            //    userId,
-            //    (nextStage.ModuleNumber, nextStage.Number),
-            //    DateTime.Now, attemptNo
-            //    );
         }
         private async static Task ShowAdditionalInfo(ITelegramBotClient botClient, CaseStagePoll nextStage, long userId)
         {

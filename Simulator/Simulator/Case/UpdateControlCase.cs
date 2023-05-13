@@ -83,10 +83,11 @@ namespace Simulator.Case
         {
             int moduleNumber = currentStage.ModuleNumber;
             int questionNumber = currentStage.Number;
+            var time = DateTime.Now - UserCaseTableCommand.GetStartTime(userId);
 
             //время и баллы записываем
             await UserCaseJsonCommand.AddValueToJsonFile(userId, (moduleNumber, questionNumber), rate, attemptNo);
-            await UserCaseJsonCommand.AddValueToJsonFile(userId, (moduleNumber, questionNumber), DateTime.Now, attemptNo);
+            await UserCaseJsonCommand.AddValueToJsonFile(userId, (moduleNumber, questionNumber), time, attemptNo);
 
             //варианты ответа
             string jsonUserAnswers = "";
