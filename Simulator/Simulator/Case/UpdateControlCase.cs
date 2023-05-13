@@ -44,7 +44,7 @@ namespace Simulator.Case
         public static async Task PollAnswerHandlingCase(PollAnswer answer, ITelegramBotClient botClient)
         {
             long userId = answer.User.Id;
-            int attemptNo = UserCaseTableCommand.GetHealthPoints(userId);
+            int attemptNo = UserCaseTableCommand.GetHealthPoints(userId) > 1 ? 1 : 2;
             CaseStagePoll currentStage = (CaseStagePoll)StagesControl.Stages[UserCaseTableCommand.GetPoint(userId)];
             //Так как мы получаем PollAnswer, то очевидно, что текущий этап - опросник
 
@@ -57,7 +57,7 @@ namespace Simulator.Case
             UserCaseTableCommand.SetRate(userId, currentUserRate);
             //Считаем на основе ответа очки пользователя и добавляем их к общим
 
-            await SetTimePtsForAnswer(userId, currentStage, rate, attemptNo, answer.OptionIds);
+            await SetResultsJson(userId, currentStage, rate, attemptNo, answer.OptionIds);
 
             var nextStage = StagesControl.Stages[currentStage.NextStage]; //next уже установлено
             //await botClient.message
@@ -79,7 +79,7 @@ namespace Simulator.Case
             }
         }
 
-        private static async Task SetTimePtsForAnswer(long userId, CaseStagePoll currentStage, double rate, int attemptNo, int[] optionsIds)
+        private static async Task SetResultsJson(long userId, CaseStagePoll currentStage, double rate, int attemptNo, int[] optionsIds)
         {
             int moduleNumber = currentStage.ModuleNumber;
             int questionNumber = currentStage.Number;

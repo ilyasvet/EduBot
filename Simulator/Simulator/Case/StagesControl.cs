@@ -109,6 +109,7 @@ namespace Simulator.Case
             switch (nextStage)
             {
                 case CaseStagePoll poll:
+                    UserCaseTableCommand.SetStartTime(userId, DateTime.Now);
                     await ShowAdditionalInfo(botClient, poll, userId);
                     await botClient.SendPollAsync(
                         chatId: userId,
@@ -135,11 +136,11 @@ namespace Simulator.Case
             }
             //В зависимости от типа этапа, бот выдаёт определённый тип сообщения
             // записываем время выдачи сообщения юзеру
-            await UserCaseJsonCommand.AddValueToJsonFile(
-                userId,
-                (nextStage.ModuleNumber, nextStage.Number),
-                DateTime.Now, attemptNo
-                );
+            //await UserCaseJsonCommand.AddValueToJsonFile(
+            //    userId,
+            //    (nextStage.ModuleNumber, nextStage.Number),
+            //    DateTime.Now, attemptNo
+            //    );
         }
         private async static Task ShowAdditionalInfo(ITelegramBotClient botClient, CaseStagePoll nextStage, long userId)
         {
