@@ -6,11 +6,14 @@ using System.IO;
 using Excel = Microsoft.Office.Interop.Excel;
 using System.Collections.Generic;
 using Simulator.Case;
+using Simulator.Models;
+using System;
 
 namespace Simulator.TelegramBotLibrary.JsonUserStats
 {
     public static class UserCaseJsonExcelHandler
     {
+        private static Dictionary<int, int> CountTasks;
         public static void CreateAndEditExcelFile(string path, bool created, string statsDirectory)
         {
             Excel.Application excelApp = new Excel.Application();
@@ -70,25 +73,19 @@ namespace Simulator.TelegramBotLibrary.JsonUserStats
 
         public static void ParseUserStats(string statsFileName, Excel.Worksheet worksheet)
         {
+            long userId = long.Parse(statsFileName.Split('.')[0]);
+            User user = UserTableCommand.GetUserById(userId);
+
+            string nameSurname = user.Surname + " " + user.Surname;
+            string group = user.GroupNumber;
+            DateTime startCaseTime = UserCaseTableCommand.GetStartCaseTime(userId);
+            DateTime endCaseTime = UserCaseTableCommand.GetEndCaseTime(userId);
+            int hp = UserCaseTableCommand.GetHealthPoints(userId);
+            int attemptsUsed = hp == 0 ? 2 : hp == 1 ? 1 : 0;
+
             string json = File.ReadAllText(statsFileName);
             JObject jsonObject = JsonConvert.DeserializeObject<JObject>(json);
 
-            int summPtsFirstAttempt = 0;
-            int summPtsSecondAttempt = 0;
-
-            /*bool foundKey = false;
-            foreach (var stagesCount in jsonObject)
-            {
-                if (stagesCount.Key == keyToSeatchFor)
-                {
-                    // нашли ключ - модифицируем старое value. Сепаратор - это _|_. Хехе)0)0)))0)
-                    string newValue = GetValueForJsonObject(stagesCount.Value.ToObject<string>(), value, attemptNo);
-                    jsonObject.Remove(stagesCount.Key);
-                    jsonObject.Add(stagesCount.Key, newValue);
-                    foundKey = true;
-                    break;
-                }
-            }*/
         }
         private static void CreateExcelTitle(Excel.Worksheet worksheet)
         {
@@ -135,10 +132,10 @@ namespace Simulator.TelegramBotLibrary.JsonUserStats
             const int cellsSummPtsStages = 2;
 
             // Номер этапа - количество заданий
-            Dictionary<int, int> countTasks = StagesControl.GetTaskCountDictionary();
+            CountTasks = StagesControl.GetTaskCountDictionary();
 
             // Заполняем каждый этап
-            foreach (var stagesCount in countTasks)
+            foreach (var stagesCount in CountTasks)
             {
                 // высчитываем ширину текущего этапа по клеточкам
                 int rangeToMergeCells = cellsTimeStages + cellsSummPtsStages + (stagesCount.Value * 5);
