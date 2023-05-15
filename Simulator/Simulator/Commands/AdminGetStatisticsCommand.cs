@@ -17,7 +17,7 @@ namespace Simulator.Commands
                    $"{ConfigurationManager.AppSettings["PathStats"]}";
             string statsFilePath = statsDirectory + "\\" + ConfigurationManager.AppSettings["StatsFileName"];
 
-            UserCaseJsonExcelHandler.CreateAndEditExcelFile(statsFilePath, File.Exists(statsFilePath), statsDirectory);
+            await UserCaseJsonExcelHandler.CreateAndEditExcelFile(statsFilePath, File.Exists(statsFilePath), statsDirectory);
 
             using (Stream fs = new FileStream(statsFilePath, FileMode.Open))
             {

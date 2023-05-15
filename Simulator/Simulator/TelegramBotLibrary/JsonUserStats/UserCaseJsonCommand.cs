@@ -4,6 +4,7 @@ using System.IO;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Configuration;
+using Simulator.Case;
 
 namespace Simulator.TelegramBotLibrary
 {
@@ -12,7 +13,7 @@ namespace Simulator.TelegramBotLibrary
         private static readonly string statsDirectory = 
             $"{AppDomain.CurrentDomain.BaseDirectory}" +
             $"{ConfigurationManager.AppSettings["PathStats"]}";
-        public static async Task AddValueToJsonFile(long userId, (int, int) StageNotaskNo, object value, int attemptNo)
+        public static async Task AddValueToJsonFile(long userId, (int, int) StageNotaskNo, StageResults results, int attemptNo)
         {
             string filePath = $"{statsDirectory}\\{userId}.json";
 
@@ -26,23 +27,10 @@ namespace Simulator.TelegramBotLibrary
             string key = $"{moduleNumber}-{stageNumber}-{attemptNo}";
 
             // Записываем данные
-            switch (value)
-            {
-                case double rate:
-                    key = "rate-" + key;
-                    jsonObject.Add(key, rate);
-                    break;
-                case string answers:
-                    key = "answers-" + key;
-                    jsonObject.Add(key, answers);
-                    break;
-                case TimeSpan time:
-                    key = "time-" + key;
-                    jsonObject.Add(key, time);
-                    break;
-                default:
-                    break;
-            }
+
+            jsonObject["rate-" + key] = results.Rate;
+            jsonObject["answers-" + key] = results.Answers;
+            jsonObject["time-" + key] = results.Time;
 
             await WriteToJson(filePath, jsonObject);
 

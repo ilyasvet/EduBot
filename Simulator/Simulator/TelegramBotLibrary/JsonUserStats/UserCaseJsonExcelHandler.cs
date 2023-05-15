@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using Simulator.Case;
 using Simulator.Models;
 using System;
+using System.Threading.Tasks;
 
 namespace Simulator.TelegramBotLibrary.JsonUserStats
 {
@@ -28,9 +29,11 @@ namespace Simulator.TelegramBotLibrary.JsonUserStats
                 StageNumbersModule.Add(module.Key, StagesControl.GetStageNumbers(module.Key));
             }
         }
-        public static void CreateAndEditExcelFile(string path, bool created, string statsDirectory)
+        public static async Task CreateAndEditExcelFile(string path, bool created, string statsDirectory)
         {
             Excel.Application excelApp = new Excel.Application();
+            excelApp.Interactive = false;
+            excelApp.Visible = false;
             Excel.Workbook workbook = null;
             Excel.Worksheet worksheet = null;
 
@@ -73,7 +76,7 @@ namespace Simulator.TelegramBotLibrary.JsonUserStats
                 int line = 4;
                 foreach (string statsFileName in Directory.GetFiles(statsDirectory, "*.json"))
                 {
-                    ParseUserStats(statsFileName, worksheet, line);
+                    await ParseUserStats(statsFileName, worksheet, line);
                     workbook.Save();
                     line++;
                 }
@@ -86,17 +89,30 @@ namespace Simulator.TelegramBotLibrary.JsonUserStats
             }
         }
 
-        public static async void ParseUserStats(string statsFileName, Excel.Worksheet worksheet, int line)
+        public static async Task ParseUserStats(string statsFileName, Excel.Worksheet worksheet, int line)
         {
-            long userId = long.Parse(statsFileName.Split('.')[0]);
+            long userId = long.Parse(statsFileName.Substring(statsFileName.LastIndexOf('\\')+1).Split('.')[0]);
             User user = UserTableCommand.GetUserById(userId);
 
-            string nameSurname = user.Surname + " " + user.Surname;
+            string nameSurname = user.Surname + " " + user.Name;
             string group = user.GroupNumber;
-            DateTime startCaseTime = UserCaseTableCommand.GetStartCaseTime(userId);
-            DateTime endCaseTime = UserCaseTableCommand.GetEndCaseTime(userId);
+
+            try // Может и не быть
+            {
+                DateTime startCaseTime = UserCaseTableCommand.GetStartCaseTime(userId);
+                worksheet.Cells[line, 4] = startCaseTime.ToString();
+                DateTime endCaseTime = UserCaseTableCommand.GetEndCaseTime(userId);
+                worksheet.Cells[line, 5] = endCaseTime.ToString();
+            } catch { }
+
             int hp = UserCaseTableCommand.GetHealthPoints(userId);
             int attemptsUsed = hp == 0 ? 2 : hp == 1 ? 1 : 0;
+
+            worksheet.Cells[line, 1] = nameSurname;
+            worksheet.Cells[line, 2] = userId.ToString();
+            worksheet.Cells[line, 3] = group;
+            worksheet.Cells[line, 6] = attemptsUsed.ToString();
+            
 
             double sumRateAllFirst = 0;
             double sumRateAllSecond = 0;
@@ -126,33 +142,67 @@ namespace Simulator.TelegramBotLibrary.JsonUserStats
                 int countStages = module.Value.Count;
                 foreach (var stage in module.Value)
                 {
-                    TimeSpan timeFirst = (TimeSpan)jsonObject[$"time-{module.Key}-{stage}-1"];
-                    TimeSpan timeSecond = (TimeSpan)jsonObject[$"time-{module.Key}-{stage}-2"];
+                    TimeSpan timeFirst = default;
+                    TimeSpan timeSecond = default;
+                    try
+                    {
+                        timeFirst = (TimeSpan)jsonObject[$"time-{module.Key}-{stage}-1"];
+                        sumTimeFirst += timeFirst;
+                    }
+                    catch { }
+                    try
+                    {
+                        timeSecond = (TimeSpan)jsonObject[$"time-{module.Key}-{stage}-2"];
+                        sumTimeSecond += timeSecond;
+                    } catch { }
 
-                    sumTimeFirst += timeFirst;
-                    sumTimeSecond += timeSecond;
+                    if (timeFirst != default && timeSecond != default)
+                    {
+                        double averageTime = (timeFirst.TotalMinutes + timeSecond.TotalMinutes) / 2;
+                        worksheet.Cells[line, startColumn + 2 + curCount] = averageTime.ToString();
+                    }
+                    else if(timeSecond != default)
+                    {
+                        worksheet.Cells[line, startColumn + 2 + curCount] = timeSecond.TotalMinutes.ToString();
+                    }
+                    else if(timeFirst != default)
+                    {
+                        worksheet.Cells[line, startColumn + 2 + curCount] = timeFirst.TotalMinutes.ToString();
+                    }
 
-                    double rateFirst = (double)jsonObject[$"rate-{module.Key}-{stage}-1"];
-                    double rateSecond = (double)jsonObject[$"rate-{module.Key}-{stage}-2"];
+                    try
+                    {
+                        double rateFirst = (double)jsonObject[$"rate-{module.Key}-{stage}-1"];
+                        worksheet.Cells[line, startColumn + 2 + countStages * 1 + curCount] = rateFirst;
+                        sumRateFirst += rateFirst;
+                    }
+                    catch { }
+                    try
+                    {
+                        double rateSecond = (double)jsonObject[$"rate-{module.Key}-{stage}-2"];
+                        worksheet.Cells[line, startColumn + 3 + countStages * 2 + curCount] = rateSecond;
+                        sumRateSecond += rateSecond;
+                    } catch { }
 
                     // countStages * n, n - номер секции
                     // startColumn + m, m - количество колонок с суммами до текущей
-                    worksheet.Cells[line, startColumn + 2 + countStages * 1 + curCount] = rateFirst;
-                    worksheet.Cells[line, startColumn + 3 + countStages * 2 + curCount] = rateFirst;
 
-                    var answersFirst = jsonObject[$"answers-{module.Key}-{stage}-1"];
-                    var answersSecond = jsonObject[$"answers-{module.Key}-{stage}-2"];
+                    try
+                    {
+                        var answersFirst = jsonObject[$"answers-{module.Key}-{stage}-1"];
+                        worksheet.Cells[line, startColumn + 4 + countStages * 3 + curCount] = answersFirst;
+                    } catch { }
+                    try
+                    {
+                        var answersSecond = jsonObject[$"answers-{module.Key}-{stage}-2"];
+                        worksheet.Cells[line, startColumn + 4 + countStages * 4 + curCount] = answersSecond;
+                    } catch { }
 
-                    worksheet.Cells[line, startColumn + 4 + countStages * 3 + curCount] = answersFirst;
-                    worksheet.Cells[line, startColumn + 4 + countStages * 4 + curCount] = answersSecond;
-
-                    sumRateFirst += rateFirst;
-                    sumRateSecond += rateSecond;
 
                     curCount++;
                 }
-                worksheet.Cells[line, startColumn] = sumTimeFirst;
-                worksheet.Cells[line, startColumn + 1] = sumTimeSecond;
+                worksheet.Cells[line, startColumn] = sumTimeFirst.ToString();
+                worksheet.Cells[line, startColumn + 1] = sumTimeSecond.ToString();
 
                 worksheet.Cells[line, startColumn + 2 + countStages * 2] = sumRateFirst;
                 worksheet.Cells[line, startColumn + 3 + countStages * 3] = sumRateSecond;
@@ -162,13 +212,6 @@ namespace Simulator.TelegramBotLibrary.JsonUserStats
                 sumRateAllFirst += sumRateFirst;
                 sumRateAllSecond += sumRateSecond;
             }
-
-            worksheet.Cells[line, 1] = nameSurname;
-            worksheet.Cells[line, 2] = userId;
-            worksheet.Cells[line, 3] = group;
-            worksheet.Cells[line, 4] = startCaseTime;
-            worksheet.Cells[line, 5] = endCaseTime;
-            worksheet.Cells[line, 6] = attemptsUsed;
             worksheet.Cells[line, 7] = sumRateAllFirst;
             worksheet.Cells[line, 8] = sumRateAllSecond;
         }

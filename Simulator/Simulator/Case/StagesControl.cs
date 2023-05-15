@@ -131,7 +131,7 @@ namespace Simulator.Case
                     break;
                 case CaseStageEndModule endStage:
                     var resultsCallback = EndStageCalc.GetResultOfModule(endStage, userId);
-                    if(endStage.IsEndOfCase && hp == 0)
+                    if(endStage.IsEndOfCase && hp <= 1) // На этом моменте hp в базе будет уже 0
                     {
                         UserCaseTableCommand.SetEndCaseTime(userId, DateTime.Now);
                     }
@@ -200,6 +200,7 @@ namespace Simulator.Case
         {
             return Stages.Stages.
                 Where(s=>s.ModuleNumber == moduleNumber).
+                Where(s=> !(s is CaseStageEndModule)).
                 Select(s=>s.Number).
                 ToList();
         }

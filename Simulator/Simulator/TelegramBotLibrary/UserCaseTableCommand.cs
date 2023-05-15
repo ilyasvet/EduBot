@@ -118,7 +118,7 @@ namespace Simulator.TelegramBotLibrary
         }
         public static void SetStartTime(long userId, DateTime time)
         {
-            string commandText = $"update UserCase StartTime = {time} where UserId = {userId}";
+            string commandText = $"update UserCase set StartTime = '{time}' where UserId = {userId}";
             ExecuteNonQueryCommand(commandText);
         }
         public static DateTime GetStartCaseTime(long userId)
@@ -136,7 +136,7 @@ namespace Simulator.TelegramBotLibrary
         }
         public static void SetStartCaseTime(long userId, DateTime time)
         {
-            string commandText = $"update UserCase StartCaseTime = {time} where UserId = {userId}";
+            string commandText = $"update UserCase set StartCaseTime = '{time}' where UserId = {userId}";
             ExecuteNonQueryCommand(commandText);
         }
         public static DateTime GetEndCaseTime(long userId)
@@ -154,7 +154,7 @@ namespace Simulator.TelegramBotLibrary
         }
         public static void SetEndCaseTime(long userId, DateTime time)
         {
-            string commandText = $"update UserCase EndCaseTime = {time} where UserId = {userId}";
+            string commandText = $"update UserCase set EndCaseTime = '{time}' where UserId = {userId}";
             ExecuteNonQueryCommand(commandText);
         }
 

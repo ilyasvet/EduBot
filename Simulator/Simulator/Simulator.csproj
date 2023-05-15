@@ -72,6 +72,7 @@
     <Compile Include="BotControl\MenuControl\UpdateControlMenu.cs" />
     <Compile Include="BotControl\UpdateControl.cs" />
     <Compile Include="Case\CaseConverter.cs" />
+    <Compile Include="Case\StageResults.cs" />
     <Compile Include="Case\StagesControl.cs" />
     <Compile Include="Case\UpdateControlCase.cs" />
     <Compile Include="Commands\AdminAddCaseCommand.cs" />

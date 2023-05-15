@@ -79,23 +79,29 @@ namespace Simulator.Case
             }
         }
 
-        private static async Task SetResultsJson(long userId, CaseStagePoll currentStage, double rate, int attemptNo, int[] optionsIds)
+        private static async Task SetResultsJson(long userId, CaseStage currentStage, double rate, int attemptNo, int[] optionsIds)
         {
             int moduleNumber = currentStage.ModuleNumber;
             int questionNumber = currentStage.Number;
+
             var time = DateTime.Now - UserCaseTableCommand.GetStartTime(userId);
 
-            //время и баллы записываем
-            await UserCaseJsonCommand.AddValueToJsonFile(userId, (moduleNumber, questionNumber), rate, attemptNo);
-            await UserCaseJsonCommand.AddValueToJsonFile(userId, (moduleNumber, questionNumber), time, attemptNo);
-
+            StageResults results = new StageResults();
+            results.Time = time;
+            results.Rate = rate;
+           
             //варианты ответа
-            string jsonUserAnswers = "";
-            foreach (int option in optionsIds)
+            if (currentStage is CaseStagePoll)
             {
-                jsonUserAnswers += $"{option};";
+                string jsonUserAnswers = "";
+                foreach (int option in optionsIds)
+                {
+                    jsonUserAnswers += $"{option + 1};";
+                    // счёт идёт от 0, а надо от 1, поэтому +1
+                }
+                results.Answers = jsonUserAnswers; 
             }
-            await UserCaseJsonCommand.AddValueToJsonFile(userId, (moduleNumber, questionNumber), jsonUserAnswers, attemptNo);
+            await UserCaseJsonCommand.AddValueToJsonFile(userId, (moduleNumber, questionNumber), results, attemptNo);
         }
 
         private static async Task GoOut(long userId, ITelegramBotClient botClient)
