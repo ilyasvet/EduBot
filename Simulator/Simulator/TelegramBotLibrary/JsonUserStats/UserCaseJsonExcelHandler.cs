@@ -14,6 +14,20 @@ namespace Simulator.TelegramBotLibrary.JsonUserStats
     public static class UserCaseJsonExcelHandler
     {
         private static Dictionary<int, int> CountTasks;
+        private static Dictionary<int, List<int>> StageNumbersModule;
+
+        static UserCaseJsonExcelHandler()
+        {
+            // Номер этапа - количество заданий
+            CountTasks = StagesControl.GetTaskCountDictionary();
+            
+            // Номер этапа - номера заданий
+            StageNumbersModule = new Dictionary<int, List<int>>();
+            foreach (var module in CountTasks)
+            {
+                StageNumbersModule.Add(module.Key, StagesControl.GetStageNumbers(module.Key));
+            }
+        }
         public static void CreateAndEditExcelFile(string path, bool created, string statsDirectory)
         {
             Excel.Application excelApp = new Excel.Application();
@@ -55,12 +69,13 @@ namespace Simulator.TelegramBotLibrary.JsonUserStats
                     workRange.Delete();
                     workbook.Save();
                 }
-                
 
+                int line = 4;
                 foreach (string statsFileName in Directory.GetFiles(statsDirectory, "*.json"))
                 {
-                    ParseUserStats(statsFileName, worksheet);
+                    ParseUserStats(statsFileName, worksheet, line);
                     workbook.Save();
+                    line++;
                 }
             }
             finally
@@ -71,7 +86,7 @@ namespace Simulator.TelegramBotLibrary.JsonUserStats
             }
         }
 
-        public static void ParseUserStats(string statsFileName, Excel.Worksheet worksheet)
+        public static async void ParseUserStats(string statsFileName, Excel.Worksheet worksheet, int line)
         {
             long userId = long.Parse(statsFileName.Split('.')[0]);
             User user = UserTableCommand.GetUserById(userId);
@@ -83,9 +98,79 @@ namespace Simulator.TelegramBotLibrary.JsonUserStats
             int hp = UserCaseTableCommand.GetHealthPoints(userId);
             int attemptsUsed = hp == 0 ? 2 : hp == 1 ? 1 : 0;
 
-            string json = File.ReadAllText(statsFileName);
+            double sumRateAllFirst = 0;
+            double sumRateAllSecond = 0;
+
+            string json;
+            using (var fs = new FileStream(statsFileName, FileMode.Open))
+            {
+                using (var sr = new StreamReader(fs))
+                {
+                    json = await sr.ReadToEndAsync();
+                }
+            }
             JObject jsonObject = JsonConvert.DeserializeObject<JObject>(json);
 
+            int startColumn = 9;
+
+            // string key = $"{moduleNumber}-{stageNumber}-{attemptNo}"
+            foreach (var module in StageNumbersModule) // Проходимся по этапам
+            {
+                TimeSpan sumTimeFirst = default;
+                TimeSpan sumTimeSecond = default;
+
+                double sumRateFirst = 0;
+                double sumRateSecond = 0;
+
+                int curCount = 0;
+                int countStages = module.Value.Count;
+                foreach (var stage in module.Value)
+                {
+                    TimeSpan timeFirst = (TimeSpan)jsonObject[$"time-{module.Key}-{stage}-1"];
+                    TimeSpan timeSecond = (TimeSpan)jsonObject[$"time-{module.Key}-{stage}-2"];
+
+                    sumTimeFirst += timeFirst;
+                    sumTimeSecond += timeSecond;
+
+                    double rateFirst = (double)jsonObject[$"rate-{module.Key}-{stage}-1"];
+                    double rateSecond = (double)jsonObject[$"rate-{module.Key}-{stage}-2"];
+
+                    // countStages * n, n - номер секции
+                    // startColumn + m, m - количество колонок с суммами до текущей
+                    worksheet.Cells[line, startColumn + 2 + countStages * 1 + curCount] = rateFirst;
+                    worksheet.Cells[line, startColumn + 3 + countStages * 2 + curCount] = rateFirst;
+
+                    var answersFirst = jsonObject[$"answers-{module.Key}-{stage}-1"];
+                    var answersSecond = jsonObject[$"answers-{module.Key}-{stage}-2"];
+
+                    worksheet.Cells[line, startColumn + 4 + countStages * 3 + curCount] = answersFirst;
+                    worksheet.Cells[line, startColumn + 4 + countStages * 4 + curCount] = answersSecond;
+
+                    sumRateFirst += rateFirst;
+                    sumRateSecond += rateSecond;
+
+                    curCount++;
+                }
+                worksheet.Cells[line, startColumn] = sumTimeFirst;
+                worksheet.Cells[line, startColumn + 1] = sumTimeSecond;
+
+                worksheet.Cells[line, startColumn + 2 + countStages * 2] = sumRateFirst;
+                worksheet.Cells[line, startColumn + 3 + countStages * 3] = sumRateSecond;
+
+                startColumn += 4 + countStages * 5;
+
+                sumRateAllFirst += sumRateFirst;
+                sumRateAllSecond += sumRateSecond;
+            }
+
+            worksheet.Cells[line, 1] = nameSurname;
+            worksheet.Cells[line, 2] = userId;
+            worksheet.Cells[line, 3] = group;
+            worksheet.Cells[line, 4] = startCaseTime;
+            worksheet.Cells[line, 5] = endCaseTime;
+            worksheet.Cells[line, 6] = attemptsUsed;
+            worksheet.Cells[line, 7] = sumRateAllFirst;
+            worksheet.Cells[line, 8] = sumRateAllSecond;
         }
         private static void CreateExcelTitle(Excel.Worksheet worksheet)
         {
@@ -130,9 +215,6 @@ namespace Simulator.TelegramBotLibrary.JsonUserStats
             const int sectionsCount = 5;
             const int cellsTimeStages = 2;
             const int cellsSummPtsStages = 2;
-
-            // Номер этапа - количество заданий
-            CountTasks = StagesControl.GetTaskCountDictionary();
 
             // Заполняем каждый этап
             foreach (var stagesCount in CountTasks)
@@ -188,10 +270,10 @@ namespace Simulator.TelegramBotLibrary.JsonUserStats
                 ];
                     range.Merge();
                     worksheet.Cells[2, startFromToMerge] = dictStatisticsStruct[i].Item1;
-                    List<int> stageNumbersCurrentModule = StagesControl.GetStageNumbers(stagesCount.Key);
+                    
                     for (int j = 0; j < stagesCount.Value; j++)
                     {
-                        worksheet.Cells[3, startFromToMerge] = $"П{stageNumbersCurrentModule[j]}";
+                        worksheet.Cells[3, startFromToMerge] = $"П{StageNumbersModule[stagesCount.Key][j]}";
                         startFromToMerge++;
                     }
                     for (int j = 0; j < dictStatisticsStruct[i].Item2; j++)
