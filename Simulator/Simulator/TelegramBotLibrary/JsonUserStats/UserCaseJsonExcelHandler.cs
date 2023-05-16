@@ -190,12 +190,12 @@ namespace Simulator.TelegramBotLibrary.JsonUserStats
                     try
                     {
                         var answersFirst = jsonObject[$"answers-{module.Key}-{stage}-1"];
-                        worksheet.Cells[line, startColumn + 4 + countStages * 3 + curCount] = answersFirst;
+                        worksheet.Cells[line, startColumn + 4 + countStages * 3 + curCount] = answersFirst.ToString();
                     } catch { }
                     try
                     {
                         var answersSecond = jsonObject[$"answers-{module.Key}-{stage}-2"];
-                        worksheet.Cells[line, startColumn + 4 + countStages * 4 + curCount] = answersSecond;
+                        worksheet.Cells[line, startColumn + 4 + countStages * 4 + curCount] = answersSecond.ToString();
                     } catch { }
 
 

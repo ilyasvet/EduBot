@@ -6,6 +6,7 @@ using Telegram.Bot.Types;
 using Simulator.TelegramBotLibrary;
 using System;
 using System.IO;
+using Simulator.Properties;
 
 namespace Simulator.Case
 {
@@ -76,16 +77,22 @@ namespace Simulator.Case
 
                     if(message.Type != Telegram.Bot.Types.Enums.MessageType.Video)
                     {
-                        break; // Если сообщение не соответсвует ответу - ничего не делаем
+                         await botClient.SendTextMessageAsync(userId, Resources.SendVideo);
+                        return;
+                        // Если сообщение не соответсвует ответу - ничего не делаем
                     }
 
                     // сохраняем видос
-                    var video = message.Video;
                     string fileName = $"{userId}-{currentStage.Number}.mp4";
-                    string filePath = $"temp/answers/videos/{fileName}";
-                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    string filePath = "temp/answers/videos/";
+                    if(!Directory.Exists(filePath))
                     {
-                        await botClient.DownloadFileAsync(video.FileId, stream);
+                        Directory.CreateDirectory(filePath);
+                    }
+                    var file = await botClient.GetFileAsync(message.Video.FileId);
+                    using (var stream = new FileStream(filePath+fileName, FileMode.Create))
+                    {
+                        await botClient.DownloadFileAsync(file.FilePath, stream);
                     }
 
                     // добавляем птс за видос
@@ -98,6 +105,8 @@ namespace Simulator.Case
                 default:
                     break;
             }
+            var nextStage = StagesControl.Stages[currentStage.NextStage]; //next уже установлено
+            await SetAndMovePoint(userId, nextStage, botClient);
         }
 
         private static async Task SetResultsJson(long userId, CaseStage currentStage, double rate, int attemptNo, int[] optionsIds)
@@ -117,7 +126,7 @@ namespace Simulator.Case
                 string jsonUserAnswers = "";
                 foreach (int option in optionsIds)
                 {
-                    jsonUserAnswers += $"{option + 1};";
+                    jsonUserAnswers += $"{option + 1}-";
                     // счёт идёт от 0, а надо от 1, поэтому +1
                 }
                 results.Answers = jsonUserAnswers; 

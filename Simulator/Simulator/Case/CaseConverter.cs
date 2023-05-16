@@ -45,8 +45,8 @@ namespace Simulator.Case
                     MakeStageEnd(stage as CaseStageEndModule, stageParameters);
                     break;
                 case "message":
-                    stage = new CaseStageText(number, textBefore);
-                    MakeStageText(stage, stageParameters);
+                    stage = new CaseStageMessage(number, textBefore);
+                    MakeStageMessage(stage as CaseStageMessage, stageParameters);
                     break;
                 default:
                     break;
@@ -55,9 +55,18 @@ namespace Simulator.Case
             return stage;
         }
 
-        private static void MakeStageText(CaseStage stage, string[] stageParameters)
+        private static void MakeStageMessage(CaseStageMessage stage, string[] stageParameters)
         {
-            throw new NotImplementedException();
+            stage.NextStage = int.Parse(stageParameters[4].Trim());
+            stage.Rate = double.Parse(stageParameters[5].Trim());
+            switch (stageParameters[6].Trim())
+            {
+                case "video":
+                    stage.MessageTypeAnswer = Telegram.Bot.Types.Enums.MessageType.Video;
+                    break;
+                default:
+                    break;
+            }
         }
 
         private static void MakeStageEnd(CaseStageEndModule stage, string[] stageParameters)
@@ -139,8 +148,6 @@ namespace Simulator.Case
                     }
                 }
             }        
-            
-            
         }
     }
 }

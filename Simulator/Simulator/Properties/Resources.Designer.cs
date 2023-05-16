@@ -142,6 +142,15 @@ namespace Simulator.Properties {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на Именно видео.
+        /// </summary>
+        internal static string SendVideo {
+            get {
+                return ResourceManager.GetString("SendVideo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на Список групп, добавленных на курс.
         /// </summary>
         internal static string ShowGroups {

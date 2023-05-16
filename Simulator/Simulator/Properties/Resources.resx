@@ -177,4 +177,7 @@
   <data name="FileCaseNotFound" xml:space="preserve">
     <value>Файл caseinfo.case не найден</value>
   </data>
+  <data name="SendVideo" xml:space="preserve">
+    <value>Именно видео</value>
+  </data>
 </root>
