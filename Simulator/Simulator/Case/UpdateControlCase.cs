@@ -68,16 +68,20 @@ namespace Simulator.Case
         public static async Task MessageHandlingCase(Message message, ITelegramBotClient botClient)
         {
             long userId = message.Chat.Id;
-            int attemptNo = UserCaseTableCommand.GetHealthPoints(userId);
-            CaseStageText currentStage = (CaseStageText)StagesControl.Stages[UserCaseTableCommand.GetPoint(userId)];
-            CaseStagePoll moduleQuestionNumber = (CaseStagePoll)StagesControl.Stages[UserCaseTableCommand.GetPoint(userId)];
+            int attemptNo = UserCaseTableCommand.GetHealthPoints(userId) > 1 ? 1 : 2;
+            CaseStageMessage currentStage = (CaseStageMessage)StagesControl.Stages[UserCaseTableCommand.GetPoint(userId)];
             switch (currentStage.MessageTypeAnswer)
             {
                 case Telegram.Bot.Types.Enums.MessageType.Video:
 
+                    if(message.Type != Telegram.Bot.Types.Enums.MessageType.Video)
+                    {
+                        break; // Если сообщение не соответсвует ответу - ничего не делаем
+                    }
+
                     // сохраняем видос
                     var video = message.Video;
-                    string fileName = $"{userId}-{moduleQuestionNumber.Number}.mp4";
+                    string fileName = $"{userId}-{currentStage.Number}.mp4";
                     string filePath = $"temp/answers/videos/{fileName}";
                     using (var stream = new FileStream(filePath, FileMode.Create))
                     {
@@ -86,14 +90,10 @@ namespace Simulator.Case
 
                     // добавляем птс за видос
                     double currentUserRate = UserCaseTableCommand.GetRate(userId);
-                    currentUserRate += 1.0;
+                    currentUserRate += currentStage.Rate;
                     UserCaseTableCommand.SetRate(userId, currentUserRate);
-                    //Считаем на основе ответа очки пользователя и добавляем их к общим
 
-                    // юзер прислал видео, вариантов ответа нету
-                    int[] emptyArray = new int[0];
-
-                    await UserCaseJsonCommand.AddValueToJsonFile(userId, (moduleQuestionNumber.ModuleNumber, moduleQuestionNumber.Number), 1.0, attemptNo);
+                    await SetResultsJson(userId, currentStage, currentStage.Rate, attemptNo, null);
                     break;
                 default:
                     break;

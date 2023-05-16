@@ -120,6 +120,15 @@ namespace Simulator.Case
                         replyMarkup: new InlineKeyboardMarkup(CommandKeyboard.ToFinishButton)
                         );
                     break;
+                case CaseStageMessage message:
+                    UserCaseTableCommand.SetStartTime(userId, DateTime.Now);
+                    await ShowAdditionalInfo(botClient, message, userId);
+                    await botClient.SendTextMessageAsync(
+                        chatId: userId,
+                        text: message.TextBefore,
+                        replyMarkup: new InlineKeyboardMarkup(CommandKeyboard.ToFinishButton)
+                        );
+                    break;
                 case CaseStageNone none:
                     if(hp == 3) // начальное значение
                     {
@@ -143,7 +152,7 @@ namespace Simulator.Case
                     break;
             }
         }
-        private async static Task ShowAdditionalInfo(ITelegramBotClient botClient, CaseStagePoll nextStage, long userId)
+        private async static Task ShowAdditionalInfo(ITelegramBotClient botClient, CaseStage nextStage, long userId)
         {
             if (nextStage.AdditionalInfoType == AdditionalInfo.None) return;
             foreach (string fileName in nextStage.NamesAdditionalFiles)

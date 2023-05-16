@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Simulator.Models
 {
@@ -8,6 +9,8 @@ namespace Simulator.Models
         public string TextBefore { get; private set; }
         public int NextStage { get; set; }
         public int ModuleNumber { get; set; }
+        public AdditionalInfo AdditionalInfoType { get; set; }
+        public List<string> NamesAdditionalFiles { get; set; }
         public CaseStage(
             int number,
             string textBefore

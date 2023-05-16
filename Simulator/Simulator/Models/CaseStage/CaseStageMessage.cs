@@ -2,11 +2,12 @@
 
 namespace Simulator.Models
 {
-    internal class CaseStageText : CaseStage
+    internal class CaseStageMessage : CaseStage
     {
+        public double Rate { get; set; }
         public MessageType MessageTypeAnswer { get; set; }
 
-        public CaseStageText(
+        public CaseStageMessage(
             int number,
             string textBefore
             )
