@@ -180,4 +180,7 @@
   <data name="SendVideo" xml:space="preserve">
     <value>Именно видео</value>
   </data>
+  <data name="CreateCase" xml:space="preserve">
+    <value>Добавьте файл формата электроной таблицы, которая содержит материалы курса по заданному шаблону</value>
+  </data>
 </root>

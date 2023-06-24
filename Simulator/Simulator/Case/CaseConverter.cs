@@ -33,19 +33,19 @@ namespace Simulator.Case
             switch (type)
             {
                 case "poll":
-                    stage = new CaseStagePoll(number, textBefore);
+                    stage = new CaseStagePoll();
                     MakeStagePoll(stage as CaseStagePoll, stageParameters);
                     break;
                 case "none":
-                    stage = new CaseStageNone(number, textBefore);
+                    stage = new CaseStageNone();
                     MakeStageNone(stage as CaseStageNone, stageParameters);
                     break;
                 case "end":
-                    stage = new CaseStageEndModule(number, textBefore);
+                    stage = new CaseStageEndModule();
                     MakeStageEnd(stage as CaseStageEndModule, stageParameters);
                     break;
                 case "message":
-                    stage = new CaseStageMessage(number, textBefore);
+                    stage = new CaseStageMessage();
                     MakeStageMessage(stage as CaseStageMessage, stageParameters);
                     break;
                 default:

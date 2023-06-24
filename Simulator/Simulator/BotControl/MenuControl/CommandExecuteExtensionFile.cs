@@ -6,8 +6,10 @@ using System;
 using Simulator.Properties;
 using Simulator.Services;
 using Simulator.Case;
-using System.IO.Compression;
 using System.Configuration;
+using Telegram.Bot.Types.InputFiles;
+using System.IO.Compression;
+using System.IO;
 
 namespace Simulator.BotControl
 {
@@ -15,7 +17,7 @@ namespace Simulator.BotControl
     {
         public static async Task Execute(long userId, ITelegramBotClient botClient, string path)
         {
-            await Task.Run(async() =>
+            await Task.Run(async () =>
             {
                 DialogState state = UserTableCommand.GetDialogState(userId);
                 try
@@ -30,15 +32,36 @@ namespace Simulator.BotControl
                         case DialogState.AddingCase:
                             await AddCase(userId, botClient, path);
                             break;
-                        default:
+                        case DialogState.CreatingCase:
+                            await CreateCase(userId, botClient, path);
                             break;
+                        default:
+                            throw new ArgumentException("Unknown state");
                     }
                 }
                 finally
                 {
-                    UserTableCommand.SetDialogState(userId, DialogState.None); //в любом случае скипаем стадию отправки файла
+                    UserTableCommand.SetDialogState(userId, DialogState.None);
+                    // в любом случае скипаем стадию отправки файла
                 }
             });
+        }
+
+        private async static Task CreateCase(long userId, ITelegramBotClient botClient, string path)
+        {
+            try
+            {
+                if (!Checker.IsCorrectFileExtension(path, FileType.ExcelTable))
+                {
+                    throw new ArgumentException("File must be excel");
+                }
+                string fileCasePath = ExcelHandler.CreateCase(path);
+                await BotCallBackWithFile(userId, botClient, fileCasePath);
+            }
+            finally
+            {
+                System.IO.File.Delete(path);
+            }
         }
 
         private async static Task AddCase(long userId, ITelegramBotClient botClient, string path)
@@ -52,7 +75,7 @@ namespace Simulator.BotControl
 
                 StagesControl.DeleteCaseFiles(); //Удаляем старые файлы перед добавлением новых
                 ZipFile.ExtractToDirectory(path, dir);
-                
+
                 if (StagesControl.Make())
                 {
                     await BotCallBack(userId, botClient, Resources.AddCaseSuccess); //сообщение об успехе операции
@@ -74,18 +97,20 @@ namespace Simulator.BotControl
             try
             {
                 if (!Checker.IsCorrectFileExtension(path, FileType.ExcelTable)) throw new ArgumentException("Файл должен быть exel");
-                string groupNumber = GroupHandler.GetGroupNumberFromPath(path); //Получаем номер группы из названия файла
+                string groupNumber = GroupHandler.GetGroupNumberFromPath(path); // Получаем номер группы из названия файла
                 if (!GroupHandler.IsCorrectGroupNumber(groupNumber)) throw new ArgumentException("Неверный формат номера группы");
-                if (!GroupTableCommand.HasGroup(groupNumber)) //Проверяем, есть ли такая группа
+                if (!GroupTableCommand.HasGroup(groupNumber)) // Проверяем, есть ли такая группа
                 {
                     GroupHandler.AddGroup(groupNumber); //Если нет, то создаём её
                     callBackMessage += $"\nГруппа \"{groupNumber}\" была добавлена";
                 }
-                int count = ExcelHandler.AddUsersFromExcel(path, groupNumber); //Добавляем пользователей из файла в группу
+                int count = ExcelHandler.AddUsersFromExcel(path, groupNumber);
+                // Добавляем пользователей из файла в группу
                 callBackMessage += $"\nДобавлено пользователей в группу \"{groupNumber}\": {count}\n";
-                await BotCallBack(userId, botClient, callBackMessage.Insert(0, Resources.SuccessAddGroup)); //сообщение об успехе операции
+                await BotCallBack(userId, botClient, callBackMessage.Insert(0, Resources.SuccessAddGroup));
+                // сообщение об успехе операции
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw new Exception(ex.Message + callBackMessage);
             }
@@ -100,6 +125,17 @@ namespace Simulator.BotControl
                        chatId: userId,
                        text: message,
                        replyMarkup: CommandKeyboard.ToMainMenuAdmin);
+        }
+        private async static Task BotCallBackWithFile(long userId, ITelegramBotClient botClient, string filePath)
+        {
+            using (Stream fs = new FileStream(filePath, FileMode.Open))
+            {
+                await botClient.SendDocumentAsync(
+                    chatId: userId,
+                    document: new InputOnlineFile(fs, "Statistics.xlsx"),
+                    replyMarkup: CommandKeyboard.ToMainMenuAdmin
+                    );
+            }
         }
     }
 }

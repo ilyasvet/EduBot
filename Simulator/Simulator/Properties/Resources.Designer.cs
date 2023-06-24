@@ -106,6 +106,15 @@ namespace Simulator.Properties {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на Добавьте файл формата электроной таблицы, которая содержит материалы курса по заданному шаблону.
+        /// </summary>
+        internal static string CreateCase {
+            get {
+                return ResourceManager.GetString("CreateCase", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на Введите пароль.
         /// </summary>
         internal static string EnterPassword {

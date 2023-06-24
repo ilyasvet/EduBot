@@ -14,10 +14,7 @@ namespace Simulator.Models
         public int Limit { get; set; }
         public double Fine { get; set; }
 
-        public CaseStagePoll(int number,
-            string textBefore
-            )
-            : base(number, textBefore)
+        public CaseStagePoll()
         {
             Options = new List<string>();
             PossibleRate = new Dictionary<int, double>();

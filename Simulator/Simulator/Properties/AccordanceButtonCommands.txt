@@ -8,3 +8,4 @@ AddUsersAdmin AdminAddNewUsersCommand
 AddCase AdminAddCaseCommand
 ToCase UserGoToCaseCommand
 GetStatistics AdminGetStatisticsCommand
+CreateCase AdminCreateCaseCommand
