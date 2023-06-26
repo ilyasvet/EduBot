@@ -6,6 +6,9 @@ using System;
 using System.IO;
 using Telegram.Bot.Types.Enums;
 using Excel = Microsoft.Office.Interop.Excel;
+using System.Collections.Generic;
+using System.Collections;
+using System.Linq;
 
 namespace Simulator.Services
 {
@@ -112,12 +115,90 @@ namespace Simulator.Services
             // Надо прописать логику перехода какую то если тру, а вот какую логику...
 
             newStage.ManyAnswers = worksheet.Cells[i, 9] == "false" ? false : true;
-            newStage.Options = worksheet.Cells[i, 10].ToString().Split(';').ToList();
+            newStage.Options = worksheet
+                .Cells[i, 10]
+                .ToString()
+                .Split(';')
+                .ToList();
 
+
+            // MovingNumbers
             if (!newStage.ManyAnswers)
-                newStage.MovingNumbers = worksheet.Cells[i, 11];
+            {
+                // делаем лист стрингов из исходной ячейки эксельки
+                dynamic tmpMovingNumbersString = worksheet
+                    .Cells[i, 11]
+                    .ToString();
+                List<string> tmpListMovingNumbers = tmpMovingNumbersString
+                    .Split(';')
+                    .ToList();
+
+                // дальше работаем с листом и забиваем его данные в newStage.MovingNumbers
+                foreach (string item in tmpListMovingNumbers)
+                {
+                    int key;
+                    int value;
+
+                    // было, например = ' 1-5 '. parts будет = ' 1 ' и ' 5 '
+                    string[] parts = item.Split('-');
+                    if (int.TryParse(parts[0], out key) && int.TryParse(parts[1], out value))
+                    {
+                        newStage.MovingNumbers.Add(key, value);
+                    }
+                }
+            }
 
 
+            // PossibleRate
+            dynamic tmpPossibleRateString = worksheet
+                .Cells[i, 12]
+                .ToString();
+            List<string> tmpListPossibleRate = tmpPossibleRateString
+                .Split(';')
+                .ToList();
+            foreach (string item in tmpListPossibleRate)
+            {
+                int key;
+                int value;
+
+                string[] parts = item.Split('-');
+                if (int.TryParse(parts[0], out key) && int.TryParse(parts[1], out value))
+                {
+                    newStage.PossibleRate.Add(key, value);
+                }
+            }
+
+
+            // WatchNonAnswers
+            newStage.WatchNonAnswer = worksheet.Cells[i, 13] == "false" ? false : true;
+
+
+            // NonAnswers
+            dynamic tmpNonAnswersString = worksheet
+                .Cells[i, 14]
+                .ToString();
+            List<string> tmpListNonAnswers = tmpNonAnswersString
+                .Split(';')
+                .ToList();
+            foreach (string item in tmpListNonAnswers)
+            {
+                int key;
+                int value;
+
+                string[] parts = item.Split('-');
+                if (int.TryParse(parts[0], out key) && int.TryParse(parts[1], out value))
+                {
+                    newStage.NonAnswers.Add(key, value);
+                }
+            }
+
+
+            // Limit
+            newStage.Limit = worksheet.Cells[i, 15];
+
+
+            // Fine
+            newStage.Fine = worksheet.Cells[i, 16];
 
             return newStage;
         }
