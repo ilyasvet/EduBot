@@ -106,7 +106,19 @@ namespace Simulator.Services
         private static CaseStagePoll CreatePollStage(Worksheet worksheet, int i)
         {
             CaseStagePoll newStage = new CaseStagePoll();
-            // TODO приписать создание poll stage.
+            
+            newStage.ConditionalMove = worksheet.Cells[i, 8] == "false" ? false : true;
+            // Переход на следующий стейдж зависит от ответа или нет?
+            // Надо прописать логику перехода какую то если тру, а вот какую логику...
+
+            newStage.ManyAnswers = worksheet.Cells[i, 9] == "false" ? false : true;
+            newStage.Options = worksheet.Cells[i, 10].ToString().Split(';').ToList();
+
+            if (!newStage.ManyAnswers)
+                newStage.MovingNumbers = worksheet.Cells[i, 11];
+
+
+
             return newStage;
         }
 
