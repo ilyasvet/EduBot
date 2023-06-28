@@ -7,10 +7,10 @@ namespace Simulator.Models
         public bool IsEndOfCase { get; set; }
         public List<double> Rates { get; set; }
         public List<string> Texts { get; set; }
+        
         public CaseStageEndModule()
         {
             Rates = new List<double>();
-            Texts = new List<string>();
-        } 
+        }
     }
 }

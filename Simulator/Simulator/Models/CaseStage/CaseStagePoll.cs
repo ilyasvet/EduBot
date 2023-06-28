@@ -33,7 +33,8 @@ namespace Simulator.Models
 
         public CaseStagePoll()
         {
-            Options = new List<string>();
+            NonAnswers = new Dictionary<int, double>();
+            MovingNumbers = new Dictionary<int, int>();
             PossibleRate = new Dictionary<int, double>();
         }
     }

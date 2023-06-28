@@ -49,13 +49,14 @@ namespace Simulator.BotControl
 
         private async static Task CreateCase(long userId, ITelegramBotClient botClient, string path)
         {
+            string fileCasePath = string.Empty;
             try
             {
                 if (!Checker.IsCorrectFileExtension(path, FileType.ExcelTable))
                 {
                     throw new ArgumentException("File must be excel");
                 }
-                string fileCasePath = ExcelHandler.CreateCase(path);
+                fileCasePath = await ExcelHandler.CreateCaseAsync(path);
                 await BotCallBackWithFile(userId, botClient, fileCasePath);
             }
             finally
@@ -132,9 +133,10 @@ namespace Simulator.BotControl
             {
                 await botClient.SendDocumentAsync(
                     chatId: userId,
-                    document: new InputOnlineFile(fs, "Statistics.xlsx"),
+                    document: new InputOnlineFile(fs, filePath),
                     replyMarkup: CommandKeyboard.ToMainMenuAdmin
                     );
+                System.IO.File.Delete(filePath);
             }
         }
     }

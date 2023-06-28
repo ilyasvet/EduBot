@@ -7,16 +7,16 @@ using System.IO;
 using Telegram.Bot.Types.Enums;
 using Excel = Microsoft.Office.Interop.Excel;
 using System.Collections.Generic;
-using System.Collections;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Simulator.Services
 {
     internal static class ExcelHandler
     {
-        public static string CreateCase(string path)
+        public static async Task<string> CreateCaseAsync(string path)
         {
-            Excel.Application excelApp = new Excel.Application();
+            Excel.Application excelApp = new();
             Excel.Workbooks workbooks = null;
             Excel.Workbook workbook = null;
             try
@@ -34,13 +34,13 @@ namespace Simulator.Services
 
                 using (Stream fs = new FileStream("case.json", FileMode.Create))
                 {
-                    using (StreamWriter sw = new StreamWriter(fs))
+                    using (StreamWriter sw = new(fs))
                     {
-                        sw.WriteAsync(AddCaseStageIterative(worksheet, urRows.Count));
-                        return "case.json";
+                        await sw.WriteAsync(await AddCaseStageIterative(worksheet, urRows.Count));
                     }
                 }
-                
+                return "case.json";
+
             }
             finally
             {
@@ -51,97 +51,111 @@ namespace Simulator.Services
             }
         }
 
-        private static string AddCaseStageIterative(Worksheet worksheet, int count)
+        private static async Task<string> AddCaseStageIterative(Worksheet worksheet, int count)
         {
-            JObject stageListJObject = new JObject();
-            for (int i = 2; i <= count; i++)
+            JObject stageListJObject = new();
+            await Task.Run(() =>
             {
-                string stageType;
-                stageType = worksheet.Cells[i, 1].Value.ToLoverCase();
-                CaseStage newStage = null;
-                switch (stageType)
+                for (int i = 2; i <= count; i++)
                 {
-                    case "none":
-                        break;
-                    case "pool":
-                        newStage = CreatePollStage(worksheet, i);
-                        break;
-                    case "end":
-                        newStage = CreateEndStage(worksheet, i);
-                        break;
-                    case "message":
-                        newStage = CreateMessageStage(worksheet, i);
-                        break;
-                    default:
-                        throw new ArgumentException($"No Such parameter. Row {i}, column 1");
+                    string stageType;
+                    stageType = worksheet.Cells[i, 1].Value.ToLower();
+                    CaseStage newStage = null;
+                    switch (stageType)
+                    {
+                        case "none":
+                            newStage = new CaseStageNone();
+                            break;
+                        case "poll":
+                            newStage = CreatePollStage(worksheet, i);
+                            break;
+                        case "end":
+                            newStage = CreateEndStage(worksheet, i);
+                            break;
+                        case "message":
+                            newStage = CreateMessageStage(worksheet, i);
+                            break;
+                        default:
+                            throw new ArgumentException($"No Such parameter. Row {i}, column 1");
+                    }
+                    newStage.Number = int.Parse(worksheet.Cells[i, 2].Value.ToString());
+                    newStage.ModuleNumber = int.Parse(worksheet.Cells[i, 3].Value.ToString());
+                    newStage.NextStage = int.Parse(worksheet.Cells[i, 4].Value.ToString());
+                    newStage.TextBefore = worksheet.Cells[i, 5].Value.ToString();
+                    newStage.AdditionalInfoType = Enum.Parse(typeof(AdditionalInfo), worksheet.Cells[i, 6].Value.ToString());
+                    if (newStage.AdditionalInfoType != AdditionalInfo.None)
+                    {
+                        newStage.NamesAdditionalFiles = new List<string>(worksheet.Cells[i, 7].Value.ToString().Split(';'));
+                    }
+                    stageListJObject[$"{stageType}-{i}"] = JObject.FromObject(newStage);
                 }
-                newStage.Number = worksheet.Cells[i, 2];
-                newStage.ModuleNumber = worksheet.Cells[i, 3];
-                newStage.NextStage = worksheet.Cells[i, 4];
-                newStage.TextBefore = worksheet.Cells[i, 5];
-                newStage.AdditionalInfoType = Enum.Parse(typeof(AdditionalInfo), worksheet.Cells[i, 6]);
-                if(newStage.AdditionalInfoType != AdditionalInfo.None)
-                {
-                    newStage.NamesAdditionalFiles = worksheet.Cells[i, 7].ToString().Split(';').ToList();
-                }
-                stageListJObject[$"{stageType}-{i}"] = JObject.FromObject(newStage);
-            }
+            });
             return stageListJObject.ToString();
         }
 
         private static CaseStageMessage CreateMessageStage(Worksheet worksheet, int lineNumber)
         {
-            CaseStageMessage newStage = new CaseStageMessage();
-            newStage.MessageTypeAnswer = Enum.Parse(typeof(MessageType), worksheet.Cells[lineNumber, 8]);
-            newStage.Rate = worksheet.Cells[lineNumber, 9];
+            CaseStageMessage newStage = new()
+            {
+                MessageTypeAnswer = Enum.Parse(typeof(MessageType), worksheet.Cells[lineNumber, 8].Value.ToString()),
+                Rate = double.Parse(worksheet.Cells[lineNumber, 9].Value.ToString())
+            };
             return newStage;
         }
 
         private static CaseStageEndModule CreateEndStage(Worksheet worksheet, int i)
         {
-            CaseStageEndModule newStage = new CaseStageEndModule();
-            newStage.IsEndOfCase = worksheet.Cells[i, 8] == "false" ? false : true;
-            newStage.Texts = worksheet.Cells[i, 9].ToString().Split(';').ToList();
-            newStage.Rates = worksheet.Cells[i, 10].ToString().Split(';'); // Доделать
+            CaseStageEndModule newStage = new()
+            {
+                IsEndOfCase = worksheet.Cells[i, 8].Value.ToString() == "false" ? false : true,
+                Texts = new List<string>(worksheet.Cells[i, 9].Value.
+                ToString().
+                Split(';'))
+            };
+
+            List<string> stringsRate = new List<string>(worksheet.Cells[i, 10].Value.
+                ToString().
+                Split(';'));
+            foreach (string s in stringsRate)
+            {
+                double.TryParse(s, out double rate);
+                newStage.Rates.Add(rate);
+            }
             return newStage;
         }
 
         private static CaseStagePoll CreatePollStage(Worksheet worksheet, int i)
         {
-            CaseStagePoll newStage = new CaseStagePoll();
-            
-            newStage.ConditionalMove = worksheet.Cells[i, 8] == "false" ? false : true;
-            // Переход на следующий стейдж зависит от ответа или нет?
-            // Надо прописать логику перехода какую то если тру, а вот какую логику...
+            CaseStagePoll newStage = new()
+            {
+                ConditionalMove = worksheet.Cells[i, 8].Value.ToString() == "false" ? false : true,
+                // Переход на следующий стейдж зависит от ответа или нет?
+                // Надо прописать логику перехода какую то если тру, а вот какую логику...
 
-            newStage.ManyAnswers = worksheet.Cells[i, 9] == "false" ? false : true;
-            newStage.Options = worksheet
-                .Cells[i, 10]
+                ManyAnswers = worksheet.Cells[i, 9].Value.ToString() == "false" ? false : true,
+                Options = new List<string>(worksheet
+                .Cells[i, 10].Value
                 .ToString()
-                .Split(';')
-                .ToList();
+                .Split(';'))
+            };
 
 
             // MovingNumbers
-            if (!newStage.ManyAnswers)
+            if (!newStage.ManyAnswers && newStage.ConditionalMove)
             {
                 // делаем лист стрингов из исходной ячейки эксельки
-                dynamic tmpMovingNumbersString = worksheet
-                    .Cells[i, 11]
+                var tmpMovingNumbersString = worksheet
+                    .Cells[i, 11].Value
                     .ToString();
-                List<string> tmpListMovingNumbers = tmpMovingNumbersString
-                    .Split(';')
-                    .ToList();
+                List<string> tmpListMovingNumbers = new List<string>(tmpMovingNumbersString
+                    .Split(';'));
 
                 // дальше работаем с листом и забиваем его данные в newStage.MovingNumbers
                 foreach (string item in tmpListMovingNumbers)
                 {
-                    int key;
-                    int value;
-
                     // было, например = ' 1-5 '. parts будет = ' 1 ' и ' 5 '
                     string[] parts = item.Split('-');
-                    if (int.TryParse(parts[0], out key) && int.TryParse(parts[1], out value))
+                    if (int.TryParse(parts[0], out int key) && int.TryParse(parts[1], out int value))
                     {
                         newStage.MovingNumbers.Add(key, value);
                     }
@@ -151,54 +165,45 @@ namespace Simulator.Services
 
             // PossibleRate
             dynamic tmpPossibleRateString = worksheet
-                .Cells[i, 12]
+                .Cells[i, 12].Value
                 .ToString();
-            List<string> tmpListPossibleRate = tmpPossibleRateString
-                .Split(';')
-                .ToList();
+            List<string> tmpListPossibleRate = new List<string>(tmpPossibleRateString
+                .Split(';'));
             foreach (string item in tmpListPossibleRate)
             {
-                int key;
-                int value;
-
                 string[] parts = item.Split('-');
-                if (int.TryParse(parts[0], out key) && int.TryParse(parts[1], out value))
+                if (int.TryParse(parts[0], out int key) && int.TryParse(parts[1], out int value))
                 {
                     newStage.PossibleRate.Add(key, value);
                 }
             }
 
-
             // WatchNonAnswers
-            newStage.WatchNonAnswer = worksheet.Cells[i, 13] == "false" ? false : true;
-
+            newStage.WatchNonAnswer = worksheet.Cells[i, 13].Value.ToString() == "false" ? false : true;
 
             // NonAnswers
-            dynamic tmpNonAnswersString = worksheet
-                .Cells[i, 14]
-                .ToString();
-            List<string> tmpListNonAnswers = tmpNonAnswersString
-                .Split(';')
-                .ToList();
-            foreach (string item in tmpListNonAnswers)
+            if (newStage.WatchNonAnswer)
             {
-                int key;
-                int value;
-
-                string[] parts = item.Split('-');
-                if (int.TryParse(parts[0], out key) && int.TryParse(parts[1], out value))
+                dynamic tmpNonAnswersString = worksheet
+                    .Cells[i, 14].Value
+                    .ToString();
+                List<string> tmpListNonAnswers = new List<string>(tmpNonAnswersString
+                    .Split(';'));
+                foreach (string item in tmpListNonAnswers)
                 {
-                    newStage.NonAnswers.Add(key, value);
+                    string[] parts = item.Split('-');
+                    if (int.TryParse(parts[0], out int key) && int.TryParse(parts[1], out int value))
+                    {
+                        newStage.NonAnswers.Add(key, value);
+                    }
                 }
             }
 
-
             // Limit
-            newStage.Limit = worksheet.Cells[i, 15];
-
+            newStage.Limit = int.Parse(worksheet.Cells[i, 15].Value.ToString());
 
             // Fine
-            newStage.Fine = worksheet.Cells[i, 16];
+            newStage.Fine = double.Parse(worksheet.Cells[i, 16].Value.ToString());
 
             return newStage;
         }
