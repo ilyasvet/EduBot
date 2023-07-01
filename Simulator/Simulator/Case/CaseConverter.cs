@@ -1,4 +1,5 @@
-﻿using Simulator.Models;
+﻿using Newtonsoft.Json;
+using Simulator.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -7,22 +8,25 @@ namespace Simulator.Case
 {
     internal static class CaseConverter
     {
+
         public static void FromFile(string path)
         {
-            using (Stream stream = new FileStream(path, FileMode.Open))
+            string json = File.ReadAllText(path);
+            //Вопросы разделяются знаком $
+            var stageStrings = json.Split('$');
+
+            StagesControl.Stages = new StageList() { Stages = new List<CaseStage>() };
+            foreach (string stageString in stageStrings)
             {
-                using (StreamReader reader = new StreamReader(stream))
+                string trimmedStageString = stageString.Trim();
+                if (!string.IsNullOrEmpty(trimmedStageString))
                 {
-                    string[] stageStrings = reader.ReadToEnd().Split('$');
-                    //Вопросы разделяются знаком $
-                    StagesControl.Stages = new StageList() { Stages = new List<CaseStage>() };
-                    foreach (string stageString in stageStrings)
-                    {
-                        StagesControl.Stages.Stages.Add(StringToStage(stageString));
-                    }
+                    CaseStage stage = JsonConvert.DeserializeObject<CaseStage>(trimmedStageString);
+                    StagesControl.Stages.Stages.Add(stage);
                 }
             }
         }
+
         public static CaseStage StringToStage(string stringStage)
         {
             CaseStage stage = null;
