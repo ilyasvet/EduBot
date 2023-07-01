@@ -8,7 +8,7 @@ using Simulator.Case;
 
 namespace Simulator.TelegramBotLibrary
 {
-    public static class UserCaseJsonCommand
+    public static class CaseJsonCommand
     {
         private static readonly string statsDirectory = 
             $"{AppDomain.CurrentDomain.BaseDirectory}" +
@@ -50,7 +50,7 @@ namespace Simulator.TelegramBotLibrary
             }
             return jsonObject[key];
         }
-        private static async Task WriteToJson(string filePath, JObject jsonObject)
+        public static async Task WriteToJson(string filePath, JObject jsonObject)
         {
             using (var stream = new FileStream(filePath, FileMode.Open, FileAccess.Write))
             {
@@ -61,7 +61,7 @@ namespace Simulator.TelegramBotLibrary
             }
         }
 
-        private static async Task<JObject> ReadJsonFile(string filePath)
+        public static async Task<JObject> ReadJsonFile(string filePath)
         {
             using (var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read))
             {

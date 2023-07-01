@@ -131,7 +131,7 @@ namespace Simulator.Case
                 }
                 results.Answers = jsonUserAnswers; 
             }
-            await UserCaseJsonCommand.AddValueToJsonFile(userId, (moduleNumber, questionNumber), results, attemptNo);
+            await CaseJsonCommand.AddValueToJsonFile(userId, (moduleNumber, questionNumber), results, attemptNo);
         }
 
         private static async Task GoOut(long userId, ITelegramBotClient botClient)

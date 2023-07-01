@@ -23,7 +23,8 @@ namespace Simulator.Case
         public static StageList Stages { get; set; }
         public static bool Make()
         {
-            string path = pathToCase + "\\caseinfo.case";
+            string caseInfoFileName = ConfigurationManager.AppSettings["CaseInfoFileName"];
+            string path = pathToCase + "\\" + caseInfoFileName;
             if (System.IO.File.Exists(path))
             {
                 try
@@ -133,7 +134,7 @@ namespace Simulator.Case
                     if(hp == 3) // начальное значение
                     {
                         UserCaseTableCommand.SetStartCaseTime(userId, DateTime.Now);
-                        await UserCaseJsonCommand.CheckJsonFile($"{ConfigurationManager.AppSettings["PathStats"]}\\{userId}.json");
+                        await CaseJsonCommand.CheckJsonFile($"{ConfigurationManager.AppSettings["PathStats"]}\\{userId}.json");
                     }
                     await botClient.SendTextMessageAsync(userId,
                         none.TextBefore,

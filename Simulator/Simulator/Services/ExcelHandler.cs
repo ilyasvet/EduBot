@@ -8,6 +8,7 @@ using Telegram.Bot.Types.Enums;
 using Excel = Microsoft.Office.Interop.Excel;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Configuration;
 
 namespace Simulator.Services
 {
@@ -31,14 +32,16 @@ namespace Simulator.Services
                 // Получаем столбцы в используемом диапазоне
                 Excel.Range urColums = usedRange.Columns;
 
-                using (Stream fs = new FileStream("case.json", FileMode.Create))
+                string caseFileName = ConfigurationManager.AppSettings["CaseInfoFileName"];
+
+                using (Stream fs = new FileStream(caseFileName, FileMode.Create))
                 {
                     using (StreamWriter sw = new(fs))
                     {
                         await sw.WriteAsync(await AddCaseStageIterative(worksheet, urRows.Count));
                     }
                 }
-                return "case.json";
+                return caseFileName;
 
             }
             finally
@@ -53,6 +56,11 @@ namespace Simulator.Services
         private static async Task<string> AddCaseStageIterative(Worksheet worksheet, int count)
         {
             JObject stageListJObject = new();
+            var listNone = new StageList() { Stages = new List<CaseStage>() };
+            var listPoll = new StageList() { Stages = new List<CaseStage>() };
+            var listMessage = new StageList() { Stages = new List<CaseStage>() };
+            var listEnd = new StageList() { Stages = new List<CaseStage>() };
+
             await Task.Run(() =>
             {
                 // Общие свойства - свойства, которые есть у всех вопросов
@@ -76,15 +84,19 @@ namespace Simulator.Services
                         {
                             case "none":
                                 newStage = new CaseStageNone();
+                                listNone.Stages.Add(newStage);
                                 break;
                             case "poll":
                                 newStage = CreatePollStage(worksheet, i, ref j);
+                                listPoll.Stages.Add(newStage);
                                 break;
                             case "end":
                                 newStage = CreateEndStage(worksheet, i, ref j);
+                                listEnd.Stages.Add(newStage);
                                 break;
                             case "message":
                                 newStage = CreateMessageStage(worksheet, i, ref j);
+                                listMessage.Stages.Add(newStage);
                                 break;
                             default:
                                 throw new ArgumentException($"No Such parameter. Row {i}, column 1");
@@ -117,15 +129,16 @@ namespace Simulator.Services
                         {
                             newStage.NamesAdditionalFiles = new List<string>(worksheet.Cells[i, j].Value.ToString().Split(';'));
                         }
-
-                        // Объект добавляется в json с ключём Тип вопроса-Номер строки
-                        stageListJObject[$"{stageType}-{i}"] = JObject.FromObject(newStage);
                     }
                     catch (Exception)
                     {
                         throw new ArgumentException($"No such parameter. Line {i} column {j}");
                     }
                 }
+                stageListJObject["none"] = JObject.FromObject(listNone);
+                stageListJObject["end"] = JObject.FromObject(listEnd);
+                stageListJObject["poll"] = JObject.FromObject(listPoll);
+                stageListJObject["message"] = JObject.FromObject(listMessage);
             });
             return stageListJObject.ToString();
         }
