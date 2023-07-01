@@ -95,7 +95,7 @@ namespace Simulator.Case
             else if(query.Data == "ToBegin")
             {
                 UserCaseTableCommand.SetRate(query.From.Id, 0);
-                //return Stages.Stages.Min();
+                return Stages.StagesNone.Min();
             }
             else if(query.Data == "ToOut")
             {
