@@ -20,7 +20,7 @@ namespace Simulator.Case
         private readonly static string pathToCase = 
                 $"{AppDomain.CurrentDomain.BaseDirectory}" +
                 $"{ConfigurationManager.AppSettings["PathCase"]}";
-        public static StageList Stages { get; set; }
+        public static StageList Stages { get; set; } = new StageList();
         public static bool Make()
         {
             string caseInfoFileName = ConfigurationManager.AppSettings["CaseInfoFileName"];
@@ -95,7 +95,7 @@ namespace Simulator.Case
             else if(query.Data == "ToBegin")
             {
                 UserCaseTableCommand.SetRate(query.From.Id, 0);
-                return Stages.Stages.Min();
+                //return Stages.Stages.Min();
             }
             else if(query.Data == "ToOut")
             {
@@ -185,35 +185,12 @@ namespace Simulator.Case
 
         public static Dictionary<int, int> GetTaskCountDictionary()
         {
-            Dictionary<int, int> result = new Dictionary<int, int>();
-            foreach (CaseStage stage in Stages.Stages)
-            {
-                int moduleNumber = stage.ModuleNumber;
-                if(moduleNumber == 0
-                    || stage is CaseStageEndModule
-                    || stage is CaseStageNone)
-                {
-                    continue;
-                }
-                if(!result.ContainsKey(moduleNumber))
-                {
-                    result.Add(moduleNumber, 1);
-                }
-                else
-                {
-                    result[moduleNumber]++;
-                }
-            }
-            return result;
+            return Stages.GetTaskCountDictionary();
         }
 
-        internal static List<int> GetStageNumbers(int moduleNumber)
+        public static List<int> GetStageNumbers(int moduleNumber)
         {
-            return Stages.Stages.
-                Where(s=>s.ModuleNumber == moduleNumber).
-                Where(s=> !(s is CaseStageEndModule)).
-                Select(s=>s.Number).
-                ToList();
+            return Stages.GetStageNumbers(moduleNumber);
         }
     }
 }

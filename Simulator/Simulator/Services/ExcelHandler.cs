@@ -9,6 +9,7 @@ using Excel = Microsoft.Office.Interop.Excel;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Configuration;
+using Newtonsoft.Json;
 
 namespace Simulator.Services
 {
@@ -55,11 +56,7 @@ namespace Simulator.Services
 
         private static async Task<string> AddCaseStageIterative(Worksheet worksheet, int count)
         {
-            JObject stageListJObject = new();
-            var listNone = new StageList() { Stages = new List<CaseStage>() };
-            var listPoll = new StageList() { Stages = new List<CaseStage>() };
-            var listMessage = new StageList() { Stages = new List<CaseStage>() };
-            var listEnd = new StageList() { Stages = new List<CaseStage>() };
+            var stageList = new StageList();
 
             await Task.Run(() =>
             {
@@ -84,19 +81,19 @@ namespace Simulator.Services
                         {
                             case "none":
                                 newStage = new CaseStageNone();
-                                listNone.Stages.Add(newStage);
+                                stageList.StagesNone.Add(newStage as CaseStageNone);
                                 break;
                             case "poll":
                                 newStage = CreatePollStage(worksheet, i, ref j);
-                                listPoll.Stages.Add(newStage);
+                                stageList.StagesPoll.Add(newStage as CaseStagePoll);
                                 break;
                             case "end":
                                 newStage = CreateEndStage(worksheet, i, ref j);
-                                listEnd.Stages.Add(newStage);
+                                stageList.StagesEnd.Add(newStage as CaseStageEndModule);
                                 break;
                             case "message":
                                 newStage = CreateMessageStage(worksheet, i, ref j);
-                                listMessage.Stages.Add(newStage);
+                                stageList.StagesMessage.Add(newStage as CaseStageMessage);
                                 break;
                             default:
                                 throw new ArgumentException($"No Such parameter. Row {i}, column 1");
@@ -135,12 +132,8 @@ namespace Simulator.Services
                         throw new ArgumentException($"No such parameter. Line {i} column {j}");
                     }
                 }
-                stageListJObject["none"] = JObject.FromObject(listNone);
-                stageListJObject["end"] = JObject.FromObject(listEnd);
-                stageListJObject["poll"] = JObject.FromObject(listPoll);
-                stageListJObject["message"] = JObject.FromObject(listMessage);
             });
-            return stageListJObject.ToString();
+            return JObject.FromObject(stageList).ToString();
         }
 
         private static CaseStageMessage CreateMessageStage(Worksheet worksheet, int lineNumber, ref int j)
