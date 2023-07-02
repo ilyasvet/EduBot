@@ -57,9 +57,9 @@ namespace Simulator.Case
             int count = answers.Length;
             if(stage.Limit < count && stage.Limit != 0)
             {
-                count = stage.Limit;
                 //Штраф за превышение кол-ва ответов
                 rate -= stage.Fine * (count - stage.Limit);
+                count = stage.Limit;
             }
             for (int i = 0; i < count;i++)
             {
