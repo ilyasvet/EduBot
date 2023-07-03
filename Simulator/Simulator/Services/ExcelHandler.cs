@@ -162,11 +162,6 @@ namespace Simulator.Services
             }
             j++;
 
-            newStage.Texts = new List<string>(worksheet.Cells[i, j].Value.
-            ToString().
-            Split(';'));
-            j++;
-
             List<string> stringsRate = new List<string>(worksheet.Cells[i, j].Value.
                 ToString().
                 Split(';'));
@@ -177,6 +172,16 @@ namespace Simulator.Services
                 newStage.Rates.Add(rate);
             }
 
+            int countTexts = int.Parse(worksheet.Cells[i, j].Value.ToString());
+            j++;
+
+            newStage.Texts = new List<string>();
+            for (int k = 0; k < countTexts; k++)
+            {
+                string text = worksheet.Cells[i, j].Value.ToString();
+                newStage.Texts.Add(text);
+                j++;
+            }
             return newStage;
         }
 
@@ -184,7 +189,7 @@ namespace Simulator.Services
         {
             CaseStagePoll newStage = new();
             
-            // Налицие условного перехода между вопросами
+            // Налицие условного перехода между вопросами - 8
             string conditionalMove = worksheet.Cells[i, j].Value.ToString();
             switch (conditionalMove.ToLower())
             {
@@ -199,7 +204,7 @@ namespace Simulator.Services
             }
             j++;
 
-            // Множественный ответ или нет
+            // Множественный ответ или нет - 9
             string manyAnswers = worksheet.Cells[i, j].Value.ToString();
             switch (manyAnswers.ToLower())
             {
@@ -214,61 +219,7 @@ namespace Simulator.Services
             }
             j++;
 
-            // Варианты ответов
-            newStage.Options = new List<string>(worksheet
-            .Cells[i, j].Value
-            .ToString()
-            .Split(';'));
-            j++;
-
-            // Если условный переход и одиночный ответ
-            if (!newStage.ManyAnswers && newStage.ConditionalMove)
-            {
-                // делаем лист стрингов из исходной ячейки эксельки
-                var tmpMovingNumbersString = worksheet
-                    .Cells[i, j].Value
-                    .ToString();
-                List<string> tmpListMovingNumbers = new List<string>(tmpMovingNumbersString
-                    .Split(';'));
-                if(tmpListMovingNumbers.Count != newStage.Options.Count)
-                {
-                    throw new ArgumentException();
-                }
-
-                // дальше работаем с листом и забиваем его данные в newStage.MovingNumbers
-                foreach (string item in tmpListMovingNumbers)
-                {
-                    // было, например = ' 1-5 '. parts будет = ' 1 ' и ' 5 '
-                    string[] parts = item.Split('-');
-                    int key = int.Parse(parts[0]);
-                    int value = int.Parse(parts[1]);
-                    newStage.MovingNumbers.Add(key, value);
-                }
-            }
-            j++;
-
-
-            // PossibleRate
-            dynamic tmpPossibleRateString = worksheet
-                .Cells[i, j].Value
-                .ToString();
-            List<string> tmpListPossibleRate = new List<string>(tmpPossibleRateString
-                .Split(';'));
-            if (tmpListPossibleRate.Count != newStage.Options.Count)
-            {
-                throw new ArgumentException();
-            }
-
-            foreach (string item in tmpListPossibleRate)
-            {
-                string[] parts = item.Split('-');
-                int key = int.Parse(parts[0]);
-                int value = int.Parse(parts[1]);
-                newStage.PossibleRate.Add(key, value);
-            }
-            j++;
-
-            // WatchNonAnswers
+            // Смотрим неотмеченные ответы или нет - 10
             string watchNonAnswers = worksheet.Cells[i, j].Value.ToString();
             switch (watchNonAnswers.ToLower())
             {
@@ -283,35 +234,57 @@ namespace Simulator.Services
             }
             j++;
 
-            // NonAnswers
-            if (newStage.WatchNonAnswer)
-            {
-                dynamic tmpNonAnswersString = worksheet
-                    .Cells[i, j].Value
-                    .ToString();
-                List<string> tmpListNonAnswers = new List<string>(tmpNonAnswersString
-                    .Split(';'));
-                if (tmpListNonAnswers.Count != newStage.Options.Count)
-                {
-                    throw new ArgumentException($"No such parameter. Line {i} column{j}");
-                }
-
-                foreach (string item in tmpListNonAnswers)
-                {
-                    string[] parts = item.Split('-');
-                    int key = int.Parse(parts[0]);
-                    int value = int.Parse(parts[1]);
-                    newStage.NonAnswers.Add(key, value);
-                }
-            }
-            j++;
-
+            // Лимит по ответам и штраф за превышение - 11 и 12
             if (newStage.ManyAnswers)
             {
                 newStage.Limit = int.Parse(worksheet.Cells[i, j].Value.ToString());
                 j++;
                 newStage.Fine = double.Parse(worksheet.Cells[i, j].Value.ToString());
+                j++;
             }
+            else
+            {
+                j += 2;
+            }
+
+            // Количество вариантов ответов - 13
+            int countOptions = int.Parse(worksheet.Cells[i, j].Value.ToString());
+            j++;
+
+            // Ячейки: вариант ответа;баллы;баллы при отсутствии;адрес перехода
+            newStage.Options = new List<string>();
+            for(int k = 0; k < countOptions; k++)
+            {
+                string optionString = worksheet.Cells[i, j].Value.ToString();
+                string[] optionProperties = optionString.Split(';');
+                
+                newStage.Options.Add(optionProperties[0]);
+
+                double rate = double.Parse(optionProperties[1]);
+                newStage.PossibleRate.Add(k, rate);
+
+
+                double nonRate;
+                int movePoint;
+                if (newStage.WatchNonAnswer)
+                {
+                    nonRate = double.Parse(optionProperties[2]);
+                    newStage.NonAnswers.Add(k, nonRate);
+                    if (newStage.ConditionalMove)
+                    {
+                        movePoint = int.Parse(optionProperties[3]);
+                        newStage.MovingNumbers.Add(k, movePoint);
+                    }
+                }
+                else if (newStage.ConditionalMove)
+                {
+                    movePoint = int.Parse(optionProperties[2]);
+                    newStage.MovingNumbers.Add(k, movePoint);
+                }
+                
+
+                j++;
+            }    
 
             return newStage;
         }
