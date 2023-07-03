@@ -126,7 +126,7 @@ namespace Simulator.Case
                 string jsonUserAnswers = "";
                 foreach (int option in optionsIds)
                 {
-                    jsonUserAnswers += $"{option + 1}-";
+                    jsonUserAnswers += $"{option + 1};";
                     // счёт идёт от 0, а надо от 1, поэтому +1
                 }
                 results.Answers = jsonUserAnswers; 

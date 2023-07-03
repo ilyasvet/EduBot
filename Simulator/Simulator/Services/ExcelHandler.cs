@@ -118,13 +118,18 @@ namespace Simulator.Services
                         j++;
 
                         // Тип дополнительной информации
-                        newStage.AdditionalInfoType = Enum.Parse(typeof(AdditionalInfo), worksheet.Cells[i, j].Value.ToString());
+                        string hasAdditionalInfo = worksheet.Cells[i, j].Value.ToString();
                         j++;
 
                         // Если дополнительная информация имеется, то последовательность имён файлов
-                        if (newStage.AdditionalInfoType != AdditionalInfo.None)
+                        if (hasAdditionalInfo.ToLower() != "none")
                         {
-                            newStage.NamesAdditionalFiles = new List<string>(worksheet.Cells[i, j].Value.ToString().Split(';'));
+                            newStage.AdditionalInfo = new AdditionalInfo();
+                            List<string> additionalFiles = new List<string>(worksheet.Cells[i, j].Value.ToString().Split(';'));
+                            foreach (string fileName in additionalFiles)
+                            {
+                                newStage.AdditionalInfo.Add(fileName);
+                            }
                         }
                     }
                     catch (Exception)

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace Simulator.Models
 {
@@ -9,8 +8,7 @@ namespace Simulator.Models
         public string TextBefore { get; set; }
         public int NextStage { get; set; }
         public int ModuleNumber { get; set; }
-        public AdditionalInfo AdditionalInfoType { get; set; }
-        public List<string> NamesAdditionalFiles { get; set; }
+        public AdditionalInfo AdditionalInfo { get; set; }
         public int CompareTo(object obj)
         {
             if(obj is CaseStage stage)

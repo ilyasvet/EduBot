@@ -156,31 +156,45 @@ namespace Simulator.Case
         }
         private async static Task ShowAdditionalInfo(ITelegramBotClient botClient, CaseStage nextStage, long userId)
         {
-            if (nextStage.AdditionalInfoType == AdditionalInfo.None) return;
-            foreach (string fileName in nextStage.NamesAdditionalFiles)
-            {   
-                using (Stream fs = new FileStream(pathToCase + "\\" + fileName.Trim(), FileMode.Open))
+            if (nextStage.AdditionalInfo == null) return;
+            foreach (string docName in nextStage.AdditionalInfo.GetNamesDocuments())
+            {
+                using (Stream fs = new FileStream(pathToCase + "\\" + docName.Trim(), FileMode.Open))
                 {
-                    var inputOnlineFile = new InputOnlineFile(fs, fileName.Trim());
-                    switch (nextStage.AdditionalInfoType)
-                    {
-                        case AdditionalInfo.Photo:
-                            await botClient.SendPhotoAsync(userId, inputOnlineFile);
-                            break;
-                        case AdditionalInfo.Audio:
-                            await botClient.SendAudioAsync(userId, inputOnlineFile);
-                            break;
-                        case AdditionalInfo.Video:
-                            await botClient.SendVideoAsync(userId, inputOnlineFile);
-                            break;
-                        case AdditionalInfo.Document:
-                            await botClient.SendDocumentAsync(userId, inputOnlineFile);
-                            break;
-                        default:
-                            break;
-                    }
+                    var inputOnlineFile = new InputOnlineFile(fs, docName.Trim());
+                    await botClient.SendDocumentAsync(userId, inputOnlineFile);
                 }
-            }  
+            }
+            foreach (string audioName in nextStage.AdditionalInfo.GetNamesDocuments())
+            {
+                using (Stream fs = new FileStream(pathToCase + "\\" + audioName.Trim(), FileMode.Open))
+                {
+                    var inputOnlineFile = new InputOnlineFile(fs, audioName.Trim());
+                    await botClient.SendAudioAsync(userId, inputOnlineFile);
+                }
+            }
+            if (nextStage.AdditionalInfo.GetNamesVideos().Count == 0 &&
+                nextStage.AdditionalInfo.GetNamesPhotos().Count == 0) return;
+
+            List<IAlbumInputMedia> mediaList = new List<IAlbumInputMedia>();
+            foreach (string photoName in nextStage.AdditionalInfo.GetNamesPhotos())
+            {
+                using (Stream fs = new FileStream(pathToCase + "\\" + photoName.Trim(), FileMode.Open))
+                {
+                    var inputMediaFile = new InputMediaPhoto(new InputMedia(fs, photoName.Trim()));
+                    mediaList.Add(inputMediaFile);
+                }
+            }
+            foreach (string videoName in nextStage.AdditionalInfo.GetNamesVideos())
+            {
+                using (Stream fs = new FileStream(pathToCase + "\\" + videoName.Trim(), FileMode.Open))
+                {
+                    var inputMediaFile = new InputMediaVideo(new InputMedia(fs, videoName.Trim()));
+                    mediaList.Add(inputMediaFile);
+                }
+            }
+
+            await botClient.SendMediaGroupAsync(userId, mediaList);              
         }
 
         public static Dictionary<int, int> GetTaskCountDictionary()

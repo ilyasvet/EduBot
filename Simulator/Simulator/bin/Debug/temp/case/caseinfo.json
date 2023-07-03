@@ -34,8 +34,7 @@
       "TextBefore": "Что, по сути, будет представлять наш продукт? Какие нужны опции в его первой версии?",
       "NextStage": 2,
       "ModuleNumber": 1,
-      "AdditionalInfoType": 0,
-      "NamesAdditionalFiles": null
+      "AdditionalInfo": null
     },
     {
       "ManyAnswers": false,
@@ -63,8 +62,7 @@
       "TextBefore": "Кто основные потребители, ради которых мы это устраиваем?",
       "NextStage": 3,
       "ModuleNumber": 1,
-      "AdditionalInfoType": 0,
-      "NamesAdditionalFiles": null
+      "AdditionalInfo": null
     },
     {
       "ManyAnswers": false,
@@ -94,8 +92,7 @@
       "TextBefore": "Оценив сегмент, рассчитываем доступную емкость рынка",
       "NextStage": 4,
       "ModuleNumber": 1,
-      "AdditionalInfoType": 0,
-      "NamesAdditionalFiles": null
+      "AdditionalInfo": null
     },
     {
       "ManyAnswers": true,
@@ -127,8 +124,7 @@
       "TextBefore": "Кто, по указанным неполным портретам, является нашей ЦА",
       "NextStage": 5,
       "ModuleNumber": 1,
-      "AdditionalInfoType": 0,
-      "NamesAdditionalFiles": null
+      "AdditionalInfo": null
     },
     {
       "ManyAnswers": true,
@@ -164,8 +160,7 @@
       "TextBefore": "Выбираем характеристики, подходящие под нашу ЦА",
       "NextStage": 6,
       "ModuleNumber": 1,
-      "AdditionalInfoType": 0,
-      "NamesAdditionalFiles": null
+      "AdditionalInfo": null
     },
     {
       "ManyAnswers": true,
@@ -199,8 +194,7 @@
       "TextBefore": "Какие схожие продукты есть на рынке, кто является нашими наиболее прямыми конкурентами",
       "NextStage": 7,
       "ModuleNumber": 1,
-      "AdditionalInfoType": 0,
-      "NamesAdditionalFiles": null
+      "AdditionalInfo": null
     },
     {
       "ManyAnswers": true,
@@ -209,7 +203,7 @@
         "Зам.главы по экономике и финансам, он  отвечает за деньги, а значит решает, давать их или нет",
         "Зам.главы по реализации, он отвечает за доход компании, а ваш продукт поможет его нарастить",
         "Менеджер проекта от комитета, он лучше всего знает проект и сможет на всех повлиять",
-        "Не суть важно, строим презентацию через взаимодействие с самым лояльным сотрудником, кем бы он ни был"
+        "Не важно, строим презентацию через взаимодействие с самым лояльным сотрудником, кем бы он ни был"
       ],
       "ConditionalMove": false,
       "MovingNumbers": {},
@@ -228,8 +222,7 @@
       "TextBefore": "Кто, в вашем понимании, ЛПР заказчика, на которого надо ориентироваться",
       "NextStage": 9,
       "ModuleNumber": 1,
-      "AdditionalInfoType": 0,
-      "NamesAdditionalFiles": null
+      "AdditionalInfo": null
     },
     {
       "ManyAnswers": true,
@@ -263,8 +256,7 @@
       "TextBefore": "Для доведения продукта до финальной стадии продакт-менеджер собирает команду. Кто там должен быть (в условиях ограниченных ресурсов)? Прикрепляем резюме потенциальных участников",
       "NextStage": 11,
       "ModuleNumber": 2,
-      "AdditionalInfoType": 0,
-      "NamesAdditionalFiles": null
+      "AdditionalInfo": null
     },
     {
       "ManyAnswers": true,
@@ -296,8 +288,7 @@
       "TextBefore": "Для доработки продукта необходимо пообщаться с потенциальными покупателями. Какие из вопросов подходили бы под интервью?",
       "NextStage": 12,
       "ModuleNumber": 2,
-      "AdditionalInfoType": 0,
-      "NamesAdditionalFiles": null
+      "AdditionalInfo": null
     },
     {
       "ManyAnswers": false,
@@ -325,8 +316,7 @@
       "TextBefore": "В бюджете заложено проведения только 1 типа интервью. Какой способ инервьюирования вы хотите использовать?",
       "NextStage": 13,
       "ModuleNumber": 2,
-      "AdditionalInfoType": 0,
-      "NamesAdditionalFiles": null
+      "AdditionalInfo": null
     },
     {
       "ManyAnswers": true,
@@ -346,8 +336,7 @@
       "TextBefore": "Какие полезные для продукта данные вы можете получить из этого интервью",
       "NextStage": 14,
       "ModuleNumber": 2,
-      "AdditionalInfoType": 0,
-      "NamesAdditionalFiles": null
+      "AdditionalInfo": null
     },
     {
       "ManyAnswers": true,
@@ -377,8 +366,7 @@
       "TextBefore": "Вопрос продвижения нового товара на рынке. Как сделать так, чтобы его покупали, в условиях ограниченности бюджета на продвижение в размере 5 млн.р. В формате рекомендаций для заказчика",
       "NextStage": 15,
       "ModuleNumber": 2,
-      "AdditionalInfoType": 0,
-      "NamesAdditionalFiles": null
+      "AdditionalInfo": null
     },
     {
       "ManyAnswers": true,
@@ -406,8 +394,7 @@
       "TextBefore": "Вопрос продвижения нового товара на рынке. Как сделать так, чтобы его покупали, в условиях ограниченности бюджета на продвижение в размере 5 млн.р. В формате рекомендаций для заказчика",
       "NextStage": 16,
       "ModuleNumber": 2,
-      "AdditionalInfoType": 0,
-      "NamesAdditionalFiles": null
+      "AdditionalInfo": null
     },
     {
       "ManyAnswers": true,
@@ -435,8 +422,7 @@
       "TextBefore": "Гос.структура представила технического консультанта. По итогу обсуждения он четко выразил свое негативное отношение к проекту. Какие из указанных им проблем вы можете оценить как реальные риски и попробовать их отработать?",
       "NextStage": 17,
       "ModuleNumber": 2,
-      "AdditionalInfoType": 0,
-      "NamesAdditionalFiles": null
+      "AdditionalInfo": null
     },
     {
       "ManyAnswers": true,
@@ -462,8 +448,7 @@
       "TextBefore": "По итогам общения с внешним консультантом и собственными техническими специалистами было принято итоговое решение - подготовка мобильного приложения.  Ключевой риск - трудности оплаты. Какие способы предотвратить этот риск?",
       "NextStage": 18,
       "ModuleNumber": 2,
-      "AdditionalInfoType": 0,
-      "NamesAdditionalFiles": null
+      "AdditionalInfo": null
     },
     {
       "ManyAnswers": true,
@@ -493,8 +478,7 @@
       "TextBefore": "Необходимо собрать минимальный список функций. Что требуется разработать? + здесь будет ссылка",
       "NextStage": 19,
       "ModuleNumber": 2,
-      "AdditionalInfoType": 0,
-      "NamesAdditionalFiles": null
+      "AdditionalInfo": null
     },
     {
       "ManyAnswers": false,
@@ -525,8 +509,7 @@
       "TextBefore": "Дополнительный запрос от заказчика. Предполагается ли какая-то монетизация продукта",
       "NextStage": 0,
       "ModuleNumber": 2,
-      "AdditionalInfoType": 0,
-      "NamesAdditionalFiles": null
+      "AdditionalInfo": null
     },
     {
       "ManyAnswers": false,
@@ -554,8 +537,7 @@
       "TextBefore": "Запрос от заказчика - какие предлагаются доп. функции",
       "NextStage": 21,
       "ModuleNumber": 2,
-      "AdditionalInfoType": 0,
-      "NamesAdditionalFiles": null
+      "AdditionalInfo": null
     },
     {
       "ManyAnswers": false,
@@ -563,7 +545,7 @@
         "MVP - чтобы получить обратную связь как можно быстре",
         "MLP - чтобы продукт понравился заказику визуально, ведь он еще и пользователь",
         "MMP - чтобы они понимали, как этот продукт можно предлагать конечным пользователям",
-        "Готовый продукт, ведь все условия уже проговорены, а эти заказчики явно не хотят видеть половинчатый продукт"
+        "Готовый продукт, ведь все условия уже проговорены, а заказчики не хотят половинчатый продукт"
       ],
       "ConditionalMove": false,
       "MovingNumbers": {},
@@ -581,8 +563,7 @@
       "TextBefore": "Вы пытаетесь определиться, какую версию продукта имеет смысл показать закзачику в данном кейсе",
       "NextStage": 22,
       "ModuleNumber": 2,
-      "AdditionalInfoType": 0,
-      "NamesAdditionalFiles": null
+      "AdditionalInfo": null
     },
     {
       "ManyAnswers": true,
@@ -602,8 +583,7 @@
       "TextBefore": "Сбор обратной связи по итогам 5 аудиосообщений от тестировщиков. Необходимо выделить 3 ключевых проблемы из названных",
       "NextStage": 24,
       "ModuleNumber": 3,
-      "AdditionalInfoType": 0,
-      "NamesAdditionalFiles": null
+      "AdditionalInfo": null
     },
     {
       "ManyAnswers": false,
@@ -640,8 +620,7 @@
       "TextBefore": "На основании обратной связи было принято решение доработать визуальную часть приложения. Как именно будет доработана визуальная составляющая?",
       "NextStage": 0,
       "ModuleNumber": 3,
-      "AdditionalInfoType": 0,
-      "NamesAdditionalFiles": null
+      "AdditionalInfo": null
     },
     {
       "ManyAnswers": false,
@@ -669,8 +648,7 @@
       "TextBefore": "Запрос от заказчика - какие предлагаются доп. функции",
       "NextStage": 27,
       "ModuleNumber": 3,
-      "AdditionalInfoType": 0,
-      "NamesAdditionalFiles": null
+      "AdditionalInfo": null
     },
     {
       "ManyAnswers": false,
@@ -698,8 +676,7 @@
       "TextBefore": "Кому можно предложить рекламироваться в приложении?",
       "NextStage": 27,
       "ModuleNumber": 3,
-      "AdditionalInfoType": 0,
-      "NamesAdditionalFiles": null
+      "AdditionalInfo": null
     },
     {
       "ManyAnswers": false,
@@ -721,8 +698,7 @@
       "TextBefore": "По итогам полугода работы платные функции (если был п. 19) установили Х человек по 100 руб., от спонсорских контрактов ежемесячно был доход в размере 50000 руб. Окупились ли базовые вложения заказчика (суммано на Т руб)",
       "NextStage": 28,
       "ModuleNumber": 3,
-      "AdditionalInfoType": 0,
-      "NamesAdditionalFiles": null
+      "AdditionalInfo": null
     }
   ],
   "StagesNone": [
@@ -731,8 +707,7 @@
       "TextBefore": "Привет, будущий продакт! Поздравляю, с твоим, возможно, первым продуктом. Тебя позвали в команду энтузиастов, которая хочет создать электронный проездной для городского транспорта в Санкт-Петербурге. Предварительно вы уже пообщались с представителями Комитета по транспорту. Им понравился ваш проект, они сказали, что проблема актуальная, но а) много неопределенности в том, как это должно выглядеть, что должно быть в этом проездном, б) непонятно, нужно ли это жителям города, в) сколько человек будут пользоваться... В общем, нужна хорошая продуктовая проработка перед инвестициями в продукт. Как раз задача для продакта, который прошёл теоретический курс по основам управления продуктом :) Впереди тебе предстоит принять несколько ключевых решений, сделать несколько расчетов, чтобы проработать продукт и представить заказчику.",
       "NextStage": 1,
       "ModuleNumber": 0,
-      "AdditionalInfoType": 0,
-      "NamesAdditionalFiles": null
+      "AdditionalInfo": null
     }
   ],
   "StagesEnd": [
@@ -751,8 +726,7 @@
       "TextBefore": null,
       "NextStage": 10,
       "ModuleNumber": 1,
-      "AdditionalInfoType": 0,
-      "NamesAdditionalFiles": null
+      "AdditionalInfo": null
     },
     {
       "IsEndOfCase": false,
@@ -769,8 +743,7 @@
       "TextBefore": null,
       "NextStage": 23,
       "ModuleNumber": 2,
-      "AdditionalInfoType": 0,
-      "NamesAdditionalFiles": null
+      "AdditionalInfo": null
     },
     {
       "IsEndOfCase": true,
@@ -789,8 +762,7 @@
       "TextBefore": null,
       "NextStage": 0,
       "ModuleNumber": 3,
-      "AdditionalInfoType": 0,
-      "NamesAdditionalFiles": null
+      "AdditionalInfo": null
     }
   ],
   "StagesMessage": [
@@ -801,8 +773,7 @@
       "TextBefore": "Итого, по предыдущим ответам имеем (свод данных).  С этой информацией предполагается презентация заказчику предпродукта",
       "NextStage": 8,
       "ModuleNumber": 1,
-      "AdditionalInfoType": 0,
-      "NamesAdditionalFiles": null
+      "AdditionalInfo": null
     }
   ]
 }
