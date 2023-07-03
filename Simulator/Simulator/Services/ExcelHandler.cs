@@ -114,7 +114,7 @@ namespace Simulator.Services
                         j++;
 
                         // Основной тест вопроса
-                        newStage.TextBefore = worksheet.Cells[i, j].Value.ToString();
+                        newStage.TextBefore = worksheet.Cells[i, j].Value?.ToString();
                         j++;
 
                         // Тип дополнительной информации
@@ -171,6 +171,7 @@ namespace Simulator.Services
                 double rate = double.Parse(s);
                 newStage.Rates.Add(rate);
             }
+            j++;
 
             int countTexts = int.Parse(worksheet.Cells[i, j].Value.ToString());
             j++;
@@ -258,6 +259,11 @@ namespace Simulator.Services
                 string optionString = worksheet.Cells[i, j].Value.ToString();
                 string[] optionProperties = optionString.Split(';');
                 
+                if (optionProperties[0].Length > 100)
+                {
+                    throw new ArgumentException();
+                }
+
                 newStage.Options.Add(optionProperties[0]);
 
                 double rate = double.Parse(optionProperties[1]);
