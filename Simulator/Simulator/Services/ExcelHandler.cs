@@ -124,11 +124,10 @@ namespace Simulator.Services
                         // Если дополнительная информация имеется, то последовательность имён файлов
                         if (hasAdditionalInfo?.ToLower() == "true")
                         {
-                            newStage.AdditionalInfo = new AdditionalInfo();
                             List<string> additionalFiles = new List<string>(worksheet.Cells[i, j].Value.ToString().Split(';'));
                             foreach (string fileName in additionalFiles)
                             {
-                                newStage.AdditionalInfo.Add(fileName);
+                                newStage.AddAdditionalFile(fileName);
                             }
                         }
                     }

@@ -20,7 +20,9 @@ namespace Simulator.Commands
                 replyMarkup: CommandKeyboard.UserMenu);
 
             }
-            else if (UserCaseTableCommand.GetHealthPoints(userId) == 0)
+            else if (UserCaseTableCommand.GetHealthPoints(userId) == 0
+                && UserCaseTableCommand.GetPoint(userId) == StagesControl.Stages.StagesEnd.
+                    Find(s => s.IsEndOfCase == true).Number)
             {
                 await botClient.SendTextMessageAsync(
                 userId,
