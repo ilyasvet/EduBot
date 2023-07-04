@@ -34,7 +34,7 @@
       "TextBefore": "Что, по сути, будет представлять наш продукт? Какие нужны опции в его первой версии?",
       "NextStage": 2,
       "ModuleNumber": 1,
-      "AdditionalInfo": null
+      "AdditionalInfo": {}
     },
     {
       "ManyAnswers": false,

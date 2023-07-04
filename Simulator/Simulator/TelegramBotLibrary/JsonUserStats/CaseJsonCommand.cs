@@ -30,15 +30,10 @@ namespace Simulator.TelegramBotLibrary
             string rateKey = "rate-" + key;
             string answersKey = "answers-" + key;
             string timeKey = "time-" + key;
-            jsonObject.Remove(rateKey);
-            jsonObject.Remove(answersKey);
-            jsonObject.Remove(timeKey);
 
             jsonObject[rateKey] = results.Rate;
             jsonObject[answersKey] = results.Answers;
             jsonObject[timeKey] = results.Time;
-
-            //if (jsonObject.ToString().re)
 
             await WriteToJson(filePath, jsonObject);
         }
@@ -58,17 +53,14 @@ namespace Simulator.TelegramBotLibrary
         }
         public static async Task WriteToJson(string filePath, JObject jsonObject)
         {
-            using (var stream = new FileStream(filePath, FileMode.Create, FileAccess.Write))
+            using (var stream = new FileStream(filePath, FileMode.Open, FileAccess.Write))
             {
                 using (var sw = new StreamWriter(stream))
                 {
                     string jsonText = jsonObject.ToString();
-
-                    // Костыль
-                    // Убирает лишние символы после закрывающей скобки в json файле статистики
-                    jsonText = jsonText.Substring(0, jsonText.IndexOf("}") + 1);
                     
                     await sw.WriteAsync(jsonText);
+                    stream.SetLength(jsonText.Length);
                 }
             }
         }

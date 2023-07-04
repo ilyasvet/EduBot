@@ -118,11 +118,11 @@ namespace Simulator.Services
                         j++;
 
                         // Тип дополнительной информации
-                        string hasAdditionalInfo = worksheet.Cells[i, j].Value.ToString();
+                        string hasAdditionalInfo = worksheet.Cells[i, j].Value?.ToString();
                         j++;
 
                         // Если дополнительная информация имеется, то последовательность имён файлов
-                        if (hasAdditionalInfo.ToLower() != "none")
+                        if (hasAdditionalInfo?.ToLower() == "true")
                         {
                             newStage.AdditionalInfo = new AdditionalInfo();
                             List<string> additionalFiles = new List<string>(worksheet.Cells[i, j].Value.ToString().Split(';'));
