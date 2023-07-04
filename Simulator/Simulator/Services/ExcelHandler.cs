@@ -280,19 +280,12 @@ namespace Simulator.Services
                 {
                     nonRate = double.Parse(optionProperties[2]);
                     newStage.NonAnswers.Add(k, nonRate);
-                    if (newStage.ConditionalMove)
-                    {
-                        movePoint = int.Parse(optionProperties[3]);
-                        newStage.MovingNumbers.Add(k, movePoint);
-                    }
                 }
                 else if (newStage.ConditionalMove)
                 {
                     movePoint = int.Parse(optionProperties[2]);
                     newStage.MovingNumbers.Add(k, movePoint);
                 }
-                
-
                 j++;
             }    
 
