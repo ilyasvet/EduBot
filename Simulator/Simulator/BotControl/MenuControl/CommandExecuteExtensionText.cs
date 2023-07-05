@@ -13,7 +13,7 @@ namespace Simulator.BotControl
         {
             return Task.Run(() =>
             {
-                DialogState state = UserTableCommand.GetDialogState(userId);//TODO схерали Cannot resolve symbol 'DialogState'
+                DialogState state = UserTableCommand.GetDialogState(userId);
                 switch (state)
                 {
                     case DialogState.None:
