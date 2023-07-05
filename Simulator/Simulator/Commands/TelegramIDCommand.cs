@@ -17,18 +17,29 @@ namespace Simulator.Commands
                 UserTableCommand.SetDialogState(userId, BotControl.State.DialogState.None);
                 string userTelegramIdString = Resources.TelegramId;
                 userTelegramIdString += $"\n{userId}";
-                if (UserTableCommand.IsAdmin(userId))
+
+                if (UserTableCommand.HasUser(userId))
                 {
-                    botClient.SendTextMessageAsync(chatId: userId,
-                        text: userTelegramIdString,
-                        replyMarkup: CommandKeyboard.AdminMenu);
+                    if (UserTableCommand.IsAdmin(userId))
+                    {
+                        botClient.SendTextMessageAsync(chatId: userId,
+                            text: userTelegramIdString,
+                            replyMarkup: CommandKeyboard.AdminMenu);
+                    }
+                    else
+                    {
+                        botClient.SendTextMessageAsync(
+                                       chatId: userId,
+                                       text: userTelegramIdString,
+                                       replyMarkup: CommandKeyboard.UserMenu);
+                    }
                 }
                 else
                 {
+                    string textUnknown = Resources.WelcomeUnknown + $"\n\n{userTelegramIdString}";
                     botClient.SendTextMessageAsync(
-                                   chatId: userId,
-                                   text: userTelegramIdString,
-                                   replyMarkup: CommandKeyboard.UserMenu);
+                            chatId: userId,
+                            text: textUnknown);
                 }
             });
         }

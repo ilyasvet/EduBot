@@ -35,6 +35,10 @@ namespace Simulator.BotControl
         {
             new[] { LogInButton },
         });
+        public static InlineKeyboardMarkup TelegramId = new(new[]
+        {
+            new[] { CheckTelegramId },
+        });
         public static InlineKeyboardMarkup ToMainMenuUser = new(new[]
         {
             new[] { ToMenuUser },
