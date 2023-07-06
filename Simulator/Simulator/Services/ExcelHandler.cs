@@ -71,7 +71,7 @@ namespace Simulator.Services
 
                         // Находится в 1 столбце
                         stageType = worksheet.Cells[i, j].Value.ToLower();
-                        j = 8; // Сначала заполняются специализированные свойства, они начинаются с 8 столбца
+                        j = 7; // Сначала заполняются специализированные свойства, они начинаются с 8 столбца
 
                         CaseStage newStage = null;
                         // Ссылка на новый объект вопроса
@@ -96,44 +96,39 @@ namespace Simulator.Services
                                 stageList.StagesMessage.Add(newStage as CaseStageMessage);
                                 break;
                             default:
-                                throw new ArgumentException($"No Such parameter. Row {i}, column 1");
+                                j = 1;
+                                throw new ArgumentException($"No Such parameter");
                         }
 
                         j = 2; // Теперь заполняем общие свойства
 
                         // Номер вопроса
-                        newStage.Number = int.Parse(worksheet.Cells[i, j].Value.ToString());
+                        newStage.Number = int.Parse(worksheet.Cells[i, j].Value?.ToString());
                         j++;
 
                         // Номер модуля
-                        newStage.ModuleNumber = int.Parse(worksheet.Cells[i, j].Value.ToString());
+                        newStage.ModuleNumber = int.Parse(worksheet.Cells[i, j].Value?.ToString());
                         j++;
 
                         // Номер следующего вопроса
-                        newStage.NextStage = int.Parse(worksheet.Cells[i, j].Value.ToString());
+                        newStage.NextStage = int.Parse(worksheet.Cells[i, j].Value?.ToString());
                         j++;
 
                         // Основной тест вопроса
                         newStage.TextBefore = worksheet.Cells[i, j].Value?.ToString();
                         j++;
 
-                        // Тип дополнительной информации
-                        string hasAdditionalInfo = worksheet.Cells[i, j].Value?.ToString();
-                        j++;
 
                         // Если дополнительная информация имеется, то последовательность имён файлов
-                        if (hasAdditionalInfo?.ToLower() == "true")
+                        List<string> additionalFiles = new List<string>(worksheet.Cells[i, j].Value?.ToString().Split(';') ?? 0);
+                        foreach (string fileName in additionalFiles)
                         {
-                            List<string> additionalFiles = new List<string>(worksheet.Cells[i, j].Value.ToString().Split(';'));
-                            foreach (string fileName in additionalFiles)
-                            {
-                                newStage.AddAdditionalFile(fileName);
-                            }
+                            newStage.AddAdditionalFile(fileName);
                         }
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
-                        throw new ArgumentException($"No such parameter. Line {i} column {j}");
+                        throw new Exception($"{ex.Message}\nLine {i} column {j}");
                     }
                 }
             });
@@ -143,16 +138,22 @@ namespace Simulator.Services
         private static CaseStageMessage CreateMessageStage(Worksheet worksheet, int lineNumber, ref int j)
         {
             CaseStageMessage newStage = new();
-            newStage.MessageTypeAnswer = Enum.Parse(typeof(MessageType), worksheet.Cells[lineNumber, j].Value.ToString());
+
+            // Тип ответа (видео, аудио). Обязательное поле
+            newStage.MessageTypeAnswer = Enum.Parse(typeof(MessageType), worksheet.Cells[lineNumber, j].Value?.ToString());
             j++;
-            newStage.Rate = double.Parse(worksheet.Cells[lineNumber, j].Value.ToString());
+            
+            // Количество баллов за ответ. Обязательное поле
+            newStage.Rate = double.Parse(worksheet.Cells[lineNumber, j].Value?.ToString());
             return newStage;
         }
 
         private static CaseStageEndModule CreateEndStage(Worksheet worksheet, int i, ref int j)
         {
             CaseStageEndModule newStage = new();
-            string isEndOfCase = worksheet.Cells[i, j].Value.ToString();
+
+            // Является ли концом курса. Обязательное поле
+            string isEndOfCase = worksheet.Cells[i, j].Value?.ToString();
             switch (isEndOfCase.ToLower())
             {
                 case "false":
@@ -162,12 +163,12 @@ namespace Simulator.Services
                     newStage.IsEndOfCase = true;
                     break;
                 default:
-                    throw new ArgumentException();
+                    throw new ArgumentException("No such parameter");
             }
             j++;
 
-            List<string> stringsRate = new List<string>(worksheet.Cells[i, j].Value.
-                ToString().
+            // Градации по рейтингу. Обязательное поле
+            List<string> stringsRate = new List<string>(worksheet.Cells[i, j].Value.ToString().
                 Split(';'));
 
             foreach (string s in stringsRate)
@@ -177,16 +178,24 @@ namespace Simulator.Services
             }
             j++;
 
-            int countTexts = int.Parse(worksheet.Cells[i, j].Value.ToString());
+            // Количество текстов. Обязательное поле
+            int countTexts = int.Parse(worksheet.Cells[i, j].Value?.ToString());
             j++;
 
+            if (countTexts != stringsRate.Count + 3)
+            {
+                throw new ArgumentException("Texts count must be rate gradations + 3");
+            }
+
+            // Текста. Обязательное поле
             newStage.Texts = new List<string>();
             for (int k = 0; k < countTexts; k++)
             {
                 string text = worksheet.Cells[i, j].Value.ToString();
                 newStage.Texts.Add(text);
                 j++;
-            }
+            } 
+
             return newStage;
         }
 
@@ -194,57 +203,42 @@ namespace Simulator.Services
         {
             CaseStagePoll newStage = new();
             
-            // Налицие условного перехода между вопросами - 8
-            string conditionalMove = worksheet.Cells[i, j].Value.ToString();
-            switch (conditionalMove.ToLower())
-            {
-                case "false":
-                    newStage.ConditionalMove = false;
-                    break;
-                case "true":
-                    newStage.ConditionalMove = true;
-                    break;
-                default:
-                    throw new ArgumentException();
-            }
+            // Налицие условного перехода между вопросами - 8. По умолчанию false
+            string conditionalMove = worksheet.Cells[i, j].Value?.ToString() ?? string.Empty;
+            newStage.ConditionalMove = conditionalMove.ToLower() == "true";
             j++;
 
-            // Множественный ответ или нет - 9
-            string manyAnswers = worksheet.Cells[i, j].Value.ToString();
-            switch (manyAnswers.ToLower())
-            {
-                case "false":
-                    newStage.ManyAnswers = false;
-                    break;
-                case "true":
-                    newStage.ManyAnswers = true;
-                    break;
-                default:
-                    throw new ArgumentException();
-            }
+            // Множественный ответ или нет - 9. По умолчанию false
+            string manyAnswers = worksheet.Cells[i, j].Value?.ToString() ?? string.Empty;
+            newStage.ManyAnswers = manyAnswers.ToLower() == "true";
             j++;
 
-            // Смотрим неотмеченные ответы или нет - 10
-            string watchNonAnswers = worksheet.Cells[i, j].Value.ToString();
-            switch (watchNonAnswers.ToLower())
-            {
-                case "false":
-                    newStage.WatchNonAnswer = false;
-                    break;
-                case "true":
-                    newStage.WatchNonAnswer = true;
-                    break;
-                default:
-                    throw new ArgumentException();
-            }
+            if (newStage.ManyAnswers && newStage.ConditionalMove)
+                throw new ArgumentException("Many answers with conditional move cannot be together");
+
+            // Смотрим неотмеченные ответы или нет - 10. По умолчанию false
+            string watchNonAnswers = worksheet.Cells[i, j].Value?.ToString() ?? string.Empty;
+            newStage.WatchNonAnswer = watchNonAnswers.ToLower() == "true";
             j++;
 
-            // Лимит по ответам и штраф за превышение - 11 и 12
+            if (newStage.ConditionalMove && newStage.WatchNonAnswer)
+                throw new ArgumentException("Conditional move with watching non-answers cannot be together");
+            if (!newStage.ManyAnswers && newStage.WatchNonAnswer)
+                throw new ArgumentException("Single answer with watching non-answers cannot be together");
+            
+
+            // Лимит по ответам и штраф за превышение - 11 и 12. По умолчанию 0
             if (newStage.ManyAnswers)
             {
-                newStage.Limit = int.Parse(worksheet.Cells[i, j].Value.ToString());
+                try
+                {
+                    newStage.Limit = int.Parse(worksheet.Cells[i, j].Value?.ToString());
+                } catch {}
                 j++;
-                newStage.Fine = double.Parse(worksheet.Cells[i, j].Value.ToString());
+                try
+                {
+                    newStage.Fine = double.Parse(worksheet.Cells[i, j].Value?.ToString());
+                } catch {}
                 j++;
             }
             else
@@ -252,11 +246,11 @@ namespace Simulator.Services
                 j += 2;
             }
 
-            // Количество вариантов ответов - 13
-            int countOptions = int.Parse(worksheet.Cells[i, j].Value.ToString());
+            // Количество вариантов ответов - 13. Обязательное поле
+            int countOptions = int.Parse(worksheet.Cells[i, j].Value?.ToString());
             j++;
 
-            // Ячейки: вариант ответа;баллы;баллы при отсутствии;адрес перехода
+            // Ячейки: вариант ответа;баллы;баллы при отсутствии|адрес перехода
             newStage.Options = new List<string>();
             for(int k = 0; k < countOptions; k++)
             {
@@ -265,25 +259,22 @@ namespace Simulator.Services
                 
                 if (optionProperties[0].Length > 100)
                 {
-                    throw new ArgumentException();
+                    throw new ArgumentException("Option lenght must be no more 100 characters");
                 }
 
                 newStage.Options.Add(optionProperties[0]);
 
                 double rate = double.Parse(optionProperties[1]);
-                newStage.PossibleRate.Add(k, rate);
-
-
-                double nonRate;
-                int movePoint;
+                newStage.PossibleRate.Add(k, rate);   
+                
                 if (newStage.WatchNonAnswer)
                 {
-                    nonRate = double.Parse(optionProperties[2]);
+                    double nonRate = double.Parse(optionProperties[2]);
                     newStage.NonAnswers.Add(k, nonRate);
                 }
                 else if (newStage.ConditionalMove)
                 {
-                    movePoint = int.Parse(optionProperties[2]);
+                    int movePoint = int.Parse(optionProperties[2]);
                     newStage.MovingNumbers.Add(k, movePoint);
                 }
                 j++;

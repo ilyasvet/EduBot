@@ -86,6 +86,7 @@
     <Compile Include="Commands\LogInCommand.cs" />
     <Compile Include="Commands\AdminShowUsersInfoCommand.cs" />
     <Compile Include="Commands\SkipCommand.cs" />
+    <Compile Include="Commands\TelegramIDCommand.cs" />
     <Compile Include="Commands\UserCardCommand.cs" />
     <Compile Include="Commands\UserGoToCaseCommand.cs" />
     <Compile Include="Commands\WelcomeCommand.cs" />
