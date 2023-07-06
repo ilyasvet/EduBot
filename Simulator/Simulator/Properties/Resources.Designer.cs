@@ -187,6 +187,15 @@ namespace Simulator.Properties {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на Это ваш ваш персональный телеграм айди.
+        /// </summary>
+        internal static string TelegramId {
+            get {
+                return ResourceManager.GetString("TelegramId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на У вас больше нет попыток.
         /// </summary>
         internal static string ThereIsNotAttempts {

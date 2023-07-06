@@ -33,7 +33,8 @@ namespace Simulator.Commands
                 {
                     botClient.SendTextMessageAsync(
                             chatId: userId,
-                            text: Resources.WelcomeUnknown);
+                            text: Resources.WelcomeUnknown,
+                            replyMarkup: CommandKeyboard.TelegramId);
                 }
             });
         }

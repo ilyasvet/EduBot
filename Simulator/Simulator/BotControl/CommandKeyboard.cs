@@ -17,6 +17,7 @@ namespace Simulator.BotControl
         private static InlineKeyboardButton AddCase = InlineKeyboardButton.WithCallbackData("Добавить кейс", "AddCase");
         private static InlineKeyboardButton GetStatistics = InlineKeyboardButton.WithCallbackData("Сатистика", "GetStatistics");
         private static InlineKeyboardButton CreateCase = InlineKeyboardButton.WithCallbackData("Создать кейс", "CreateCase");
+        private static InlineKeyboardButton CheckTelegramId = InlineKeyboardButton.WithCallbackData("Узнать свой Telegram ID", "CheckTelegramId");
 
 
         public static InlineKeyboardButton ToFinishButton = InlineKeyboardButton.WithCallbackData("Выйти", "ToOut");
@@ -33,6 +34,10 @@ namespace Simulator.BotControl
         public static InlineKeyboardMarkup LogIn = new(new[]
         {
             new[] { LogInButton },
+        });
+        public static InlineKeyboardMarkup TelegramId = new(new[]
+        {
+            new[] { CheckTelegramId },
         });
         public static InlineKeyboardMarkup ToMainMenuUser = new(new[]
         {
@@ -53,11 +58,13 @@ namespace Simulator.BotControl
             new[] { AddCase },
             new[] { GetStatistics },
             new[] { CreateCase },
+            new[] { CheckTelegramId }
         });
         public static InlineKeyboardMarkup UserMenu = new(new[]
         {
             new[] { UserCard },
-            new[] { GoToCase }
+            new[] { GoToCase },
+            new[] { CheckTelegramId }
         });
         public static InlineKeyboardMarkup GroupsList;
         public static void MakeGroupList()

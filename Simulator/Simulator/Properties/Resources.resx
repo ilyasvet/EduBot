@@ -183,4 +183,7 @@
   <data name="CreateCase" xml:space="preserve">
     <value>Добавьте файл формата электроной таблицы, которая содержит материалы курса по заданному шаблону</value>
   </data>
+  <data name="TelegramId" xml:space="preserve">
+    <value>Это ваш ваш персональный телеграм айди</value>
+  </data>
 </root>
