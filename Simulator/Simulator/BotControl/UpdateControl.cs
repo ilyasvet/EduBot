@@ -5,11 +5,17 @@ using System.Threading.Tasks;
 using Telegram.Bot;
 using Simulator.TelegramBotLibrary;
 using Telegram.Bot.Types;
+using System.Configuration;
+using System.IO;
+using Newtonsoft.Json.Linq;
 
 namespace Simulator.BotControl
 {
     internal static class UpdateControl
     {
+        private readonly static string pathToExceptionsFile =
+                $"{AppDomain.CurrentDomain.BaseDirectory}" +
+                $"{ConfigurationManager.AppSettings["PathToExceptions"]}";
         public static async Task MessageHandling(Message message, ITelegramBotClient botClient)
         {
             long userId = message.Chat.Id;
@@ -88,11 +94,23 @@ namespace Simulator.BotControl
         }
         private static async Task ErrorHandling(long userId, ITelegramBotClient botClient, Exception ex)
         {
-            SkipCommand skip = new SkipCommand();
+            SkipCommand skip = new();
             await skip.Execute(
                             userId,
                             botClient,
                             ex.Message);
+
+            if(!System.IO.File.Exists(pathToExceptionsFile))
+            {
+                System.IO.File.Create(pathToExceptionsFile);
+            }
+            using (var fs = new FileStream(pathToExceptionsFile, FileMode.Append))
+            {
+                using (var sw = new StreamWriter(fs))
+                {
+                    await sw.WriteAsync(JObject.FromObject(ex).ToString());
+                }
+            }
         }
     }
 }
