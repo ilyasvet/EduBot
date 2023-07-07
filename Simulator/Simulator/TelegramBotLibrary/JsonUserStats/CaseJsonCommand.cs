@@ -20,7 +20,20 @@ namespace Simulator.TelegramBotLibrary
             int moduleNumber = StageNotaskNo.Item1;
             int stageNumber = StageNotaskNo.Item2;
 
-            JObject jsonObject = await ReadJsonFile(filePath);
+            JObject jsonObject = null;
+            while (true)
+            {
+                try
+                {
+                    jsonObject = await ReadJsonFile(filePath);
+                }
+                catch (IOException)
+                {
+                    await Task.Delay(300);
+                    continue;
+                }
+                break;
+            }
             
             string key = $"{moduleNumber}-{stageNumber}-{attemptNo}";
 
@@ -33,7 +46,20 @@ namespace Simulator.TelegramBotLibrary
             jsonObject[answersKey] = results.Answers;
             jsonObject[timeKey] = results.Time;
 
-            await WriteToJson(filePath, jsonObject);
+            while (true)
+            {
+                try
+                {
+                    await WriteToJson(filePath, jsonObject);
+                }
+                catch (IOException)
+                {
+                    await Task.Delay(300);
+                    continue;
+                }
+                break;
+            }
+            
         }
         public static async Task<object> GetValueFromJson(long userId, string key)
         {

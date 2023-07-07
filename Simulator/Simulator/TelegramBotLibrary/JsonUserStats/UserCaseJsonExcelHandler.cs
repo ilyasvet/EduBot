@@ -117,14 +117,27 @@ namespace Simulator.TelegramBotLibrary.JsonUserStats
             double sumRateAllFirst = 0;
             double sumRateAllSecond = 0;
 
-            string json;
-            using (var fs = new FileStream(statsFileName, FileMode.Open))
+            string json = string.Empty;
+            while (true)
             {
-                using (var sr = new StreamReader(fs))
+                try
                 {
-                    json = await sr.ReadToEndAsync();
+                    using (var fs = new FileStream(statsFileName, FileMode.Open))
+                    {
+                        using (var sr = new StreamReader(fs))
+                        {
+                            json = await sr.ReadToEndAsync();
+                        }
+                    }
                 }
+                catch (IOException)
+                {
+                    await Task.Delay(300);
+                    continue;
+                }
+                break;
             }
+
             JObject jsonObject = JsonConvert.DeserializeObject<JObject>(json);
 
             int startColumn = 9;

@@ -5,7 +5,6 @@ namespace Simulator.Services
 {
     public static class ControlSystem
     {
-        public static object Monitor = new();
         public static void KillProcess(string name)
         {
             GC.Collect();
