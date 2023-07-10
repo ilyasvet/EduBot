@@ -67,7 +67,7 @@ namespace Simulator.TelegramBotLibrary
                     return (bool)reader["IsAdmin"];
                 }
             }
-            throw new ArgumentException();
+            throw new ArgumentException("Not foubd user in database");
         }
         public static User GetUserById(long userId)
         {

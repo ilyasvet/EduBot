@@ -23,7 +23,7 @@ namespace Simulator.BotControl
             bool onCourse = false;
             try
             {
-                if (UserCaseTableCommand.IsOnCourse(userId))
+                if (UserTableCommand.HasUser(userId) && UserCaseTableCommand.IsOnCourse(userId))
                 {
                     onCourse = true;
                     await UpdateControlCase.MessageHandlingCase(message, botClient);
@@ -55,7 +55,7 @@ namespace Simulator.BotControl
             long userId = query.Message.Chat.Id;
             try
             {
-                if (UserCaseTableCommand.IsOnCourse(userId))
+                if (UserTableCommand.HasUser(userId) && UserCaseTableCommand.IsOnCourse(userId))
                 {
                     await UpdateControlCase.CallbackQueryHandlingCase(query, botClient);
                 }
@@ -92,24 +92,35 @@ namespace Simulator.BotControl
                 await ErrorHandling(userId, botClient, ex);
             }
         }
-        private static async Task ErrorHandling(long userId, ITelegramBotClient botClient, Exception ex)
+        private static async Task ErrorHandling(long userId, ITelegramBotClient botClient, Exception inerException)
         {
             SkipCommand skip = new();
-            await skip.Execute(
-                            userId,
-                            botClient,
-                            ex.Message);
+            try
+            {
+                await skip.Execute(
+                                userId,
+                                botClient,
+                                inerException.Message);
 
-            if(!System.IO.File.Exists(pathToExceptionsFile))
-            {
-                System.IO.File.Create(pathToExceptionsFile);
+                // TODO
+                //if (!System.IO.File.Exists(pathToExceptionsFile))
+                //{
+                //    System.IO.File.Create(pathToExceptionsFile);
+                //}
+                //using (var fs = new FileStream(pathToExceptionsFile, FileMode.Append))
+                //{
+                //    using (var sw = new StreamWriter(fs))
+                //    {
+                //        await sw.WriteAsync(JObject.FromObject(inerException).ToString());
+                //    }
+                //}
             }
-            using (var fs = new FileStream(pathToExceptionsFile, FileMode.Append))
+            catch(Exception externalException)
             {
-                using (var sw = new StreamWriter(fs))
-                {
-                    await sw.WriteAsync(JObject.FromObject(ex).ToString());
-                }
+                await botClient.SendTextMessageAsync(chatId: userId,
+                            text: "Внутренняя ошибка: " + inerException.Message + 
+                            "\nОшибка при обработке:" + externalException.Message +
+                            "Enter /Start");
             }
         }
     }

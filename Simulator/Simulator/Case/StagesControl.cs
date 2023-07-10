@@ -134,6 +134,10 @@ namespace Simulator.Case
                     if(hp == 3) // начальное значение
                     {
                         UserCaseTableCommand.SetStartCaseTime(userId, DateTime.Now);
+                        if (!Directory.Exists(ConfigurationManager.AppSettings["PathStats"]))
+                        {
+                            Directory.CreateDirectory(ConfigurationManager.AppSettings["PathStats"]);
+                        }
                         await CaseJsonCommand.CheckJsonFile($"{ConfigurationManager.AppSettings["PathStats"]}\\{userId}.json");
                     }
                     await botClient.SendTextMessageAsync(userId,

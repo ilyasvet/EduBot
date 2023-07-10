@@ -124,6 +124,24 @@ namespace Simulator.Properties {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на Введите /start для продолжения.
+        /// </summary>
+        internal static string EnterStart {
+            get {
+                return ResourceManager.GetString("EnterStart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Возникла неизвестная ошибка. Наберите /start.
+        /// </summary>
+        internal static string Error {
+            get {
+                return ResourceManager.GetString("Error", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на Файл caseinfo.case не найден.
         /// </summary>
         internal static string FileCaseNotFound {

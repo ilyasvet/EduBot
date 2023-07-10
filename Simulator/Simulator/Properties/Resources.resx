@@ -186,4 +186,10 @@
   <data name="TelegramId" xml:space="preserve">
     <value>Это ваш ваш персональный телеграм айди</value>
   </data>
+  <data name="Error" xml:space="preserve">
+    <value>Возникла неизвестная ошибка. Наберите /start</value>
+  </data>
+  <data name="EnterStart" xml:space="preserve">
+    <value>Введите /start для продолжения</value>
+  </data>
 </root>

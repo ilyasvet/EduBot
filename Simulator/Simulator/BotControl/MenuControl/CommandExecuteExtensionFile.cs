@@ -74,6 +74,11 @@ namespace Simulator.BotControl
                 string dir = $"{AppDomain.CurrentDomain.BaseDirectory}" +
                     $"{ConfigurationManager.AppSettings["PathCase"]}";
 
+                if (!Directory.Exists(dir))
+                {
+                    Directory.CreateDirectory(dir);
+                }
+
                 StagesControl.DeleteCaseFiles(); //Удаляем старые файлы перед добавлением новых
                 ZipFile.ExtractToDirectory(path, dir);
 

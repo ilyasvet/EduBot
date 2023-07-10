@@ -27,6 +27,7 @@ namespace Simulator.Commands
                     replyMarkup: CommandKeyboard.ToMainMenuAdmin
                     );
             }
+            File.Delete(statsFilePath); // TODO Временно
         }
     }
 }

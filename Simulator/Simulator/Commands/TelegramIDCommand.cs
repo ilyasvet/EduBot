@@ -12,12 +12,12 @@ namespace Simulator.Commands
         {
             await Task.Run(() =>
             {
-                UserTableCommand.SetDialogState(userId, BotControl.State.DialogState.None);
                 string userTelegramIdString = Resources.TelegramId;
                 userTelegramIdString += $"\n{userId}";
 
                 if (UserTableCommand.HasUser(userId))
                 {
+                    UserTableCommand.SetDialogState(userId, BotControl.State.DialogState.None);
                     if (UserTableCommand.IsAdmin(userId))
                     {
                         botClient.SendTextMessageAsync(chatId: userId,
@@ -37,7 +37,7 @@ namespace Simulator.Commands
                     string textUnknown = Resources.WelcomeUnknown + $"\n\n{userTelegramIdString}";
                     botClient.SendTextMessageAsync(
                             chatId: userId,
-                            text: textUnknown);
+                            text: $"{textUnknown}\n{Resources.EnterStart}");
                 }
             });
         }

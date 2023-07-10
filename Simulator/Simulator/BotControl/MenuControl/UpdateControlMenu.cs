@@ -15,8 +15,8 @@ namespace Simulator.BotControl
         static UpdateControlMenu()
         {
             commandsDictionary = Filler.FillCommandDictionary();
-            accordanceDictionaryButtonCommand = Filler.FillAccordanceDictionary("AccordanceButtonCommands.txt");
-            accordanceDictionaryTextCommand = Filler.FillAccordanceDictionary("AccordanceTextCommands.txt");
+            accordanceDictionaryButtonCommand = Filler.FillAccordanceDictionaryButton();
+            accordanceDictionaryTextCommand = Filler.FillAccordanceDictionaryText();
         }
         public async static Task MessageHandlingMenu(Message message, ITelegramBotClient botClient)
         {
@@ -54,10 +54,14 @@ namespace Simulator.BotControl
             string data = query.Data;
             string commandWord = data.Split('|')[0];
             string param = Checker.GetCommandCallbackQueryParam(data);
-            await commandsDictionary[accordanceDictionaryButtonCommand[commandWord]].Execute(
-                userId,
-                botClient,
-                param);
+            try
+            {
+                await commandsDictionary[accordanceDictionaryButtonCommand[commandWord]].Execute(
+                    userId,
+                    botClient,
+                    param);
+            }
+            catch(KeyNotFoundException) { }
         }
     }
 }

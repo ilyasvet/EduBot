@@ -9,7 +9,6 @@ using Excel = Microsoft.Office.Interop.Excel;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Configuration;
-using Newtonsoft.Json;
 
 namespace Simulator.Services
 {
@@ -117,6 +116,10 @@ namespace Simulator.Services
                         // Основной тест вопроса
                         newStage.TextBefore = worksheet.Cells[i, j].Value?.ToString();
                         j++;
+                        if(stageType == "poll" && newStage.TextBefore.Length >= 300)
+                        {
+                            throw new ArgumentException("Poll question lenght must be no more 300 characters");
+                        }
 
 
                         // Если дополнительная информация имеется, то последовательность имён файлов

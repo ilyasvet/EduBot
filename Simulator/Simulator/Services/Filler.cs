@@ -1,7 +1,6 @@
 ﻿using Simulator.Commands;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Reflection;
 
@@ -25,24 +24,35 @@ namespace Simulator.Services
             }
             return result;
         }
-        public static Dictionary<string, string> FillAccordanceDictionary(string ResourceName)
+
+        public static Dictionary<string, string> FillAccordanceDictionaryButton()
         {
-            Dictionary<string, string> result = new Dictionary<string, string>();
-            string path = Directory.GetParent(Directory.GetParent(Directory.GetCurrentDirectory()).FullName).FullName;
-            path += $"\\Properties\\{ResourceName}";
-            using (var fs = new FileStream(path, FileMode.Open))
+            Dictionary<string, string> result = new()
             {
-                using (var sr = new StreamReader(fs))
-                {
-                    string line = sr.ReadLine();
-                    while (line != null)
-                    {
-                        string[] pair = line.Split(' ');
-                        result.Add(pair[0], pair[1]);
-                        line = sr.ReadLine();
-                    }
-                }
-            }
+                { "Login", "LogInCommand" },
+                { "MainMenuUser", "GoToMainMenuUserCommand" },
+                { "MainMenuAdmin", "AdminGoToMainMenuCommand" },
+                { "UserCard", "UserCardCommand" },
+                { "ShowUsersInfo", "AdminShowUsersInfoCommand" },
+                { "ListGroups", "AdminShowGroupsInfoCommand" },
+                { "AddUsersAdmin", "AdminAddNewUsersCommand" },
+                { "AddCase", "AdminAddCaseCommand" },
+                { "ToCase", "UserGoToCaseCommand" },
+                { "GetStatistics", "AdminGetStatisticsCommand" },
+                { "CreateCase", "AdminCreateCaseCommand" },
+                { "CheckTelegramId", "TelegramIDCommand" }
+            };
+            return result;
+        }
+
+        public static Dictionary<string, string> FillAccordanceDictionaryText()
+        {
+            Dictionary<string, string> result = new()
+            {
+                { "/start", "WelcomeCommand" },
+                { "/skip", "SkipCommand" }
+            };
+
             return result;
         }
     }
