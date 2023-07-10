@@ -28,6 +28,7 @@ namespace Simulator.BotControl
                             break;
                         case DialogState.AddingUsersToGroup:
                             await AddNewUsersTable(userId, botClient, path);
+                            // TODO сделать атомарной
                             break;
                         case DialogState.AddingCase:
                             await AddCase(userId, botClient, path);
