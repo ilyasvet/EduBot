@@ -158,6 +158,12 @@ namespace Simulator.TelegramBotLibrary
             ExecuteNonQueryCommand(commandText);
         }
 
+        public static void DeleteUser(long userId)
+        {
+            string commandText = $"delete from UserCase where UserId = {userId}";
+            ExecuteNonQueryCommand(commandText);
+        }
+
         private static void ExecuteNonQueryCommand(string commandText)
         {
             command.CommandText = commandText;

@@ -110,6 +110,11 @@ namespace Simulator.TelegramBotLibrary
                 return null;
             }
         }
+        public static void DeleteUser(long userId)
+        {
+            string commandText = $"delete from Users where UserId = {userId}";
+            ExecuteNonQueryCommand(commandText);
+        }
         private static bool GetUserFromReader(SqlDataReader reader, out User user)
         {
             user = null;
@@ -122,6 +127,7 @@ namespace Simulator.TelegramBotLibrary
             }
             return false;
         }
+
         private static void ExecuteNonQueryCommand(string commandText)
         {
             command.CommandText = commandText;

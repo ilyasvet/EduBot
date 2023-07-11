@@ -285,7 +285,7 @@ namespace Simulator.Services
             return newStage;
         }
 
-        public static int AddUsersFromExcel(string path, string groupNumber)
+        public static async Task<int> AddUsersFromExcel(string path, string groupNumber)
         {
             Excel.Application excelApp = new Excel.Application();
             Excel.Workbooks workbooks = null;
@@ -306,7 +306,7 @@ namespace Simulator.Services
 
                 if (urColums.Count != 3) throw new ArgumentException("В таблице должно быть только 3 столбца!");
 
-                count = AddUsersIterative(worksheet, urRows.Count, groupNumber); //построчно добавляем пользователей
+                count = await AddUsersIterative(worksheet, urRows.Count, groupNumber); //построчно добавляем пользователей
             }
             finally
             {
@@ -318,42 +318,56 @@ namespace Simulator.Services
             return count;
         }
 
-        private static int AddUsersIterative(Worksheet worksheet, int rowsCount, string groupNumber)
+        private static async Task<int> AddUsersIterative(Worksheet worksheet, int rowsCount, string groupNumber)
         {
-            int count = 0;
-            for (int i = 1; i <= rowsCount; i++)
+            return await Task.Run(() =>
             {
-                long userTelegramId;
-                try
+                int count = 0;
+                for (int i = 1; i <= rowsCount; i++)
                 {
-                    userTelegramId = (long)worksheet.Cells[i, 3].Value; //берём из 3 столбца Id
-                } // сеlls это матрица всех ячеек ячейки
-                catch
-                {
-                    throw new ArgumentException("TelegramId должен быть целым числом. Строка " + i);
-                }
-                if (UserTableCommand.HasUser(userTelegramId))
-                {
-                    continue; //Если пользователь уже есть, повторно не добавляем его
-                }
-                string userName = worksheet.Cells[i, 1].Value; //Берём имя из 1 столбца
-                string userSurname = worksheet.Cells[i, 2].Value; //Фамилию из 2 столбца
+                    long userTelegramId;
+                    try
+                    {
+                        userTelegramId = (long)worksheet.Cells[i, 3].Value; //берём из 3 столбца Id
+                    } // сеlls это матрица всех ячеек ячейки
+                    catch
+                    {
+                        throw new ArgumentException("TelegramId должен быть целым числом. Строка " + i);
+                    }
+                    if (UserTableCommand.HasUser(userTelegramId))
+                    {
+                        continue; //Если пользователь уже есть, повторно не добавляем его
+                    }
+                    string userName = worksheet.Cells[i, 1].Value; //Берём имя из 1 столбца
+                    string userSurname = worksheet.Cells[i, 2].Value; //Фамилию из 2 столбца
 
-                Models.User user; //Создаём пользователя. И свойства проверяют входные данные
-                try
-                {
-                    user = new Models.User(userTelegramId, userName, userSurname);
+                    User user; //Создаём пользователя. И свойства проверяют входные данные
+                    try
+                    {
+                        user = new User(userTelegramId, userName, userSurname);
+                    }
+                    catch (Exception ex) //При неправильных данных выдаётся исключение с номером строки с ошибкой
+                    {
+                        throw new ArgumentException(ex.Message + " Строка " + i);
+                    }
+                    user.GroupNumber = groupNumber; //Номер группы мы уже проверяли ранее
+
+                    try
+                    {
+                        UserTableCommand.AddUser(user);
+                        UserCaseTableCommand.AddUser(userTelegramId);
+                    }
+                    catch
+                    {
+                        UserTableCommand.DeleteUser(userTelegramId);
+                        UserCaseTableCommand.DeleteUser(userTelegramId);
+                        throw;
+                    }
+
+                    count++; //Увеличили счётчик добавленных пользователей
                 }
-                catch (Exception ex) //При неправильных данных выдаётся исключение с номером строки с ошибкой
-                {
-                    throw new ArgumentException(ex.Message + " Строка " + i);
-                }
-                user.GroupNumber = groupNumber; //Номер группы мы уже проверяли ранее
-                UserTableCommand.AddUser(user);
-                UserCaseTableCommand.AddUser(userTelegramId);
-                count++; //Увеличили счётчик добавленных пользователей
-            }
-            return count;
+                return count;
+            });
         }
     }
 }

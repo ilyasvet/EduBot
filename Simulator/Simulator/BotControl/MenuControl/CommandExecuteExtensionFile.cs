@@ -27,7 +27,6 @@ namespace Simulator.BotControl
                             break;
                         case DialogState.AddingUsersToGroup:
                             await AddNewUsersTable(userId, botClient, path);
-                            // TODO сделать атомарной
                             break;
                         case DialogState.AddingCase:
                             await AddCase(userId, botClient, path);
@@ -109,7 +108,7 @@ namespace Simulator.BotControl
                     callBackMessage += $"\nГруппа \"{groupNumber}\" была добавлена";
                 }
                 
-                int count = ExcelHandler.AddUsersFromExcel(path, groupNumber);
+                int count = await ExcelHandler.AddUsersFromExcel(path, groupNumber);
                 // Добавляем пользователей из файла в группу
                
                 callBackMessage += $"\nДобавлено пользователей в группу \"{groupNumber}\": {count}\n";
