@@ -29,7 +29,7 @@ namespace Simulator.TelegramBotLibrary.JsonUserStats
                 StageNumbersModule.Add(module.Key, StagesControl.GetStageNumbers(module.Key));
             }
         }
-        public static async Task CreateAndEditExcelFile(string path, string statsDirectory)
+        public static async Task CreateAndEditExcelFile(string path)
         {
             Excel.Application excelApp = new Excel.Application();
             excelApp.Interactive = false;
@@ -45,28 +45,19 @@ namespace Simulator.TelegramBotLibrary.JsonUserStats
                 worksheet.Cells.WrapText = true;
                 worksheet.Columns.ColumnWidth = 15;
                 CreateExcelTitle(worksheet);
+                workbook.SaveAs(path);
+                workbook.Close();
 
+                workbook = excelApp.Workbooks.Open(path);
                 worksheet = workbook.Worksheets[1];
 
-                // Удаляем старые записи
-                int lastRow = worksheet.UsedRange.Rows.Count;
-                int lastColumn = worksheet.UsedRange.Columns.Count;
-                if(lastRow >= 4)
-                {
-                    Range workRange = worksheet.Range[worksheet.Cells[4, 1],
-                    worksheet.Cells[lastRow, lastColumn]];
-                    workRange.Delete();
-                    workbook.Save();
-                }
-
                 int line = 4;
-                foreach (string statsFileName in Directory.GetFiles(statsDirectory, "*.json"))
+                foreach (string statsFileName in Directory.GetFiles(ControlSystem.statsDirectory, "*.json"))
                 {
                     await ParseUserStats(statsFileName, worksheet, line);
                     workbook.Save();
                     line++;
                 }
-                workbook.SaveAs(path);
             }
             finally
             {

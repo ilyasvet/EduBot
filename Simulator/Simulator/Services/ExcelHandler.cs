@@ -21,7 +21,7 @@ namespace Simulator.Services
             try
             {
                 workbooks = excelApp.Workbooks; //это хранилище наших файлов, с которыми мы работаем
-                workbook = workbooks.Open(path); //открываем файл excel
+                workbook = workbooks.Open(AppDomain.CurrentDomain.BaseDirectory + "\\" + path); //открываем файл excel
                 Excel.Worksheet worksheet = workbook.Worksheets[1]; //берём 1 страницу (счёт с 1)
 
                 // Получаем диапазон используемых на странице ячеек
@@ -45,7 +45,7 @@ namespace Simulator.Services
             }
             finally
             {
-                workbook.Close(); //освобождаем неуправляемые ресурсы
+                //освобождаем неуправляемые ресурсы
                 workbooks.Close();
                 excelApp.Quit();
                 ControlSystem.KillProcess("EXCEL"); //и завершаем процесс, чтобы он не висел
@@ -294,7 +294,7 @@ namespace Simulator.Services
             try
             {
                 workbooks = excelApp.Workbooks; //это хранилище наших файлов, с которыми мы работаем
-                workbook = workbooks.Open(path); //открываем файл excel
+                workbook = workbooks.Open(AppDomain.CurrentDomain.BaseDirectory + "\\" + path); //открываем файл excel
                 Excel.Worksheet worksheet = workbook.Worksheets[1]; //берём 1 страницу (счёт с 1)
 
                 // Получаем диапазон используемых на странице ячеек

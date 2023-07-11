@@ -6,7 +6,7 @@ namespace Simulator.Services
     {
         public static bool IsCorrectName(string inputName)
         {
-            Regex regex = new Regex("^[А-Я][а-я]+$");
+            Regex regex = new Regex("[А-Я][а-я]+");
             return regex.IsMatch(inputName);
         }
     }
