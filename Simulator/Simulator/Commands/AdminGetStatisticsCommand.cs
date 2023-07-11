@@ -1,7 +1,6 @@
 ﻿using Simulator.BotControl;
+using Simulator.Services;
 using Simulator.TelegramBotLibrary.JsonUserStats;
-using System;
-using System.Configuration;
 using System.IO;
 using System.Threading.Tasks;
 using Telegram.Bot;
@@ -13,11 +12,10 @@ namespace Simulator.Commands
     {
         public async override Task Execute(long userId, ITelegramBotClient botClient, string param = "")
         {
-            string statsDirectory = $"{AppDomain.CurrentDomain.BaseDirectory}" +
-                   $"{ConfigurationManager.AppSettings["PathStats"]}";
-            string statsFilePath = statsDirectory + "\\" + ConfigurationManager.AppSettings["StatsFileName"];
 
-            await UserCaseJsonExcelHandler.CreateAndEditExcelFile(statsFilePath, File.Exists(statsFilePath), statsDirectory);
+            string statsFilePath = ControlSystem.statsDirectory + "\\" + ControlSystem.statsFileName;
+
+            await UserCaseJsonExcelHandler.CreateAndEditExcelFile(statsFilePath, ControlSystem.statsDirectory);
 
             using (Stream fs = new FileStream(statsFilePath, FileMode.Open))
             {
@@ -27,7 +25,7 @@ namespace Simulator.Commands
                     replyMarkup: CommandKeyboard.ToMainMenuAdmin
                     );
             }
-            File.Delete(statsFilePath); // TODO Временно
+            File.Delete(statsFilePath);
         }
     }
 }

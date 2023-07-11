@@ -61,7 +61,7 @@
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>zTKaY7BrcVV5zdeb9vOXfcFqm+bCQf85qlJ+pzq5Diw=</dsig:DigestValue>
+        <dsig:DigestValue>yuMXfoypfpOR9H0Ou1eoF+IC6jc9MBhfDftofciw1V4=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -131,13 +131,13 @@
       <dsig:DigestValue>fdJGNTxV2hEuicjqwRimevDWQbNQLC6SNaXWPsNKl+k=</dsig:DigestValue>
     </hash>
   </file>
-  <file name="Simulator.exe.config" size="1916">
+  <file name="Simulator.exe.config" size="1915">
     <hash>
       <dsig:Transforms>
         <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-      <dsig:DigestValue>+NBR5KAVfTGWCB75sCbuF38LF/yk+ffcTKpGxKgVTqw=</dsig:DigestValue>
+      <dsig:DigestValue>1RxqX/Xx5CAHpOHX4kGM6YOLK5SrFFAJSXcdn9O4L1I=</dsig:DigestValue>
     </hash>
   </file>
 </asmv1:assembly>

@@ -6,7 +6,6 @@ using System;
 using Simulator.Properties;
 using Simulator.Services;
 using Simulator.Case;
-using System.Configuration;
 using Telegram.Bot.Types.InputFiles;
 using System.IO.Compression;
 using System.IO;
@@ -62,7 +61,7 @@ namespace Simulator.BotControl
             }
             finally
             {
-                System.IO.File.Delete(path);
+                File.Delete(path);
             }
         }
 
@@ -72,16 +71,9 @@ namespace Simulator.BotControl
             {
                 if (!Checker.IsCorrectFileExtension(path, FileType.Case))
                     throw new ArgumentException("Файл должен быть .zip");
-                string dir = $"{AppDomain.CurrentDomain.BaseDirectory}" +
-                    $"{ConfigurationManager.AppSettings["PathCase"]}";
-
-                if (!Directory.Exists(dir))
-                {
-                    Directory.CreateDirectory(dir);
-                }
-
+                
                 StagesControl.DeleteCaseFiles(); //Удаляем старые файлы перед добавлением новых
-                ZipFile.ExtractToDirectory(path, dir);
+                ZipFile.ExtractToDirectory(path, ControlSystem.caseDirectory);
 
                 if (StagesControl.Make())
                 {
@@ -94,7 +86,7 @@ namespace Simulator.BotControl
             }
             finally
             {
-                System.IO.File.Delete(path);
+                File.Delete(path);
             }
         }
 
@@ -103,16 +95,23 @@ namespace Simulator.BotControl
             string callBackMessage = "";
             try
             {
-                if (!Checker.IsCorrectFileExtension(path, FileType.ExcelTable)) throw new ArgumentException("Файл должен быть exel");
+                if (!Checker.IsCorrectFileExtension(path, FileType.ExcelTable)) 
+                    throw new ArgumentException("Файл должен быть exel");
+
                 string groupNumber = GroupHandler.GetGroupNumberFromPath(path); // Получаем номер группы из названия файла
-                if (!GroupHandler.IsCorrectGroupNumber(groupNumber)) throw new ArgumentException("Неверный формат номера группы");
+                
+                if (!GroupHandler.IsCorrectGroupNumber(groupNumber))
+                    throw new ArgumentException("Неверный формат номера группы");
+               
                 if (!GroupTableCommand.HasGroup(groupNumber)) // Проверяем, есть ли такая группа
                 {
                     GroupHandler.AddGroup(groupNumber); //Если нет, то создаём её
                     callBackMessage += $"\nГруппа \"{groupNumber}\" была добавлена";
                 }
+                
                 int count = ExcelHandler.AddUsersFromExcel(path, groupNumber);
                 // Добавляем пользователей из файла в группу
+               
                 callBackMessage += $"\nДобавлено пользователей в группу \"{groupNumber}\": {count}\n";
                 await BotCallBack(userId, botClient, callBackMessage.Insert(0, Resources.SuccessAddGroup));
                 // сообщение об успехе операции
@@ -123,7 +122,7 @@ namespace Simulator.BotControl
             }
             finally
             {
-                System.IO.File.Delete(path);
+                File.Delete(path);
             }
         }
         private async static Task BotCallBack(long userId, ITelegramBotClient botClient, string message)
@@ -142,7 +141,7 @@ namespace Simulator.BotControl
                     document: new InputOnlineFile(fs, filePath),
                     replyMarkup: CommandKeyboard.ToMainMenuAdmin
                     );
-                System.IO.File.Delete(filePath);
+                File.Delete(filePath);
             }
         }
     }

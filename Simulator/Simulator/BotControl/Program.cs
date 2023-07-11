@@ -1,6 +1,5 @@
-﻿using System;
-using System.Configuration;
-using System.IO;
+﻿using Simulator.Services;
+using System;
 
 namespace Simulator.BotControl
 {
@@ -8,18 +7,11 @@ namespace Simulator.BotControl
     {
         static void Main(string[] args)
         {
-            string docDirectory = $"{AppDomain.CurrentDomain.BaseDirectory}" +
-                $"{ConfigurationManager.AppSettings["DocumentsDir"]}";
-            // TODO сделать поуниверсальней
-            
             TelegramBotControl telegramBotControl = new TelegramBotControl(
-                ConfigurationManager.AppSettings["BotToken"]
+                ControlSystem.botToken
                 );
 
-            if(!Directory.Exists(docDirectory))
-            {
-                Directory.CreateDirectory(docDirectory);
-            }
+            ControlSystem.CreateDirectories();
 
             telegramBotControl.ManageTelegramBot();
             Console.ReadLine();

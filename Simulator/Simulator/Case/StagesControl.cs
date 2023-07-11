@@ -4,7 +4,6 @@ using Simulator.Services;
 using Simulator.TelegramBotLibrary;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -17,14 +16,13 @@ namespace Simulator.Case
 {
     internal static class StagesControl
     {
-        private readonly static string pathToCase = 
-                $"{AppDomain.CurrentDomain.BaseDirectory}" +
-                $"{ConfigurationManager.AppSettings["PathCase"]}";
         public static StageList Stages { get; set; } = new StageList();
         public static bool Make()
         {
-            string caseInfoFileName = ConfigurationManager.AppSettings["CaseInfoFileName"];
-            string path = pathToCase + "\\" + caseInfoFileName;
+            
+            string path = ControlSystem.caseDirectory +
+                "\\" + ControlSystem.caseInfoFileName;
+
             if (System.IO.File.Exists(path))
             {
                 try
@@ -43,11 +41,7 @@ namespace Simulator.Case
 
         public static void DeleteCaseFiles()
         {
-            var files = Directory.GetFiles(pathToCase);
-            foreach (var file in files)
-            {
-                System.IO.File.Delete(file);
-            }
+            ControlSystem.DeleteFilesFromDirectory(ControlSystem.caseDirectory);
         }
 
         public static double CalculateRatePoll(CaseStagePoll stage, int[] answers)
@@ -134,11 +128,7 @@ namespace Simulator.Case
                     if(hp == 3) // начальное значение
                     {
                         UserCaseTableCommand.SetStartCaseTime(userId, DateTime.Now);
-                        if (!Directory.Exists(ConfigurationManager.AppSettings["PathStats"]))
-                        {
-                            Directory.CreateDirectory(ConfigurationManager.AppSettings["PathStats"]);
-                        }
-                        await CaseJsonCommand.CheckJsonFile($"{ConfigurationManager.AppSettings["PathStats"]}\\{userId}.json");
+                        await CaseJsonCommand.CheckJsonFile($"{ControlSystem.statsDirectory}\\{userId}.json");
                     }
                     await botClient.SendTextMessageAsync(userId,
                         none.TextBefore,
@@ -165,7 +155,8 @@ namespace Simulator.Case
             {
                 foreach (string fileName in nextStage.AdditionalInfoFiles[infoType])
                 {
-                    using (Stream fs = new FileStream(pathToCase + "\\" + fileName.Trim(), FileMode.Open))
+                    using (Stream fs = new FileStream(ControlSystem.caseDirectory +
+                        "\\" + fileName.Trim(), FileMode.Open))
                     {
                         switch (infoType)
                         {

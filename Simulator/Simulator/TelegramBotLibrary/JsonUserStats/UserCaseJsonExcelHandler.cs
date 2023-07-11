@@ -29,7 +29,7 @@ namespace Simulator.TelegramBotLibrary.JsonUserStats
                 StageNumbersModule.Add(module.Key, StagesControl.GetStageNumbers(module.Key));
             }
         }
-        public static async Task CreateAndEditExcelFile(string path, bool created, string statsDirectory)
+        public static async Task CreateAndEditExcelFile(string path, string statsDirectory)
         {
             Excel.Application excelApp = new Excel.Application();
             excelApp.Interactive = false;
@@ -39,27 +39,13 @@ namespace Simulator.TelegramBotLibrary.JsonUserStats
 
             try
             {
-                try
-                {
-                    if (!created)
-                    {
-                        workbook = excelApp.Workbooks.Add();
-                        worksheet = (Worksheet)workbook.ActiveSheet;
-                        worksheet.Name = "Statistics";
-                        worksheet.Cells.WrapText = true;
-                        worksheet.Columns.ColumnWidth = 15;
-                        CreateExcelTitle(worksheet);
-                        workbook.SaveAs(path);
-                        workbook.Close();
-                    }
-                }
-                catch
-                {
-                    File.Delete(path);
-                    throw;
-                }
+                workbook = excelApp.Workbooks.Add();
+                worksheet = (Worksheet)workbook.ActiveSheet;
+                worksheet.Name = "Statistics";
+                worksheet.Cells.WrapText = true;
+                worksheet.Columns.ColumnWidth = 15;
+                CreateExcelTitle(worksheet);
 
-                workbook = excelApp.Workbooks.Open(path);
                 worksheet = workbook.Worksheets[1];
 
                 // Удаляем старые записи
@@ -80,6 +66,7 @@ namespace Simulator.TelegramBotLibrary.JsonUserStats
                     workbook.Save();
                     line++;
                 }
+                workbook.SaveAs(path);
             }
             finally
             {

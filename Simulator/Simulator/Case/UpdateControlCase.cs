@@ -7,6 +7,7 @@ using Simulator.TelegramBotLibrary;
 using System;
 using System.IO;
 using Simulator.Properties;
+using Simulator.Services;
 
 namespace Simulator.Case
 {
@@ -81,16 +82,13 @@ namespace Simulator.Case
                         return;
                         // Если сообщение не соответсвует ответу - ничего не делаем
                     }
-                    // TODO поработать с директориями
+
                     // сохраняем видос
                     string fileName = $"{userId}-{currentStage.Number}.mp4";
-                    string filePath = "temp/answers/videos/";
-                    if(!Directory.Exists(filePath))
-                    {
-                        Directory.CreateDirectory(filePath);
-                    }
+                    string filePath = ControlSystem.messageAnswersDirectory + "/videos/";
+                    
                     var file = await botClient.GetFileAsync(message.Video.FileId);
-                    using (var stream = new FileStream(filePath+fileName, FileMode.Create))
+                    using (var stream = new FileStream(filePath + fileName, FileMode.Create))
                     {
                         await botClient.DownloadFileAsync(file.FilePath, stream);
                     }

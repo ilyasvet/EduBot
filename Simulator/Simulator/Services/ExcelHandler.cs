@@ -8,7 +8,6 @@ using Telegram.Bot.Types.Enums;
 using Excel = Microsoft.Office.Interop.Excel;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Configuration;
 
 namespace Simulator.Services
 {
@@ -32,7 +31,7 @@ namespace Simulator.Services
                 // Получаем столбцы в используемом диапазоне
                 Excel.Range urColums = usedRange.Columns;
 
-                string caseFileName = ConfigurationManager.AppSettings["CaseInfoFileName"];
+                string caseFileName = ControlSystem.caseInfoFileName;
 
                 using (Stream fs = new FileStream(caseFileName, FileMode.Create))
                 {

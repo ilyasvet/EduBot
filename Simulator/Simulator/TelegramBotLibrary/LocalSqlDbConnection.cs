@@ -1,4 +1,4 @@
-﻿using System.Configuration;
+﻿using Simulator.Services;
 using System.Data.SqlClient;
 
 namespace Simulator.TelegramBotLibrary
@@ -15,8 +15,8 @@ namespace Simulator.TelegramBotLibrary
         {
             SqlConnectionStringBuilder stringBuilder = new SqlConnectionStringBuilder
             {
-                DataSource = ConfigurationManager.AppSettings["ServerName"],
-                InitialCatalog = ConfigurationManager.AppSettings["DataBaseName"],
+                DataSource = ControlSystem.serverName,
+                InitialCatalog = ControlSystem.dataBaseName,
                 IntegratedSecurity = true,
                 ConnectTimeout = 15,
             };

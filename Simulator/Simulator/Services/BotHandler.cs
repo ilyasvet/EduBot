@@ -1,6 +1,4 @@
-﻿using System;
-using System.Configuration;
-using System.IO;
+﻿using System.IO;
 using System.Threading.Tasks;
 using Telegram.Bot;
 using Telegram.Bot.Types;
@@ -13,12 +11,13 @@ namespace Simulator.Services
         {
             var file = await botClient.GetFileAsync(messageDocument.FileId);
             //все файлы, посланные боту, хранятся в одной папке
-            string path = $"{AppDomain.CurrentDomain.BaseDirectory}" +
-                $"{ConfigurationManager.AppSettings["DocumentsDir"]}" +
-                $"\\{messageDocument.FileName}";
+
+            string path = ControlSystem.tempDirectory + "\\" + messageDocument.FileName;
+
             FileStream fs = new FileStream(path, FileMode.Create);
             await botClient.DownloadFileAsync(file.FilePath, fs);
             fs.Dispose();
+
             return path;
         }
     }

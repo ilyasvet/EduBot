@@ -2,20 +2,16 @@
 using Newtonsoft.Json;
 using System.IO;
 using Newtonsoft.Json.Linq;
-using System;
-using System.Configuration;
 using Simulator.Case;
+using Simulator.Services;
 
 namespace Simulator.TelegramBotLibrary
 {
     public static class CaseJsonCommand
     {
-        private static readonly string statsDirectory = 
-            $"{AppDomain.CurrentDomain.BaseDirectory}" +
-            $"{ConfigurationManager.AppSettings["PathStats"]}";
-        public static async Task AddValueToJsonFile(long userId, (int, int) StageNotaskNo, StageResults results, int attemptNo)
+       public static async Task AddValueToJsonFile(long userId, (int, int) StageNotaskNo, StageResults results, int attemptNo)
         {
-            string filePath = $"{statsDirectory}\\{userId}.json";
+            string filePath = $"{ControlSystem.statsDirectory}\\{userId}.json";
 
             int moduleNumber = StageNotaskNo.Item1;
             int stageNumber = StageNotaskNo.Item2;
@@ -63,7 +59,7 @@ namespace Simulator.TelegramBotLibrary
         }
         public static async Task<object> GetValueFromJson(long userId, string key)
         {
-            string filePath = $"{statsDirectory}\\{userId}.json";
+            string filePath = $"{ControlSystem.statsDirectory}\\{userId}.json";
             JObject jsonObject;
             using (var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read))
             {
