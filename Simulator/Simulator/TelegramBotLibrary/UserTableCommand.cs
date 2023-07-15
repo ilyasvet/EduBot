@@ -22,8 +22,8 @@ namespace Simulator.TelegramBotLibrary
 
         public static void AddUser(User user)
         {
-            string commandText = $"insert into Users (UserId, Name, Surname, IsAdmin, DialogState, GroupNumber)" +
-                $" values ('{user.UserID}','{user.Name}','{user.Surname}','{false}','{0}','{user.GroupNumber}')";
+            string commandText = $"insert into Users (UserId, Name, Surname, IsAdmin, isGroupLeader, DialogState, GroupNumber)" +
+                $" values ('{user.UserID}','{user.Name}','{user.Surname}','{false}','{false}','{0}','{user.GroupNumber}')";
             //Добавлять пользователя (если его нет в базе)
             ExecuteNonQueryCommand(commandText);
         }
