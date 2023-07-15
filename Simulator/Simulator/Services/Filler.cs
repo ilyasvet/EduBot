@@ -40,7 +40,8 @@ namespace Simulator.Services
                 { "ToCase", "UserGoToCaseCommand" },
                 { "GetStatistics", "AdminGetStatisticsCommand" },
                 { "CreateCase", "AdminCreateCaseCommand" },
-                { "CheckTelegramId", "TelegramIDCommand" }
+                { "CheckTelegramId", "TelegramIDCommand" },
+                { "AddGroupLider", "AdminAddGroupLiderCommand" }
             };
             return result;
         }

@@ -10,3 +10,4 @@ ToCase UserGoToCaseCommand
 GetStatistics AdminGetStatisticsCommand
 CreateCase AdminCreateCaseCommand
 CheckTelegramId TelegramIDCommand
+AddGroupLider AdminAddGroupLiderCommand
