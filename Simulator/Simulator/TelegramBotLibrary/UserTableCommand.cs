@@ -36,7 +36,7 @@ namespace Simulator.TelegramBotLibrary
             return result;
         }
 
-        public async void DeleteUser(long userId)
+        public async Task DeleteUser(long userId)
         {
             string commandText = $"DELETE FROM Users WHERE UserId = {userId}";
             await ExecuteNonQueryCommand(commandText);

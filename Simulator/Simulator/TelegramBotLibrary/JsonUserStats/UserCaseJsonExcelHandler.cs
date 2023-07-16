@@ -9,6 +9,7 @@ using Simulator.Case;
 using Simulator.Models;
 using System;
 using System.Threading.Tasks;
+using Simulator.BotControl;
 
 namespace Simulator.TelegramBotLibrary.JsonUserStats
 {
@@ -70,20 +71,20 @@ namespace Simulator.TelegramBotLibrary.JsonUserStats
         public static async Task ParseUserStats(string statsFileName, Excel.Worksheet worksheet, int line)
         {
             long userId = long.Parse(statsFileName.Substring(statsFileName.LastIndexOf('\\')+1).Split('.')[0]);
-            User user = UserTableCommand.GetUserById(userId);
+            User user = await DataBaseControl.UserTableCommand.GetUserById(userId);
 
             string nameSurname = user.Surname + " " + user.Name;
             string group = user.GroupNumber;
 
             try // Может и не быть
             {
-                DateTime startCaseTime = UserCaseTableCommand.GetStartCaseTime(userId);
+                DateTime startCaseTime = await DataBaseControl.UserCaseTableCommand.GetStartCaseTime(userId);
                 worksheet.Cells[line, 4] = startCaseTime.ToString();
-                DateTime endCaseTime = UserCaseTableCommand.GetEndCaseTime(userId);
+                DateTime endCaseTime = await DataBaseControl.UserCaseTableCommand.GetEndCaseTime(userId);
                 worksheet.Cells[line, 5] = endCaseTime.ToString();
             } catch { }
 
-            int hp = UserCaseTableCommand.GetHealthPoints(userId);
+            int hp = await DataBaseControl.UserCaseTableCommand.GetHealthPoints(userId);
             int attemptsUsed = hp == 0 ? 2 : hp == 1 ? 1 : 0;
 
             worksheet.Cells[line, 1] = nameSurname;

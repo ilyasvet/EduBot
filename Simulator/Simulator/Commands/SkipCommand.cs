@@ -1,6 +1,5 @@
 ﻿using Simulator.BotControl;
 using Simulator.Properties;
-using Simulator.TelegramBotLibrary;
 using System.Threading.Tasks;
 using Telegram.Bot;
 
@@ -10,35 +9,32 @@ namespace Simulator.Commands
     {
         public override async Task Execute(long userId, ITelegramBotClient botClient, string param = "")
         {
-            await Task.Run(() =>
+            if (await DataBaseControl.UserTableCommand.HasUser(userId))
             {
-                    if (UserTableCommand.HasUser(userId))
-                    {
-                        UserTableCommand.SetDialogState(userId, BotControl.State.DialogState.None);
-                        if (UserTableCommand.IsAdmin(userId))
-                        {
-                            botClient.SendTextMessageAsync(
-                                        chatId: userId,
-                                        text: param + "\nПереход в меню",
-                                        replyMarkup: CommandKeyboard.AdminMenu);
-                        }
-                        else
-                        {
-                            UserCaseTableCommand.SetOnCourse(userId, false);
-                            botClient.SendTextMessageAsync(
-                                           chatId: userId,
-                                           text: param + "\nВойдите заново...",
-                                           replyMarkup: CommandKeyboard.LogIn);
-                        }
-                    }
-                    else
-                    {
-                        botClient.SendTextMessageAsync(
+                await DataBaseControl.UserTableCommand.SetDialogState(userId, BotControl.State.DialogState.None);
+                if (await DataBaseControl.UserTableCommand.GetUserType(userId) == Models.UserType.Admin)
+                {
+                    await botClient.SendTextMessageAsync(
                                 chatId: userId,
-                                text: Resources.WelcomeUnknown,
-                                replyMarkup: CommandKeyboard.TelegramId);
-                    }            
-            });
+                                text: param + "\nПереход в меню",
+                                replyMarkup: CommandKeyboard.AdminMenu);
+                }
+                else
+                {
+                    await DataBaseControl.UserCaseTableCommand.SetOnCourse(userId, false);
+                    await botClient.SendTextMessageAsync(
+                                   chatId: userId,
+                                   text: param + "\nВойдите заново...",
+                                   replyMarkup: CommandKeyboard.LogIn);
+                }
+            }
+            else
+            {
+                await botClient.SendTextMessageAsync(
+                        chatId: userId,
+                        text: Resources.WelcomeUnknown,
+                        replyMarkup: CommandKeyboard.TelegramId);
+            }
         }
     }
 }

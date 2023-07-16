@@ -1,7 +1,7 @@
 ﻿using Simulator.Models;
-using Simulator.TelegramBotLibrary;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Telegram.Bot.Types.ReplyMarkups;
 
 namespace Simulator.BotControl
@@ -69,9 +69,9 @@ namespace Simulator.BotControl
             new[] { CheckTelegramId }
         });
         public static InlineKeyboardMarkup GroupsList;
-        public static void MakeGroupList()
+        public async static Task MakeGroupList()
         {
-            List<Group> groups = GroupTableCommand.GetAllGroups();
+            List<Group> groups = await DataBaseControl.GroupTableCommand.GetAllGroups();
             List<InlineKeyboardButton[]> inlineKeyboardButtons = groups.Select(g => new[]
             {
                 InlineKeyboardButton.WithCallbackData(g.GroupNumber, $"ShowUsersInfo|{g.GroupNumber}")

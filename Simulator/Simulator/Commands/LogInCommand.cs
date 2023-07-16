@@ -2,7 +2,7 @@ using Simulator.BotControl.State;
 using Simulator.Properties;
 using System.Threading.Tasks;
 using Telegram.Bot;
-using Simulator.TelegramBotLibrary;
+using Simulator.BotControl;
 
 namespace Simulator.Commands
 {
@@ -10,11 +10,8 @@ namespace Simulator.Commands
     {
         public override async Task Execute(long userId, ITelegramBotClient botClient, string param = "")
         {
-            await Task.Run(() =>
-            {
-                UserTableCommand.SetDialogState(userId, DialogState.EnterPassword);
-                botClient.SendTextMessageAsync(userId, Resources.EnterPassword);
-            });
+            await DataBaseControl.UserTableCommand.SetDialogState(userId, DialogState.EnterPassword);
+            await botClient.SendTextMessageAsync(userId, Resources.EnterPassword);
         }
     }
 }

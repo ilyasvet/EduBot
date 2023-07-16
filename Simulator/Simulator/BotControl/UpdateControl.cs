@@ -3,7 +3,6 @@ using Simulator.Commands;
 using System;
 using System.Threading.Tasks;
 using Telegram.Bot;
-using Simulator.TelegramBotLibrary;
 using Telegram.Bot.Types;
 using Simulator.Services;
 
@@ -18,7 +17,8 @@ namespace Simulator.BotControl
             bool onCourse = false;
             try
             {
-                if (UserTableCommand.HasUser(userId) && UserCaseTableCommand.IsOnCourse(userId))
+                if (await DataBaseControl.UserTableCommand.HasUser(userId)
+                    && await DataBaseControl.UserCaseTableCommand.IsOnCourse(userId))
                 {
                     onCourse = true;
                     await UpdateControlCase.MessageHandlingCase(message, botClient);
@@ -50,7 +50,8 @@ namespace Simulator.BotControl
             long userId = query.Message.Chat.Id;
             try
             {
-                if (UserTableCommand.HasUser(userId) && UserCaseTableCommand.IsOnCourse(userId))
+                if (await DataBaseControl.UserTableCommand.HasUser(userId)
+                    && await DataBaseControl.UserCaseTableCommand.IsOnCourse(userId))
                 {
                     await UpdateControlCase.CallbackQueryHandlingCase(query, botClient);
                 }
@@ -77,7 +78,7 @@ namespace Simulator.BotControl
             long userId = answer.User.Id;
             try
             {
-                if(UserCaseTableCommand.IsOnCourse(userId))
+                if(await DataBaseControl.UserCaseTableCommand.IsOnCourse(userId))
                 {
                     await UpdateControlCase.PollAnswerHandlingCase(answer, botClient);
                 }

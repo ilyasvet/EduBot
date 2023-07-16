@@ -1,4 +1,3 @@
-using Simulator.TelegramBotLibrary;
 using System.Threading.Tasks;
 using Telegram.Bot;
 using Simulator.BotControl.State;
@@ -18,7 +17,7 @@ namespace Simulator.BotControl
         {
             await Task.Run(async () =>
             {
-                DialogState state = UserTableCommand.GetDialogState(userId);
+                DialogState state = await DataBaseControl.UserTableCommand.GetDialogState(userId);
                 try
                 {
                     switch (state)
@@ -40,7 +39,7 @@ namespace Simulator.BotControl
                 }
                 finally
                 {
-                    UserTableCommand.SetDialogState(userId, DialogState.None);
+                    await DataBaseControl.UserTableCommand.SetDialogState(userId, DialogState.None);
                     // в любом случае скипаем стадию отправки файла
                 }
             });
@@ -102,9 +101,9 @@ namespace Simulator.BotControl
                 if (!GroupHandler.IsCorrectGroupNumber(groupNumber))
                     throw new ArgumentException("Неверный формат номера группы");
                
-                if (!GroupTableCommand.HasGroup(groupNumber)) // Проверяем, есть ли такая группа
+                if (!await DataBaseControl.GroupTableCommand.HasGroup(groupNumber)) // Проверяем, есть ли такая группа
                 {
-                    GroupHandler.AddGroup(groupNumber); //Если нет, то создаём её
+                    await GroupHandler.AddGroup(groupNumber); //Если нет, то создаём её
                     callBackMessage += $"\nГруппа \"{groupNumber}\" была добавлена";
                 }
                 

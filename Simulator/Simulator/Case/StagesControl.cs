@@ -80,7 +80,7 @@ namespace Simulator.Case
             //Если переход безусловный, то NextStage уже установлено
             //Если нет, то на основе свойств и ответа выбираем NextStage
         }
-        public static CaseStage GetNextStage(CaseStage current, CallbackQuery query)
+        public async static Task<CaseStage> GetNextStage(CaseStage current, CallbackQuery query)
         {
             if (query.Data == "MoveNext")
             {
@@ -88,7 +88,7 @@ namespace Simulator.Case
             }
             else if(query.Data == "ToBegin")
             {
-                UserCaseTableCommand.SetRate(query.From.Id, 0);
+                await DataBaseControl.UserCaseTableCommand.SetRate(query.From.Id, 0);
                 return Stages.StagesNone.Min();
             }
             else if(query.Data == "ToOut")
@@ -99,12 +99,12 @@ namespace Simulator.Case
         }
         public static async Task Move(long userId, CaseStage nextStage, ITelegramBotClient botClient)
         {
-            int hp = UserCaseTableCommand.GetHealthPoints(userId);
+            int hp = await DataBaseControl.UserCaseTableCommand.GetHealthPoints(userId);
 
             switch (nextStage)
             {
                 case CaseStagePoll poll:
-                    UserCaseTableCommand.SetStartTime(userId, DateTime.Now);
+                    await DataBaseControl.UserCaseTableCommand.SetStartTime(userId, DateTime.Now);
                     await ShowAdditionalInfo(botClient, poll, userId);
                     await botClient.SendPollAsync(
                         chatId: userId,
@@ -116,7 +116,7 @@ namespace Simulator.Case
                         );
                     break;
                 case CaseStageMessage message:
-                    UserCaseTableCommand.SetStartTime(userId, DateTime.Now);
+                    await DataBaseControl.UserCaseTableCommand.SetStartTime(userId, DateTime.Now);
                     await ShowAdditionalInfo(botClient, message, userId);
                     await botClient.SendTextMessageAsync(
                         chatId: userId,
@@ -127,7 +127,7 @@ namespace Simulator.Case
                 case CaseStageNone none:
                     if(hp == 3) // начальное значение
                     {
-                        UserCaseTableCommand.SetStartCaseTime(userId, DateTime.Now);
+                        await DataBaseControl.UserCaseTableCommand.SetStartCaseTime(userId, DateTime.Now);
                         await CaseJsonCommand.CheckJsonFile($"{ControlSystem.statsDirectory}\\{userId}.json");
                     }
                     await botClient.SendTextMessageAsync(userId,
@@ -135,10 +135,10 @@ namespace Simulator.Case
                         replyMarkup: CommandKeyboard.StageMenu);
                     break;
                 case CaseStageEndModule endStage:
-                    var resultsCallback = EndStageCalc.GetResultOfModule(endStage, userId);
+                    var resultsCallback = await EndStageCalc.GetResultOfModule(endStage, userId);
                     if(endStage.IsEndOfCase && hp <= 1) // На этом моменте hp в базе будет уже 0
                     {
-                        UserCaseTableCommand.SetEndCaseTime(userId, DateTime.Now);
+                        await DataBaseControl.UserCaseTableCommand.SetEndCaseTime(userId, DateTime.Now);
                     }
                     await botClient.SendTextMessageAsync(userId,
                         resultsCallback.Item1,

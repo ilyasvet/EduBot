@@ -1,15 +1,16 @@
-﻿using Simulator.TelegramBotLibrary;
+﻿using Simulator.BotControl;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace Simulator.Services
 {
     public static class GroupHandler
     {
-        public static void AddGroup(string groupNumber)
+        public static async Task AddGroup(string groupNumber)
         {
             Models.Group group = new Models.Group(groupNumber);
             group.SetPassword();
-            GroupTableCommand.AddGroup(group);
+            await DataBaseControl.GroupTableCommand.AddGroup(group);
         }
         public static string GetGroupNumberFromPath(string path)
         {

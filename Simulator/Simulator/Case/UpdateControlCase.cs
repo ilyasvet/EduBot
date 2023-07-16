@@ -8,6 +8,7 @@ using System;
 using System.IO;
 using Simulator.Properties;
 using Simulator.Services;
+using Simulator.BotControl;
 
 namespace Simulator.Case
 {
@@ -16,10 +17,10 @@ namespace Simulator.Case
         public static async Task CallbackQueryHandlingCase(CallbackQuery query, ITelegramBotClient botClient)
         {
             long userId = query.Message.Chat.Id;
-            CaseStage currentStage = StagesControl.Stages[UserCaseTableCommand.GetPoint(userId)];
+            CaseStage currentStage = StagesControl.Stages[await DataBaseControl.UserCaseTableCommand.GetPoint(userId)];
             //Получили этап, который пользователь только что прошёл, нажав на кнопку
 
-            CaseStage nextStage = StagesControl.GetNextStage(currentStage, query);
+            CaseStage nextStage = await StagesControl.GetNextStage(currentStage, query);
             //Получаем следующий этап, исходя из кнопки, на которую нажал пользователь
 
             if(nextStage == null)
@@ -32,7 +33,7 @@ namespace Simulator.Case
                     }
                     else
                     {
-                        if (UserCaseTableCommand.GetHealthPoints(userId) != 0)
+                        if (await DataBaseControl.UserCaseTableCommand.GetHealthPoints(userId) != 0)
                         {
                             return;
                         }
@@ -47,17 +48,18 @@ namespace Simulator.Case
         public static async Task PollAnswerHandlingCase(PollAnswer answer, ITelegramBotClient botClient)
         {
             long userId = answer.User.Id;
-            int attemptNo = UserCaseTableCommand.GetHealthPoints(userId) > 1 ? 1 : 2;
-            CaseStagePoll currentStage = (CaseStagePoll)StagesControl.Stages[UserCaseTableCommand.GetPoint(userId)];
+            int attemptNo = await DataBaseControl.UserCaseTableCommand.GetHealthPoints(userId) > 1 ? 1 : 2;
+            CaseStagePoll currentStage = (CaseStagePoll)StagesControl.
+                Stages[await DataBaseControl.UserCaseTableCommand.GetPoint(userId)];
             //Так как мы получаем PollAnswer, то очевидно, что текущий этап - опросник
 
             StagesControl.SetStageForMove(currentStage, answer.OptionIds);
             //По свойствам опросника и ответу определояем свойство NextStage
 
             double rate = StagesControl.CalculateRatePoll(currentStage, answer.OptionIds);
-            double currentUserRate = UserCaseTableCommand.GetRate(userId);
+            double currentUserRate = await DataBaseControl.UserCaseTableCommand.GetRate(userId);
             currentUserRate += rate;
-            UserCaseTableCommand.SetRate(userId, currentUserRate);
+            await DataBaseControl.UserCaseTableCommand.SetRate(userId, currentUserRate);
             //Считаем на основе ответа очки пользователя и добавляем их к общим
 
             await SetResultsJson(userId, currentStage, rate, attemptNo, answer.OptionIds);
@@ -70,8 +72,9 @@ namespace Simulator.Case
         public static async Task MessageHandlingCase(Message message, ITelegramBotClient botClient)
         {
             long userId = message.Chat.Id;
-            int attemptNo = UserCaseTableCommand.GetHealthPoints(userId) > 1 ? 1 : 2;
-            CaseStageMessage currentStage = (CaseStageMessage)StagesControl.Stages[UserCaseTableCommand.GetPoint(userId)];
+            int attemptNo = await DataBaseControl.UserCaseTableCommand.GetHealthPoints(userId) > 1 ? 1 : 2;
+            CaseStageMessage currentStage = (CaseStageMessage)StagesControl.
+                Stages[await DataBaseControl.UserCaseTableCommand.GetPoint(userId)];
             switch (currentStage.MessageTypeAnswer)
             {
                 case Telegram.Bot.Types.Enums.MessageType.Video:
@@ -94,9 +97,9 @@ namespace Simulator.Case
                     }
 
                     // добавляем птс за видос
-                    double currentUserRate = UserCaseTableCommand.GetRate(userId);
+                    double currentUserRate = await DataBaseControl.UserCaseTableCommand.GetRate(userId);
                     currentUserRate += currentStage.Rate;
-                    UserCaseTableCommand.SetRate(userId, currentUserRate);
+                    await DataBaseControl.UserCaseTableCommand.SetRate(userId, currentUserRate);
 
                     await SetResultsJson(userId, currentStage, currentStage.Rate, attemptNo, null);
                     break;
@@ -107,12 +110,14 @@ namespace Simulator.Case
             await SetAndMovePoint(userId, nextStage, botClient);
         }
 
-        private static async Task SetResultsJson(long userId, CaseStage currentStage, double rate, int attemptNo, int[] optionsIds)
+        private static async Task SetResultsJson(
+            long userId, CaseStage currentStage, double rate, int attemptNo, int[] optionsIds
+            )
         {
             int moduleNumber = currentStage.ModuleNumber;
             int questionNumber = currentStage.Number;
 
-            var time = DateTime.Now - UserCaseTableCommand.GetStartTime(userId);
+            var time = DateTime.Now - await DataBaseControl.UserCaseTableCommand.GetStartTime(userId);
 
             StageResults results = new StageResults();
             results.Time = time;
@@ -134,13 +139,13 @@ namespace Simulator.Case
 
         private static async Task GoOut(long userId, ITelegramBotClient botClient)
         {
-            UserCaseTableCommand.SetOnCourse(userId, false);
+            await DataBaseControl.UserCaseTableCommand.SetOnCourse(userId, false);
             var outCommand = new GoToMainMenuUserCommand();
             await outCommand.Execute(userId, botClient);
         }
         private async static Task SetAndMovePoint(long userId, CaseStage nextStage, ITelegramBotClient botClient)
         {
-            UserCaseTableCommand.SetPoint(userId, nextStage.Number);
+            await DataBaseControl.UserCaseTableCommand.SetPoint(userId, nextStage.Number);
             //Ставим в базе для пользователя следующий его этап
 
             await StagesControl.Move(userId, nextStage, botClient);

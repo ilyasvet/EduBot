@@ -1,13 +1,13 @@
 ﻿using Microsoft.Office.Interop.Excel;
 using Newtonsoft.Json.Linq;
 using Simulator.Models;
-using Simulator.TelegramBotLibrary;
 using System;
 using System.IO;
 using Telegram.Bot.Types.Enums;
 using Excel = Microsoft.Office.Interop.Excel;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Simulator.BotControl;
 
 namespace Simulator.Services
 {
@@ -320,7 +320,7 @@ namespace Simulator.Services
 
         private static async Task<int> AddUsersIterative(Worksheet worksheet, int rowsCount, string groupNumber)
         {
-            return await Task.Run(() =>
+            return await Task.Run(async () =>
             {
                 int count = 0;
                 for (int i = 1; i <= rowsCount; i++)
@@ -334,7 +334,7 @@ namespace Simulator.Services
                     {
                         throw new ArgumentException("TelegramId должен быть целым числом. Строка " + i);
                     }
-                    if (UserTableCommand.HasUser(userTelegramId))
+                    if (await DataBaseControl.UserTableCommand.HasUser(userTelegramId))
                     {
                         continue; //Если пользователь уже есть, повторно не добавляем его
                     }
@@ -354,13 +354,11 @@ namespace Simulator.Services
 
                     try
                     {
-                        UserTableCommand.AddUser(user);
-                        UserCaseTableCommand.AddUser(userTelegramId);
+                        await DataBaseControl.UserTableCommand.AddUser(user, UserType.User);
                     }
                     catch
                     {
-                        UserTableCommand.DeleteUser(userTelegramId);
-                        UserCaseTableCommand.DeleteUser(userTelegramId);
+                        await DataBaseControl.UserTableCommand.DeleteUser(userTelegramId);
                         throw;
                     }
 

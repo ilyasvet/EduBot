@@ -2,7 +2,6 @@
 using Simulator.Models;
 using System.Threading.Tasks;
 using Telegram.Bot;
-using Simulator.TelegramBotLibrary;
 using Simulator.Properties;
 using Simulator.BotControl;
 
@@ -20,8 +19,8 @@ namespace Simulator.Commands
                 replyMarkup: CommandKeyboard.UserMenu);
 
             }
-            else if (UserCaseTableCommand.GetHealthPoints(userId) == 0
-                && UserCaseTableCommand.GetPoint(userId) == StagesControl.Stages.StagesEnd.
+            else if (await DataBaseControl.UserCaseTableCommand.GetHealthPoints(userId) == 0
+                && await DataBaseControl.UserCaseTableCommand.GetPoint(userId) == StagesControl.Stages.StagesEnd.
                     Find(s => s.IsEndOfCase == true).Number)
             {
                 await botClient.SendTextMessageAsync(
@@ -31,8 +30,8 @@ namespace Simulator.Commands
             }
             else
             {
-                UserCaseTableCommand.SetOnCourse(userId, true);
-                CaseStage currentStage = StagesControl.Stages[UserCaseTableCommand.GetPoint(userId)];
+                await DataBaseControl.UserCaseTableCommand.SetOnCourse(userId, true);
+                CaseStage currentStage = StagesControl.Stages[await DataBaseControl.UserCaseTableCommand.GetPoint(userId)];
                 await StagesControl.Move(userId, currentStage, botClient);
             }
         }

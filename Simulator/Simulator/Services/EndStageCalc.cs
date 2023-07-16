@@ -3,6 +3,7 @@ using Simulator.Models;
 using Simulator.TelegramBotLibrary;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Telegram.Bot.Types.ReplyMarkups;
 
 namespace Simulator.Services
@@ -16,14 +17,14 @@ namespace Simulator.Services
 
     internal static class EndStageCalc
     {
-        public static ValueTuple<string, InlineKeyboardMarkup> GetResultOfModule(CaseStageEndModule descriptor, long userId)
+        public async static Task<ValueTuple<string, InlineKeyboardMarkup>> GetResultOfModule(CaseStageEndModule descriptor, long userId)
         {
             double currentRate;
             List<InlineKeyboardButton[]> buttons = new List<InlineKeyboardButton[]>();
             var result = new ValueTuple<string, InlineKeyboardMarkup>();
             
-            currentRate = UserCaseTableCommand.GetRate(userId);
-            int attemptNumber = UserCaseTableCommand.GetHealthPoints(userId) > 1 ? 1 : 2;
+            currentRate = await DataBaseControl.UserCaseTableCommand.GetRate(userId);
+            int attemptNumber = await DataBaseControl.UserCaseTableCommand.GetHealthPoints(userId) > 1 ? 1 : 2;
             //Если жизней больше, чем 1, то это первая попытка, иначе 2.
             
             if(descriptor.IsEndOfCase)
@@ -42,14 +43,14 @@ namespace Simulator.Services
                     ratePlace = 2;
                 }
                 result = GetResultEnd(attemptNumber, descriptor, buttons, ratePlace);
-                UserCaseTableCommand.SetHealthPoints(userId, 2-attemptNumber);
+                await DataBaseControl.UserCaseTableCommand.SetHealthPoints(userId, 2-attemptNumber);
                 //Если была первая попытка, то поставится 1, если вторая, то 0
             }
             else if(currentRate < descriptor.Rates[0])
             {
                 int newHealthPoints = 0;
                 if(descriptor.ModuleNumber == 1 &&
-                    UserCaseTableCommand.GetHealthPoints(userId)==3)
+                    await DataBaseControl.UserCaseTableCommand.GetHealthPoints(userId) ==3)
                 {
                     newHealthPoints = 2;
                     //Снимается дополнительная попытка на 1 модуль
@@ -66,7 +67,7 @@ namespace Simulator.Services
                     newHealthPoints = 0;
                     result = GetResult(buttons, descriptor, ResultType.SecondFail);
                 }
-                UserCaseTableCommand.SetHealthPoints(userId, newHealthPoints);
+                await DataBaseControl.UserCaseTableCommand.SetHealthPoints(userId, newHealthPoints);
             }
             else
             {
