@@ -39,21 +39,25 @@ namespace Simulator.Models
             }
         }
         public string GroupNumber { get; set; }
-        public bool IsAdmin { get; set; }
+        public UserType UserType { get; set; }
 
         public User(long userId, string name, string surname)
         {
             UserID = userId;
             Name = name;
             Surname = surname;
-            IsAdmin = false;
         }
         public override string ToString()
         {
             string result = Name + " " + Surname;
-            if(IsAdmin)
+            switch (UserType)
             {
-                result += " (А)";
+                case UserType.Admin:
+                    result += " (А)";
+                    break;
+                case UserType.ClassLeader:
+                    result += " (C)";
+                    break;
             }
             return result;
         }

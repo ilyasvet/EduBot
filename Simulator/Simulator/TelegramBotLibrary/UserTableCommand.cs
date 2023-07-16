@@ -1,137 +1,170 @@
-﻿using Simulator.BotControl.State;
+﻿using DbBotLibrary;
+using Simulator.BotControl.State;
 using Simulator.Models;
-using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Threading.Tasks;
 
 namespace Simulator.TelegramBotLibrary
 {
-    public static class UserTableCommand
+    public class UserTableCommand : CommandTable
     {
-        private static SqlCommand command = new SqlCommand();
+        public async Task AddUser(User user, UserType type)
+        {
+            string commandText = $"INSERT INTO Users (UserID, Name, Surname)" +
+                $" VALUES ('{user.UserID}','{user.Name}','{user.Surname}')";
+            await ExecuteNonQueryCommand(commandText);
 
-        static UserTableCommand()
-        {
-            command.Connection = LocalSqlDbConnection.Connection;
-        }
-   
-        public static void Dispose()
-        {
-            command.Dispose();
+            commandText = $"INSERT INTO UsersState (UserID, DialogState, UserType, LogedIn)" +
+                $" VALUES ('{user.UserID}', 0, {(int)type}, 0)";
+            await ExecuteNonQueryCommand(commandText);
+
+            commandText = $"INSERT INTO UserCourseState (UserId, Point, Rate, OnCourse)" +
+                $" VALUES ('{user.UserID}', 0, 0, 0)";
+            await ExecuteNonQueryCommand(commandText);
         }
 
-        public static void AddUser(User user)
+        public async Task<bool> HasUser(long userId)
         {
-            string commandText = $"insert into Users (UserId, Name, Surname, IsAdmin, isGroupLeader, DialogState, GroupNumber)" +
-                $" values ('{user.UserID}','{user.Name}','{user.Surname}','{false}','{false}','{0}','{user.GroupNumber}')";
-            //Добавлять пользователя (если его нет в базе)
-            ExecuteNonQueryCommand(commandText);
-        }
-        public static DialogState GetDialogState(long userId)
-        {
-            string commandText = $"select * from Users where UserId = {userId}";
+            string commandText = $"SELECT COUNT(UserID) FROM Users WHERE UserID = {userId}";
             //Искать по уникальному идентификтаору, есть ли такой пользователь
-            command.CommandText = commandText;
-            using (SqlDataReader reader = command.ExecuteReader())
+            bool result = (bool)await ExecuteReaderCommand(commandText, (reader) =>
+            {
+                reader.Read();
+                return (int)reader[0] != 0;
+            });
+            return result;
+        }
+
+        public async void DeleteUser(long userId)
+        {
+            string commandText = $"DELETE FROM Users WHERE UserId = {userId}";
+            await ExecuteNonQueryCommand(commandText);
+            commandText = $"DELETE FROM UsersState WHERE UserId = {userId}";
+            await ExecuteNonQueryCommand(commandText);
+            commandText = $"DELETE FROM UserCourseState WHERE UserId = {userId}";
+            await ExecuteNonQueryCommand(commandText);
+        }
+
+        public async Task SetDialogState(long userId, DialogState state)
+        {
+            string commandText = $"UPDATE UsersSate SET DialogState = {(int)state} WHERE UserID = {userId}";
+            await ExecuteNonQueryCommand(commandText);
+        }
+
+        public async Task<DialogState> GetDialogState(long userId)
+        {
+            string commandText = $"SELECT DialogState FROM UsersState WHERE UserID = {userId}";
+            
+            DialogState result = (DialogState)await ExecuteReaderCommand(commandText, (reader) =>
             {
                 if (reader.Read())
                 {
-                    return (DialogState)reader["DialogState"];
+                    return (DialogState)reader[0];
                 }
-            }
-            return DialogState.None;
+                return null;
+            });
+
+            return result;
         }
-        public static void SetDialogState(long userId, DialogState state)
+       
+        public async Task<UserType> GetUserType(long userId)
         {
-            string commandText = $"update Users set DialogState = '{(int)state}' where UserId = {userId}";
-            ExecuteNonQueryCommand(commandText);
-        }
-        public static bool HasUser(long userId)
-        {
-            string commandText = $"select * from Users where UserId = {userId}";
-            //Искать по уникальному идентификтаору, есть ли такой пользователь
-            command.CommandText = commandText;
-            using (SqlDataReader reader = command.ExecuteReader())
-            {
-                return reader.HasRows;
-            }
-        }
-        public static bool IsAdmin(long userId)
-        {
-            string commandText = $"select * from Users where UserId = {userId}";
-            command.CommandText = commandText;
-            using (SqlDataReader reader = command.ExecuteReader())
+            string commandText = $"SELECT UserType FROM UsersState WHERE UserID = {userId}";
+
+            UserType result = (UserType)await ExecuteReaderCommand(commandText, (reader) =>
             {
                 if (reader.Read())
                 {
-                    return (bool)reader["IsAdmin"];
+                    return (UserType)(int)reader[0];
                 }
-            }
-            throw new ArgumentException("Not foubd user in database");
+                return null;
+            });
+
+            return result;
         }
-        public static User GetUserById(long userId)
+
+        public async Task<User> GetUserById(long userId)
         {
-            string commandText = $"select * from Users where UserId = {userId}";
-            command.CommandText = commandText;
-            using (SqlDataReader reader = command.ExecuteReader())
+            string commandText = $"SELECT u.UserID, u.Name, u.Surname, u.GroupNumber us.UserType" +
+                $" FROM Users u" +
+                $" INNER JOIN UsersState us" +
+                $" ON u.UserID = us.UserID" +
+                $" WHERE u.UserID = {userId}";
+            
+            User result = await ExecuteReaderCommand(commandText, (reader) =>
             {
                 GetUserFromReader(reader, out User user);
                 return user;
-            }
+            }) as User;
+
+            return result;
         }
-        public static void SetAccess(long userId, bool up)
+
+        public async Task<bool> IsLogedIn(long userId)
         {
-            string commandText = $"update Users set IsAdmin = '{up}' where UserId = {userId}";
-            //Назначить пользователя администратором
-            ExecuteNonQueryCommand(commandText);
-        }
-        public static List<User> GetGroupUsers(string groupNumber)
-        {
-            command.CommandText = $"select * from Users where GroupNumber = '{groupNumber}'";
-            using (SqlDataReader reader = command.ExecuteReader())
+            string commandText = $"SELECT LogedIn FROM UsersState WHERE UserID = {userId}";
+            
+            bool result = (bool)await ExecuteReaderCommand(commandText, (reader) =>
             {
-                List<User> registeredUsers = new List<User>();
+                if (reader.Read())
+                {
+                    return (bool)reader[0];
+                }
+                return null;
+            });
+
+            return result;
+        }
+
+        public async Task<List<User>> GetGroupUsers(string groupNumber)
+        {
+            string commandText = $"SELECT u.UserID, u.Name, u.Surname, u.GroupNumber us.UserType" +
+                $" FROM Users u" +
+                $" INNER JOIN UsersState us" +
+                $" ON u.UserID = us.UserID" +
+                $" WHERE u.GroupNumber = '{groupNumber}'";
+
+            List<User> result = await ExecuteReaderCommand(commandText, (reader) =>
+            {
+                List<User> registeredUsers = new();
                 while (GetUserFromReader(reader, out User user))
                 {
                     registeredUsers.Add(user);
                 }
                 return registeredUsers;
-            }
+            }) as List<User>;
+
+            return result;
         }
-        public static string GetGroupNumber(long userId)
+
+        public async Task<string> GetGroupNumber(long userId)
         {
-            command.CommandText = $"select * from Users where UserId = {userId}";
-            using (SqlDataReader reader = command.ExecuteReader())
+            string commandText = $"SELECT GroupNumber FROM Users WHERE UserId = {userId}";
+
+            string result = await ExecuteReaderCommand(commandText, (reader) =>
             {
-                if(reader.Read())
+                if (reader.Read())
                 {
-                    return (string)reader["GroupNumber"];
+                    return (string)reader[0];
                 }
                 return null;
-            }
+            }) as string;
+
+            return result;
         }
-        public static void DeleteUser(long userId)
-        {
-            string commandText = $"delete from Users where UserId = {userId}";
-            ExecuteNonQueryCommand(commandText);
-        }
-        private static bool GetUserFromReader(SqlDataReader reader, out User user)
+
+        private bool GetUserFromReader(SqlDataReader reader, out User user)
         {
             user = null;
             if (reader.Read())
             {
-                user = new User((int)reader["UserID"], (string)reader["Name"], (string)reader["Surname"]);
-                user.IsAdmin = (bool)reader["IsAdmin"];
-                user.GroupNumber = (string)reader["GroupNumber"];
+                user = new User((int)reader[0], (string)reader[1], (string)reader[2]);
+                user.GroupNumber = (string)reader[3];
+                user.UserType = (UserType)(int)reader[4];
                 return true;
             }
             return false;
-        }
-
-        private static void ExecuteNonQueryCommand(string commandText)
-        {
-            command.CommandText = commandText;
-            command.ExecuteNonQuery();
         }
     }
 }

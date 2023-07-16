@@ -1,0 +1,12 @@
+﻿Login LogInCommand
+MainMenuUser GoToMainMenuUserCommand
+MainMenuAdmin AdminGoToMainMenuCommand
+UserCard UserCardCommand
+ShowUsersInfo AdminShowUsersInfoCommand
+ListGroups AdminShowGroupsInfoCommand
+AddUsersAdmin AdminAddNewUsersCommand
+AddCase AdminAddCaseCommand
+ToCase UserGoToCaseCommand
+GetStatistics AdminGetStatisticsCommand
+CreateCase AdminCreateCaseCommand
+CheckTelegramId TelegramIDCommand

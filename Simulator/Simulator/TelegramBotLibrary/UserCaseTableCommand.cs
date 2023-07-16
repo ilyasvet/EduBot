@@ -1,173 +1,162 @@
-﻿using System;
-using System.Data.SqlClient;
+﻿using DbBotLibrary;
+using System;
+using System.Threading.Tasks;
 
 namespace Simulator.TelegramBotLibrary
 {
-    public static class UserCaseTableCommand
+    public class UserCaseTableCommand : CommandTable
     {
-        private static SqlCommand command = new SqlCommand();
-
-        static UserCaseTableCommand()
+        public async Task SetPoint(long userId, int number)
         {
-            command.Connection = LocalSqlDbConnection.Connection;
+            string commandText = $"UPDATE UserCourseState SET Point = {number} WHERE UserID = {userId}";
+            await ExecuteNonQueryCommand(commandText);
         }
 
-        public static void Dispose()
+        public async Task<int> GetPoint(long userId)
         {
-            command.Dispose();
-        }
-
-        public static void AddUser(long userId)
-        {
-            string commandText = $"insert into UserCase (UserId, OnCourse, Rate, Point, HealthPoints)" +
-                $" values ('{userId}','{false}','{0}','{0}','{3}')";
-            //Добавлять пользователя (если его нет в базе)
-            ExecuteNonQueryCommand(commandText);
-        }
-        public static bool IsOnCourse(long userId)
-        {
-            string commandText = $"select * from UserCase where UserId = {userId}";
-            command.CommandText = commandText;
-            using (SqlDataReader reader = command.ExecuteReader())
+            string commandText = $"SELECT Point FROM UserCourseState WHERE UserID = {userId}";
+            
+            int result = (int)await ExecuteReaderCommand(commandText, (reader) =>
             {
                 if (reader.Read())
                 {
-                    return (bool)reader["OnCourse"];
+                    return (int)reader[0];
                 }
-            }
-            throw new ArgumentException();
+                return null;
+            });
+
+            return result;
         }
 
-        public static int GetPoint(long userId)
+        public async Task SetRate(long userId, double currentUserRate)
         {
-            string commandText = $"select * from UserCase where UserId = {userId}";
-            command.CommandText = commandText;
-            using (SqlDataReader reader = command.ExecuteReader())
+            string commandText = $"UPDATE UserCourseState SET Rate = {currentUserRate} WHERE UserID = {userId}";
+            await ExecuteNonQueryCommand(commandText);
+        }
+
+        public async Task<double> GetRate(long userId)
+        {
+            string commandText = $"SELECT Rate FROM UserCourseState WHERE UserID = {userId}";
+            double result = (double)await ExecuteReaderCommand(commandText, (reader) =>
             {
                 if (reader.Read())
                 {
-                    return (int)reader["Point"];
+                    return (double)reader[0];
                 }
-            }
-            throw new ArgumentException();
+                return null;
+            });
+
+            return result;
         }
 
-        public static void SetPoint(long userId, int number)
+        public async Task SetOnCourse(long userId, bool boolOnCourse)
         {
-            string commandText = $"update UserCase set Point = {number} where UserId = {userId}";
-            ExecuteNonQueryCommand(commandText);
+            string commandText = $"UPDATE UserCourseState SET OnCourse = {boolOnCourse} WHERE UserID = {userId}";
+            await ExecuteNonQueryCommand(commandText);
         }
 
-        public static double GetRate(long userId)
+        public async Task<bool> IsOnCourse(long userId)
         {
-            string commantText = $"select * from UserCase where UserId = {userId}";
-            command.CommandText = commantText;
-            using (SqlDataReader reader = command.ExecuteReader())
+            string commandText = $"SELECT OnCourse FROM UserCourseState WHERE UserID = {userId}";
+            
+            bool result = (bool)await ExecuteReaderCommand(commandText, (reader) =>
             {
                 if (reader.Read())
                 {
-                    return (double)reader["Rate"];
+                    return (bool)reader[0];
                 }
-            }
-            throw new ArgumentException();
+                return null;
+            });
+
+            return result;
         }
 
-        public static void SetRate(long userId, double currentUserRate)
+        public async Task SetHealthPoints(long userId, int healthPoints = 3)
         {
-            string commandText = $"update UserCase set Rate = {currentUserRate} where userId = {userId}";
-            ExecuteNonQueryCommand(commandText);
+            string commandText = $"UPDATE UserCourseState SET HealthPoints = {healthPoints} WHERE UserID = {userId}";
+            await ExecuteNonQueryCommand(commandText);
         }
 
-        public static void SetOnCourse(long userId, bool boolOnCourse)
+        public async Task<int> GetHealthPoints(long userId)
         {
-            string commandText = $"update UserCase set OnCourse = '{boolOnCourse}' where userId = {userId}";
-            ExecuteNonQueryCommand(commandText);
-        }
+            string commandText = $"SELECT HealthPoints FROM UserCourseState WHERE UserID = {userId}";
 
-        public static void SetHealthPoints(long userId, int healthPoints = 3)
-        {
-            string commandText = $"update UserCase set HealthPoints = '{healthPoints}' where userId = {userId}";
-            ExecuteNonQueryCommand(commandText);
-        }
-
-        public static int GetHealthPoints(long userId)
-        {
-            string commantText = $"select * from UserCase where UserId = {userId}";
-            command.CommandText = commantText;
-            using (SqlDataReader reader = command.ExecuteReader())
+            int result = (int)await ExecuteReaderCommand(commandText, (reader) =>
             {
                 if (reader.Read())
                 {
-                    return (int)reader["HealthPoints"];
+                    return (int)reader[0];
                 }
-            }
-            throw new ArgumentException();
+                return null;
+            });
+
+            return result;
         }
-        public static DateTime GetStartTime(long userId)
+
+        public async Task SetStartTime(long userId, DateTime time)
         {
-            string commandText = $"select * from UserCase where UserId = {userId}";
-            command.CommandText = commandText;
-            using (SqlDataReader reader = command.ExecuteReader())
-            {
-                if(reader.Read())
-                {
-                    return (DateTime)reader["StartTime"];
-                }
-            }
-            throw new ArgumentException();
+            string commandText = $"UPDATE UserCourseState SET StartTime = '{time}' WHERE UserID = {userId}";
+            await ExecuteNonQueryCommand(commandText);
         }
-        public static void SetStartTime(long userId, DateTime time)
+
+        public async Task<DateTime> GetStartTime(long userId)
         {
-            string commandText = $"update UserCase set StartTime = '{time}' where UserId = {userId}";
-            ExecuteNonQueryCommand(commandText);
-        }
-        public static DateTime GetStartCaseTime(long userId)
-        {
-            string commandText = $"select * from UserCase where UserId = {userId}";
-            command.CommandText = commandText;
-            using (SqlDataReader reader = command.ExecuteReader())
+            string commandText = $"SELECT StartTime FROM UserCourseState WHERE UserID = {userId}";
+
+            DateTime result = (DateTime)await ExecuteReaderCommand(commandText, (reader) =>
             {
                 if (reader.Read())
                 {
-                    return (DateTime)reader["StartCaseTime"];
+                    return (DateTime)reader[0];
                 }
-            }
-            throw new ArgumentException();
+                return null;
+            });
+
+            return result;
         }
-        public static void SetStartCaseTime(long userId, DateTime time)
+
+        public async Task SetStartCaseTime(long userId, DateTime time)
         {
-            string commandText = $"update UserCase set StartCaseTime = '{time}' where UserId = {userId}";
-            ExecuteNonQueryCommand(commandText);
+            string commandText = $"UPDATE UserCourseState SET StartCaseTime = '{time}' WHERE UserID = {userId}";
+            await ExecuteNonQueryCommand(commandText);
         }
-        public static DateTime GetEndCaseTime(long userId)
+
+        public async Task<DateTime> GetStartCaseTime(long userId)
         {
-            string commandText = $"select * from UserCase where UserId = {userId}";
-            command.CommandText = commandText;
-            using (SqlDataReader reader = command.ExecuteReader())
+            string commandText = $"SELECT StartCaseTime FROM UserCourseState WHERE UserID = {userId}";
+
+            DateTime result = (DateTime)await ExecuteReaderCommand(commandText, (reader) =>
             {
                 if (reader.Read())
                 {
-                    return (DateTime)reader["EndCaseTime"];
+                    return (DateTime)reader[0];
                 }
-            }
-            throw new ArgumentException();
-        }
-        public static void SetEndCaseTime(long userId, DateTime time)
-        {
-            string commandText = $"update UserCase set EndCaseTime = '{time}' where UserId = {userId}";
-            ExecuteNonQueryCommand(commandText);
+                return null;
+            });
+
+            return result;
         }
 
-        public static void DeleteUser(long userId)
+        public async Task SetEndCaseTime(long userId, DateTime time)
         {
-            string commandText = $"delete from UserCase where UserId = {userId}";
-            ExecuteNonQueryCommand(commandText);
+            string commandText = $"UPDATE UserCourseState SET EndCaseTime = '{time}' WHERE UserID = {userId}";
+            await ExecuteNonQueryCommand(commandText);
+        }
+        public async Task<DateTime> GetEndCaseTime(long userId)
+        {
+            string commandText = $"SELECT EndCaseTime FROM UserCourseState WHERE UserID = {userId}";
+
+            DateTime result = (DateTime)await ExecuteReaderCommand(commandText, (reader) =>
+            {
+                if (reader.Read())
+                {
+                    return (DateTime)reader[0];
+                }
+                return null;
+            });
+
+            return result;
         }
 
-        private static void ExecuteNonQueryCommand(string commandText)
-        {
-            command.CommandText = commandText;
-            command.ExecuteNonQuery();
-        }
     }
 }

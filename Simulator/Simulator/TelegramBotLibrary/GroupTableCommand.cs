@@ -1,104 +1,97 @@
-using System;
+using DbBotLibrary;
+using Simulator.Models;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Threading.Tasks;
 
 namespace Simulator.TelegramBotLibrary
 {
-    public static class GroupTableCommand
+    public class GroupTableCommand : CommandTable
     {
-        private static SqlCommand command = new SqlCommand();
-        
-        static GroupTableCommand()
+        public async Task AddGroup(Group group)
         {
-            command.Connection = LocalSqlDbConnection.Connection;
-        }
-        
-        public static void Dispose()
-        {
-            command.Dispose();
-        }
-        
-        public static string GetPassword(string groupNumber)
-        {
-            string commandText = $"select * from groups where GroupNumber = '{groupNumber}'";
-            command.CommandText = commandText;
-            using (SqlDataReader reader = command.ExecuteReader())
-            {
-                if(reader.Read())
-                {
-                    return (string)reader["Password"];
-                }
-                throw new ArgumentNullException();
-            }
-        }
-        public static bool HasGroup(string groupNumber)
-        {
-            string commandText = $"select * from groups where GroupNumber = '{groupNumber}'";
-            command.CommandText = commandText;
-            using (SqlDataReader reader = command.ExecuteReader())
-            {
-                return reader.HasRows;
-            }
+            string commandText = $"INSERT INTO Groups (GroupNumber, Password)" +
+                                 $" VALUES ('{group.GroupNumber}','{group.Password}')";
+            await ExecuteNonQueryCommand(commandText);
         }
 
-        public static void SetPassword(string groupNumber, string password)
+        public async Task<Group> GetGroup(string groupNumber)
         {
-            string commandText = $"update Groups set Password = '{password}' where GroupNumber = '{groupNumber}'";
-            ExecuteNonQueryCommand(commandText);
-        }
+            string commandText = $"SELECT * FROM Groups WHERE GroupNumber = {groupNumber}";
 
-        public static void AddGroup(Models.Group group)
-        {
-            string commandText = $"insert into Groups (GroupNumber, Password)" +
-                                 $" values ('{group.GroupNumber}','{group.Password}')";
-            ExecuteNonQueryCommand(commandText);
-        }
-
-        public static Models.Group GetGroup(string groupNumber)
-        {
-            string commandText = $"select * from groups where GroupNumber = {groupNumber}";
-            command.CommandText = commandText;
-            using (SqlDataReader reader = command.ExecuteReader())
+            Group result = await ExecuteReaderCommand(commandText, (reader) =>
             {
-                GetGroupFromReader(reader, out Models.Group group);
+                GetGroupFromReader(reader, out Group group);
                 return group;
-            }
+            }) as Group;
+
+            return result;
         }
-        public static List<Models.Group> GetAllGroups()
+
+        public async Task<List<Group>> GetAllGroups()
         {
-            string commandText = $"select * from groups";
-            command.CommandText = commandText;
-            using (SqlDataReader reader = command.ExecuteReader())
+            string commandText = $"SELECT * FROM Groups";
+
+            List<Group> result = await ExecuteReaderCommand(commandText, (reader) =>
             {
-                List<Models.Group> groups = new List<Models.Group>();
-                while(GetGroupFromReader(reader, out Models.Group group))
+                List<Group> groups = new();
+                while (GetGroupFromReader(reader, out Group group))
                 {
                     groups.Add(group);
                 }
                 return groups;
-            }
+            }) as List<Group>;
+
+            return result;
         }
 
-        public static void DeleteGroup(string groupNumber)
+        public async Task<bool> HasGroup(string groupNumber)
         {
-            string commandText = $"delete from Groups where GroupNumber = '{groupNumber}'";
-            ExecuteNonQueryCommand(commandText);
+            string commandText = $"SELECT COUNT(GroupNumber) FROM Groups WHERE GroupNumber = '{groupNumber}'";
+
+            bool result = (bool)await ExecuteReaderCommand(commandText, (reader) =>
+            {
+                reader.Read();
+                return (int)reader[0] != 0;
+            });
+
+            return result;
         }
-        private static bool GetGroupFromReader(SqlDataReader reader, out Models.Group group)
+
+        public async Task DeleteGroup(string groupNumber)
+        {
+            string commandText = $"DELETE FROM Groups WHERE GroupNumber = '{groupNumber}'";
+            await ExecuteNonQueryCommand(commandText);
+        }
+
+        public async Task<string> GetPassword(string groupNumber)
+        {
+            string commandText = $"SELECT Password FROM Groups WHERE GroupNumber = '{groupNumber}'";
+
+            string result = await ExecuteReaderCommand(commandText, (reader) =>
+            {
+                if (reader.Read())
+                {
+                    return (string)reader[0];
+                }
+                return null;
+            }) as string;
+
+            return result;
+        }  
+     
+        private bool GetGroupFromReader(SqlDataReader reader, out Group group)
         {
             group = null;
             if (reader.Read())
             {
-                group = new Models.Group((string)reader["GroupNumber"]);
-                group.Password = (string)reader["Password"];
+                group = new Group((string)reader[0])
+                {
+                    Password = (string)reader[1]
+                };
                 return true;
             }
             return false;
-        }
-        private static void ExecuteNonQueryCommand(string commandText)
-        {
-            command.CommandText = commandText;
-            command.ExecuteNonQuery();
         }
     }
 }
