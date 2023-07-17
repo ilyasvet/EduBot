@@ -41,7 +41,10 @@ namespace Simulator.Services
                 { "GetStatistics", "AdminGetStatisticsCommand" },
                 { "CreateCase", "AdminCreateCaseCommand" },
                 { "CheckTelegramId", "TelegramIDCommand" },
-                { "AddGroupLider", "AdminAddGroupLiderCommand" }
+                { "AddGroupLider", "AdminAddGroupLiderCommand" },
+                { "AnswersFirst", "AdminAnswersCommand" },
+                { "AnswersTypes", "AdminAnswersTypesCommand" },
+                { "ShowAnswers", "AdminShowAnswersCommand" },
             };
             return result;
         }

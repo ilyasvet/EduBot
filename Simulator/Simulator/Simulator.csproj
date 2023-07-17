@@ -107,7 +107,10 @@
     <Compile Include="Case\UpdateControlCase.cs" />
     <Compile Include="Commands\AdminAddCaseCommand.cs" />
     <Compile Include="Commands\AdminAddNewUsersCommand.cs" />
+    <Compile Include="Commands\AdminAnswersCommand.cs" />
+    <Compile Include="Commands\AdminAnswersTypesCommand.cs" />
     <Compile Include="Commands\AdminGetStatisticsCommand.cs" />
+    <Compile Include="Commands\AdminShowAnswersCommand.cs" />
     <Compile Include="Commands\AdminShowGroupsInfoCommand.cs" />
     <Compile Include="Commands\AdminCreateCaseCommand.cs" />
     <Compile Include="Commands\Command.cs" />

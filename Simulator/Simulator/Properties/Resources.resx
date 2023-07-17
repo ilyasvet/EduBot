@@ -192,4 +192,7 @@
   <data name="EnterStart" xml:space="preserve">
     <value>Введите /start для продолжения</value>
   </data>
+  <data name="ShowAnswersTypes" xml:space="preserve">
+    <value>Группа выбрана. Теперь выберите тип ответа</value>
+  </data>
 </root>

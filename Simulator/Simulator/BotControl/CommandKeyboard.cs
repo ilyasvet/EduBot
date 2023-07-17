@@ -20,6 +20,7 @@ namespace Simulator.BotControl
         private static InlineKeyboardButton CheckTelegramId = InlineKeyboardButton.WithCallbackData("Узнать свой Telegram ID", "CheckTelegramId");
         private static InlineKeyboardButton AddGroupLider = InlineKeyboardButton.WithCallbackData("Добавить старосту на курс", "AddGroupLider");
         private static InlineKeyboardButton LogInButton = InlineKeyboardButton.WithCallbackData("Войти", "Login");
+        private static InlineKeyboardButton AnswersButton = InlineKeyboardButton.WithCallbackData("Ответы пользователей", "AnswersFirst");
 
 
         public static InlineKeyboardButton ToFinishButton = InlineKeyboardButton.WithCallbackData("Выйти", "ToOut");
@@ -29,7 +30,7 @@ namespace Simulator.BotControl
         public static InlineKeyboardMarkup StageMenu = new(new List<InlineKeyboardButton[]>
         {
             new[] { ToFinishButton },
-            new[] { NextButton }
+            new[] { NextButton },
         });
 
         public static InlineKeyboardMarkup LogIn = new(new[]
@@ -60,24 +61,40 @@ namespace Simulator.BotControl
             new[] { GetStatistics },
             new[] { CreateCase },
             new[] { CheckTelegramId },
-            new[] { AddGroupLider }
+            new[] { AddGroupLider },
+            new[] { AnswersButton },
         });
         public static InlineKeyboardMarkup UserMenu = new(new[]
         {
             new[] { UserCard },
             new[] { GoToCase },
-            new[] { CheckTelegramId }
+            new[] { CheckTelegramId },
         });
         public static InlineKeyboardMarkup GroupsList;
-        public async static Task MakeGroupList()
+        public static InlineKeyboardMarkup AnswersTypesList;
+        public async static Task MakeGroupList(string command)
         {
             List<Group> groups = await DataBaseControl.GroupTableCommand.GetAllGroups();
             List<InlineKeyboardButton[]> inlineKeyboardButtons = groups.Select(g => new[]
             {
-                InlineKeyboardButton.WithCallbackData(g.GroupNumber, $"ShowUsersInfo|{g.GroupNumber}")
+                InlineKeyboardButton.WithCallbackData(g.GroupNumber, $"{command}|{g.GroupNumber}")
             }).ToList();
             inlineKeyboardButtons.Add(new[] { ToMenuAdmin });
             GroupsList = new InlineKeyboardMarkup(inlineKeyboardButtons);
+        }
+
+        public static void MakeAnswersTypes(string groupNumber)
+        {
+            string commandName = "ShowAnswers";
+            List<InlineKeyboardButton[]> inlineKeyboardButtons = new()
+            {
+                new[] { InlineKeyboardButton.WithCallbackData("Видео", $"{commandName}|{groupNumber}-/videos/") },
+                new[] { InlineKeyboardButton.WithCallbackData("Аудио", $"{commandName}|{groupNumber}-/audios/") },
+                new[] { InlineKeyboardButton.WithCallbackData("Текст", $"{commandName}|{groupNumber}-/texts/") },
+                new[] { InlineKeyboardButton.WithCallbackData("Другой документ", $"{commandName}|{groupNumber}-/other/") },
+                new[] { InlineKeyboardButton.WithCallbackData("К группам", "AnswersFirst") },
+            };
+            AnswersTypesList = new InlineKeyboardMarkup(inlineKeyboardButtons);
         }
     }
 }

@@ -5,11 +5,11 @@ using Telegram.Bot;
 
 namespace Simulator.Commands
 {
-    public class AdminShowGroupsInfoCommand : Command
+    internal class AdminAnswersCommand : Command
     {
         public async override Task Execute(long userId, ITelegramBotClient botClient, string param = "")
         {
-            await CommandKeyboard.MakeGroupList("ShowUsersInfo");
+            await CommandKeyboard.MakeGroupList("AnswersTypes");
             await botClient.SendTextMessageAsync(
                         chatId: userId,
                         text: Resources.ShowGroups,

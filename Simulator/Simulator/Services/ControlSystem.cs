@@ -24,6 +24,9 @@ namespace Simulator.Services
             CreateDirectory(statsDirectory);
             CreateDirectory(messageAnswersDirectory);
             CreateDirectory(messageAnswersDirectory + "/videos/");
+            CreateDirectory(messageAnswersDirectory + "/audios/");
+            CreateDirectory(messageAnswersDirectory + "/texts/");
+            CreateDirectory(messageAnswersDirectory + "/other/");
         }
 
         public static void DeleteFilesFromDirectory(string directory)

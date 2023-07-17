@@ -178,6 +178,15 @@ namespace Simulator.Properties {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на Группа выбрана. Теперь выберите тип ответа.
+        /// </summary>
+        internal static string ShowAnswersTypes {
+            get {
+                return ResourceManager.GetString("ShowAnswersTypes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на Список групп, добавленных на курс.
         /// </summary>
         internal static string ShowGroups {
