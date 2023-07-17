@@ -2,6 +2,7 @@
 using Simulator.Properties;
 using System.Threading.Tasks;
 using Telegram.Bot;
+using Telegram.Bot.Types.ReplyMarkups;
 
 namespace Simulator.Commands
 {
@@ -21,11 +22,22 @@ namespace Simulator.Commands
                 }
                 else
                 {
+                    IReplyMarkup markup;
                     await DataBaseControl.UserCaseTableCommand.SetOnCourse(userId, false);
+
+                    if (await DataBaseControl.UserTableCommand.IsLogedIn(userId))
+                    {
+                        markup = CommandKeyboard.ToMainMenuUser;
+                    }
+                    else
+                    {
+                        markup = CommandKeyboard.LogIn;
+                    }
+
                     await botClient.SendTextMessageAsync(
-                                   chatId: userId,
-                                   text: param + "\nВойдите заново...",
-                                   replyMarkup: CommandKeyboard.LogIn);
+                                       chatId: userId,
+                                       text: param,
+                                       replyMarkup: markup);
                 }
             }
             else

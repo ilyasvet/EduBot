@@ -19,12 +19,12 @@ namespace Simulator.BotControl
         private static InlineKeyboardButton CreateCase = InlineKeyboardButton.WithCallbackData("Создать кейс", "CreateCase");
         private static InlineKeyboardButton CheckTelegramId = InlineKeyboardButton.WithCallbackData("Узнать свой Telegram ID", "CheckTelegramId");
         private static InlineKeyboardButton AddGroupLider = InlineKeyboardButton.WithCallbackData("Добавить старосту на курс", "AddGroupLider");
+        private static InlineKeyboardButton LogInButton = InlineKeyboardButton.WithCallbackData("Войти", "Login");
 
 
         public static InlineKeyboardButton ToFinishButton = InlineKeyboardButton.WithCallbackData("Выйти", "ToOut");
         public static InlineKeyboardButton NextButton = InlineKeyboardButton.WithCallbackData("Далее", "MoveNext");
         public static InlineKeyboardButton ToBeginButton = InlineKeyboardButton.WithCallbackData("Сначала", "ToBegin");
-        public static InlineKeyboardButton LogInButton = InlineKeyboardButton.WithCallbackData("Войти", "Login");
 
         public static InlineKeyboardMarkup StageMenu = new(new List<InlineKeyboardButton[]>
         {

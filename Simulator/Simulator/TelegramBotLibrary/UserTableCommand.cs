@@ -117,6 +117,12 @@ namespace Simulator.TelegramBotLibrary
             return result;
         }
 
+        public async Task SetLogedIn(long userId, bool logedIn)
+        {
+            string commandText = $"UPDATE UsersState SET LogedIn = {logedIn} WHERE UserID = {userId}";
+            await ExecuteNonQueryCommand(commandText);
+        }
+
         public async Task<List<User>> GetGroupUsers(string groupNumber)
         {
             string commandText = $"SELECT u.UserID, u.Name, u.Surname, u.GroupNumber us.UserType" +

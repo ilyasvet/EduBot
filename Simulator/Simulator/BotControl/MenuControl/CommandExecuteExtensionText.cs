@@ -32,6 +32,7 @@ namespace Simulator.BotControl
             string groupPassword = await DataBaseControl.GroupTableCommand.GetPassword(user.GroupNumber);
             if(password == groupPassword)
             {
+                await DataBaseControl.UserTableCommand.SetLogedIn(userId, true);
                 await DataBaseControl.UserTableCommand.SetDialogState(userId, DialogState.None);
                 await botClient.SendTextMessageAsync(
                             chatId: userId,
