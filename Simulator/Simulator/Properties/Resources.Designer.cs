@@ -106,6 +106,24 @@ namespace Simulator.Properties {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на Для ответа на этот вопрос отправьте .
+        /// </summary>
+        internal static string AnswerGuidePt1 {
+            get {
+                return ResourceManager.GetString("AnswerGuidePt1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Максимальный размер файла - 20Мб.
+        /// </summary>
+        internal static string AnswerGuidePt2 {
+            get {
+                return ResourceManager.GetString("AnswerGuidePt2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на Добавьте файл формата электроной таблицы, которая содержит материалы курса по заданному шаблону.
         /// </summary>
         internal static string CreateCase {
@@ -237,6 +255,15 @@ namespace Simulator.Properties {
         internal static string ThereIsNotCase {
             get {
                 return ResourceManager.GetString("ThereIsNotCase", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Файл должен быть меньше 20МБ.
+        /// </summary>
+        internal static string TooBigFile {
+            get {
+                return ResourceManager.GetString("TooBigFile", resourceCulture);
             }
         }
         

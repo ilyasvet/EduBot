@@ -1,5 +1,6 @@
 ﻿using Simulator.BotControl;
 using Simulator.Models;
+using Simulator.Properties;
 using Simulator.Services;
 using Simulator.TelegramBotLibrary;
 using System;
@@ -9,6 +10,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Telegram.Bot;
 using Telegram.Bot.Types;
+using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.InputFiles;
 using Telegram.Bot.Types.ReplyMarkups;
 
@@ -116,11 +118,13 @@ namespace Simulator.Case
                         );
                     break;
                 case CaseStageMessage message:
+                    string answerGuide = GetAnsweGuide(message.MessageTypeAnswer);
+
                     await DataBaseControl.UserCaseTableCommand.SetStartTime(userId, DateTime.Now);
                     await ShowAdditionalInfo(botClient, message, userId);
                     await botClient.SendTextMessageAsync(
                         chatId: userId,
-                        text: message.TextBefore,
+                        text: message.TextBefore + answerGuide,
                         replyMarkup: new InlineKeyboardMarkup(CommandKeyboard.ToFinishButton)
                         );
                     break;
@@ -148,6 +152,30 @@ namespace Simulator.Case
                     break;
             }
         }
+
+        private static string GetAnsweGuide(MessageType messageTypeAnswer)
+        {
+            string answerGuide = $"\n\n{Resources.AnswerGuidePt1}";
+
+            switch (messageTypeAnswer)
+            {
+                case MessageType.Video:
+                    answerGuide += "видео формата mp4";
+                    break;
+                case MessageType.Audio:
+                    answerGuide += "аудио формата mp3";
+                    break;
+                case MessageType.Text:
+                    answerGuide += "текстовое сообщение";
+                    break;
+                default:
+                    answerGuide += "документ pdf";
+                    break;
+            }
+            answerGuide += "\n" + Resources.AnswerGuidePt2;
+            return answerGuide;
+        }
+
         private async static Task ShowAdditionalInfo(ITelegramBotClient botClient, CaseStage nextStage, long userId)
         {
             if (nextStage.AdditionalInfoFiles == null) return;

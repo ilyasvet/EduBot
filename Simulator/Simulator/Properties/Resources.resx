@@ -195,4 +195,13 @@
   <data name="ShowAnswersTypes" xml:space="preserve">
     <value>Группа выбрана. Теперь выберите тип ответа</value>
   </data>
+  <data name="TooBigFile" xml:space="preserve">
+    <value>Файл должен быть меньше 20МБ</value>
+  </data>
+  <data name="AnswerGuidePt1" xml:space="preserve">
+    <value>Для ответа на этот вопрос отправьте </value>
+  </data>
+  <data name="AnswerGuidePt2" xml:space="preserve">
+    <value>Максимальный размер файла - 20Мб</value>
+  </data>
 </root>
