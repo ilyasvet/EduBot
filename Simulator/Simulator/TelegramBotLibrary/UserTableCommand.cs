@@ -86,7 +86,7 @@ namespace Simulator.TelegramBotLibrary
 
         public async Task<User> GetUserById(long userId)
         {
-            string commandText = $"SELECT u.UserID, u.Name, u.Surname, u.GroupNumber us.UserType" +
+            string commandText = $"SELECT u.UserID, u.Name, u.Surname, u.GroupNumber, us.UserType" +
                 $" FROM Users u" +
                 $" INNER JOIN UsersState us" +
                 $" ON u.UserID = us.UserID" +
@@ -119,7 +119,7 @@ namespace Simulator.TelegramBotLibrary
 
         public async Task SetLogedIn(long userId, bool logedIn)
         {
-            string commandText = $"UPDATE UsersState SET LogedIn = {logedIn} WHERE UserID = {userId}";
+            string commandText = $"UPDATE UsersState SET LogedIn = '{logedIn}' WHERE UserID = {userId}";
             await ExecuteNonQueryCommand(commandText);
         }
 
@@ -158,6 +158,12 @@ namespace Simulator.TelegramBotLibrary
             }) as string;
 
             return result;
+        }
+
+        public async Task SetGroup(long userId, string groupNumber)
+        {
+            string commandText = $"UPDATE Users SET GroupNumber = '{groupNumber}' WHERE UserID = {userId}";
+            await ExecuteNonQueryCommand(commandText);
         }
 
         private bool GetUserFromReader(SqlDataReader reader, out User user)

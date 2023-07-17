@@ -51,7 +51,7 @@ namespace Simulator.TelegramBotLibrary
 
         public async Task SetOnCourse(long userId, bool boolOnCourse)
         {
-            string commandText = $"UPDATE UserCourseState SET OnCourse = {boolOnCourse} WHERE UserID = {userId}";
+            string commandText = $"UPDATE UserCourseState SET OnCourse = '{boolOnCourse}' WHERE UserID = {userId}";
             await ExecuteNonQueryCommand(commandText);
         }
 
@@ -95,13 +95,13 @@ namespace Simulator.TelegramBotLibrary
 
         public async Task SetStartTime(long userId, DateTime time)
         {
-            string commandText = $"UPDATE UserCourseState SET StartTime = '{time}' WHERE UserID = {userId}";
+            string commandText = $"UPDATE UserCourseState SET StartQuestTime = '{time}' WHERE UserID = {userId}";
             await ExecuteNonQueryCommand(commandText);
         }
 
         public async Task<DateTime> GetStartTime(long userId)
         {
-            string commandText = $"SELECT StartTime FROM UserCourseState WHERE UserID = {userId}";
+            string commandText = $"SELECT StartQuestTime FROM UserCourseState WHERE UserID = {userId}";
 
             DateTime result = (DateTime)await ExecuteReaderCommand(commandText, (reader) =>
             {
@@ -117,13 +117,13 @@ namespace Simulator.TelegramBotLibrary
 
         public async Task SetStartCaseTime(long userId, DateTime time)
         {
-            string commandText = $"UPDATE UserCourseState SET StartCaseTime = '{time}' WHERE UserID = {userId}";
+            string commandText = $"UPDATE UserCourseState SET StartCourse = '{time}' WHERE UserID = {userId}";
             await ExecuteNonQueryCommand(commandText);
         }
 
         public async Task<DateTime> GetStartCaseTime(long userId)
         {
-            string commandText = $"SELECT StartCaseTime FROM UserCourseState WHERE UserID = {userId}";
+            string commandText = $"SELECT StartCourse FROM UserCourseState WHERE UserID = {userId}";
 
             DateTime result = (DateTime)await ExecuteReaderCommand(commandText, (reader) =>
             {
@@ -139,12 +139,12 @@ namespace Simulator.TelegramBotLibrary
 
         public async Task SetEndCaseTime(long userId, DateTime time)
         {
-            string commandText = $"UPDATE UserCourseState SET EndCaseTime = '{time}' WHERE UserID = {userId}";
+            string commandText = $"UPDATE UserCourseState SET EndCourse = '{time}' WHERE UserID = {userId}";
             await ExecuteNonQueryCommand(commandText);
         }
         public async Task<DateTime> GetEndCaseTime(long userId)
         {
-            string commandText = $"SELECT EndCaseTime FROM UserCourseState WHERE UserID = {userId}";
+            string commandText = $"SELECT EndCourse FROM UserCourseState WHERE UserID = {userId}";
 
             DateTime result = (DateTime)await ExecuteReaderCommand(commandText, (reader) =>
             {

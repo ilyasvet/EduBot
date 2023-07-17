@@ -204,4 +204,7 @@
   <data name="AnswerGuidePt2" xml:space="preserve">
     <value>Максимальный размер файла - 20Мб</value>
   </data>
+  <data name="ToMenu" xml:space="preserve">
+    <value>Можно вернуться в меню</value>
+  </data>
 </root>

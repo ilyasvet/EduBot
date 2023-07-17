@@ -259,6 +259,15 @@ namespace Simulator.Properties {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на Можно вернуться в меню.
+        /// </summary>
+        internal static string ToMenu {
+            get {
+                return ResourceManager.GetString("ToMenu", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на Файл должен быть меньше 20МБ.
         /// </summary>
         internal static string TooBigFile {

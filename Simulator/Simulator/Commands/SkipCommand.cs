@@ -36,7 +36,7 @@ namespace Simulator.Commands
 
                     await botClient.SendTextMessageAsync(
                                        chatId: userId,
-                                       text: param,
+                                       text: param + "!",
                                        replyMarkup: markup);
                 }
             }

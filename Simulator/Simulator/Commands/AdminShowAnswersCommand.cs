@@ -1,5 +1,6 @@
 ﻿using Simulator.BotControl;
 using Simulator.Models;
+using Simulator.Properties;
 using Simulator.Services;
 using System.Collections.Generic;
 using System.IO;
@@ -33,15 +34,16 @@ namespace Simulator.Commands
                         await botClient.SendDocumentAsync(
                             chatId: userId,
                             document: new InputOnlineFile(
-                                fs, $"{user.Surname}{user.Surname}Вопрос{fileProperties[1]}.{fileName.Split('.')[1]}"
-                                )
+                                fs, $"{user.Surname}{user.Name}Вопрос{fileProperties[1]}.{fileName.Split('.')[1]}"
+                                ),
+                            disableContentTypeDetection: true
                             );
                     }
                 }
             }
 
             await botClient.SendTextMessageAsync(chatId: userId,
-                        text: "",
+                        text: Resources.ToMenu,
                         replyMarkup: CommandKeyboard.ToMainMenuAdmin);
         }
     }

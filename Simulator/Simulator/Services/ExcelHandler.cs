@@ -355,6 +355,7 @@ namespace Simulator.Services
                     try
                     {
                         await DataBaseControl.UserTableCommand.AddUser(user, UserType.User);
+                        await DataBaseControl.UserTableCommand.SetGroup(userTelegramId, user.GroupNumber);
                     }
                     catch
                     {

@@ -72,54 +72,62 @@ namespace Simulator.Case
         public static async Task MessageHandlingCase(Message message, ITelegramBotClient botClient)
         {
             long userId = message.Chat.Id;
-            int attemptNo = await DataBaseControl.UserCaseTableCommand.GetHealthPoints(userId) > 1 ? 1 : 2;
-            CaseStageMessage currentStage = (CaseStageMessage)StagesControl.
-                Stages[await DataBaseControl.UserCaseTableCommand.GetPoint(userId)];
-
-            string fileName = $"{userId}-{currentStage.Number}";
-            string filePath = ControlSystem.messageAnswersDirectory;
-            Telegram.Bot.Types.File file = null;
-
-            switch (currentStage.MessageTypeAnswer)
+            if (message.Text == "/skip")
             {
-                case Telegram.Bot.Types.Enums.MessageType.Video:
-
-                    if(message.Type != Telegram.Bot.Types.Enums.MessageType.Video)
-                    {
-                        await botClient.SendTextMessageAsync(userId, Resources.SendVideo);
-                        return;
-                        // Если сообщение не соответсвует ответу - ничего не делаем
-                    }
-
-                    file = await botClient.GetFileAsync(message.Video.FileId);
-                    filePath += "/videos/";
-                    fileName += ".mp4";
-                    break;
-                default:
-                    break;
-            }
-
-            if (file.FileSize >= 20 * Math.Pow(2, 20))
-            {
-                await botClient.SendTextMessageAsync(userId, Resources.TooBigFile);
+                SkipCommand s = new();
+                await s.Execute(userId, botClient);
                 return;
-                // Если сообщение не соответсвует ответу - ничего не делаем
             }
 
-            using (var stream = new FileStream(filePath + fileName, FileMode.Create))
+            if (StagesControl.Stages[await DataBaseControl.UserCaseTableCommand.GetPoint(userId)]
+                is CaseStageMessage currentStage)
             {
-                await botClient.DownloadFileAsync(file.FilePath, stream);
+                int attemptNo = await DataBaseControl.UserCaseTableCommand.GetHealthPoints(userId) > 1 ? 1 : 2;
+                string fileName = $"{userId}-{currentStage.Number}";
+                string filePath = ControlSystem.messageAnswersDirectory;
+                Telegram.Bot.Types.File file = null;
+
+                switch (currentStage.MessageTypeAnswer)
+                {
+                    case Telegram.Bot.Types.Enums.MessageType.Video:
+
+                        if (message.Type != Telegram.Bot.Types.Enums.MessageType.Video)
+                        {
+                            await botClient.SendTextMessageAsync(userId, Resources.SendVideo);
+                            return;
+                            // Если сообщение не соответсвует ответу - ничего не делаем
+                        }
+
+                        file = await botClient.GetFileAsync(message.Video.FileId);
+                        filePath += "/videos/";
+                        fileName += ".mp4";
+                        break;
+                    default:
+                        break;
+                }
+
+                if (file.FileSize >= 20 * Math.Pow(2, 20))
+                {
+                    await botClient.SendTextMessageAsync(userId, Resources.TooBigFile);
+                    return;
+                    // Если сообщение не соответсвует ответу - ничего не делаем
+                }
+
+                using (var stream = new FileStream(filePath + fileName, FileMode.Create))
+                {
+                    await botClient.DownloadFileAsync(file.FilePath, stream);
+                }
+
+                // добавляем птс
+                double currentUserRate = await DataBaseControl.UserCaseTableCommand.GetRate(userId);
+                currentUserRate += currentStage.Rate;
+                await DataBaseControl.UserCaseTableCommand.SetRate(userId, currentUserRate);
+
+                await SetResultsJson(userId, currentStage, currentStage.Rate, attemptNo, null);
+
+                var nextStage = StagesControl.Stages[currentStage.NextStage]; //next уже установлено
+                await SetAndMovePoint(userId, nextStage, botClient);
             }
-
-            // добавляем птс
-            double currentUserRate = await DataBaseControl.UserCaseTableCommand.GetRate(userId);
-            currentUserRate += currentStage.Rate;
-            await DataBaseControl.UserCaseTableCommand.SetRate(userId, currentUserRate);
-
-            await SetResultsJson(userId, currentStage, currentStage.Rate, attemptNo, null);
-
-            var nextStage = StagesControl.Stages[currentStage.NextStage]; //next уже установлено
-            await SetAndMovePoint(userId, nextStage, botClient);
         }
 
         private static async Task SetResultsJson(
