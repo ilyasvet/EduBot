@@ -19,8 +19,8 @@ namespace Simulator.TelegramBotLibrary
                 $" VALUES ('{user.UserID}', 0, {(int)type}, 0)";
             await ExecuteNonQueryCommand(commandText);
 
-            commandText = $"INSERT INTO UserCourseState (UserId, Point, Rate, OnCourse)" +
-                $" VALUES ('{user.UserID}', 0, 0, 0)";
+            commandText = $"INSERT INTO UserCourseState (UserId, Point, HealthPoints, Rate, OnCourse)" +
+                $" VALUES ('{user.UserID}', 0, 3, 0, 0)";
             await ExecuteNonQueryCommand(commandText);
         }
 
@@ -48,7 +48,7 @@ namespace Simulator.TelegramBotLibrary
 
         public async Task SetDialogState(long userId, DialogState state)
         {
-            string commandText = $"UPDATE UsersSate SET DialogState = {(int)state} WHERE UserID = {userId}";
+            string commandText = $"UPDATE UsersState SET DialogState = {(int)state} WHERE UserID = {userId}";
             await ExecuteNonQueryCommand(commandText);
         }
 
@@ -125,7 +125,7 @@ namespace Simulator.TelegramBotLibrary
 
         public async Task<List<User>> GetGroupUsers(string groupNumber)
         {
-            string commandText = $"SELECT u.UserID, u.Name, u.Surname, u.GroupNumber us.UserType" +
+            string commandText = $"SELECT u.UserID, u.Name, u.Surname, u.GroupNumber, us.UserType" +
                 $" FROM Users u" +
                 $" INNER JOIN UsersState us" +
                 $" ON u.UserID = us.UserID" +
