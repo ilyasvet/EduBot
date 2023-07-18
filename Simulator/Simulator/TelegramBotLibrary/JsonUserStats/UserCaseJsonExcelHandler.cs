@@ -70,7 +70,7 @@ namespace Simulator.TelegramBotLibrary.JsonUserStats
 
         public static async Task ParseUserStats(string statsFileName, Excel.Worksheet worksheet, int line)
         {
-            long userId = long.Parse(statsFileName.Substring(statsFileName.LastIndexOf('\\')+1).Split('.')[0]);
+            long userId = long.Parse(Path.GetFileNameWithoutExtension(statsFileName));
             User user = await DataBaseControl.UserTableCommand.GetUserById(userId);
 
             string nameSurname = user.Surname + " " + user.Name;

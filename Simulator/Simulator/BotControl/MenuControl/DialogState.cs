@@ -6,6 +6,7 @@ namespace Simulator.BotControl.State
         EnterPassword,
         AddingUsersToGroup,
         AddingCase,
+        AddingGroupLeader,
         CreatingCase,
     }
 }

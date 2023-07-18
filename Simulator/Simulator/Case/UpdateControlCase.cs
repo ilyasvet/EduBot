@@ -160,7 +160,7 @@ namespace Simulator.Case
         private static async Task GoOut(long userId, ITelegramBotClient botClient)
         {
             await DataBaseControl.UserCaseTableCommand.SetOnCourse(userId, false);
-            var outCommand = new GoToMainMenuUserCommand();
+            var outCommand = new GoToMainMenuCommand();
             await outCommand.Execute(userId, botClient);
         }
         private async static Task SetAndMovePoint(long userId, CaseStage nextStage, ITelegramBotClient botClient)

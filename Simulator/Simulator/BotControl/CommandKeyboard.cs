@@ -9,8 +9,7 @@ namespace Simulator.BotControl
     public static class CommandKeyboard
     {
         private static InlineKeyboardButton ListGroups = InlineKeyboardButton.WithCallbackData("Списки", "ListGroups");
-        private static InlineKeyboardButton ToMenuAdmin = InlineKeyboardButton.WithCallbackData("Главное меню", "MainMenuAdmin");
-        private static InlineKeyboardButton ToMenuUser = InlineKeyboardButton.WithCallbackData("Главное меню", "MainMenuUser");
+        private static InlineKeyboardButton ToMenu = InlineKeyboardButton.WithCallbackData("Главное меню", "MainMenu");
         private static InlineKeyboardButton AddUsers = InlineKeyboardButton.WithCallbackData("Добавить пользователей", "AddUsersAdmin");
         private static InlineKeyboardButton GoToCase = InlineKeyboardButton.WithCallbackData("Перейти к курсу", "ToCase");
         private static InlineKeyboardButton UserCard = InlineKeyboardButton.WithCallbackData("Карточка пользователя", "UserCard");
@@ -21,7 +20,7 @@ namespace Simulator.BotControl
         private static InlineKeyboardButton AddGroupLider = InlineKeyboardButton.WithCallbackData("Добавить старосту на курс", "AddGroupLider");
         private static InlineKeyboardButton LogInButton = InlineKeyboardButton.WithCallbackData("Войти", "Login");
         private static InlineKeyboardButton AnswersButton = InlineKeyboardButton.WithCallbackData("Ответы пользователей", "AnswersFirst");
-
+        private static InlineKeyboardButton MyGroup = InlineKeyboardButton.WithCallbackData("Группа", "ShowUsersInfo");
 
         public static InlineKeyboardButton ToFinishButton = InlineKeyboardButton.WithCallbackData("Выйти", "ToOut");
         public static InlineKeyboardButton NextButton = InlineKeyboardButton.WithCallbackData("Далее", "MoveNext");
@@ -41,13 +40,10 @@ namespace Simulator.BotControl
         {
             new[] { CheckTelegramId },
         });
-        public static InlineKeyboardMarkup ToMainMenuUser = new(new[]
+
+        public static InlineKeyboardMarkup ToMainMenu = new(new[]
         {
-            new[] { ToMenuUser },
-        });
-        public static InlineKeyboardMarkup ToMainMenuAdmin = new(new[]
-        {
-            new[] { ToMenuAdmin },  
+            new[] { ToMenu },  
         });
         public static InlineKeyboardMarkup ToGroups = new(new[]
         {
@@ -70,6 +66,16 @@ namespace Simulator.BotControl
             new[] { GoToCase },
             new[] { CheckTelegramId },
         });
+
+        public static InlineKeyboardMarkup GroupLeaderMenu = new(new[]
+        {
+            new[] { UserCard },
+            new[] { GoToCase },
+            new[] { CheckTelegramId },
+            new[] { AddUsers },
+            new[] { MyGroup },
+        });
+
         public static InlineKeyboardMarkup GroupsList;
         public static InlineKeyboardMarkup AnswersTypesList;
         public async static Task MakeGroupList(string command)
@@ -79,7 +85,7 @@ namespace Simulator.BotControl
             {
                 InlineKeyboardButton.WithCallbackData(g.GroupNumber, $"{command}|{g.GroupNumber}")
             }).ToList();
-            inlineKeyboardButtons.Add(new[] { ToMenuAdmin });
+            inlineKeyboardButtons.Add(new[] { ToMenu });
             GroupsList = new InlineKeyboardMarkup(inlineKeyboardButtons);
         }
 

@@ -16,7 +16,7 @@ namespace Simulator.Commands
             userCardString += $"\nВаша группа: {user.GroupNumber}\n";
             await botClient.SendTextMessageAsync(chatId: userId,
                 text: userCardString,
-                replyMarkup: CommandKeyboard.ToMainMenuUser);
+                replyMarkup: CommandKeyboard.ToMainMenu);
 
         }
     }

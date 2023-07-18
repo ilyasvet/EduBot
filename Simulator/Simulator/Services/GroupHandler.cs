@@ -6,15 +6,16 @@ namespace Simulator.Services
 {
     public static class GroupHandler
     {
-        public static async Task AddGroup(string groupNumber)
+        public static async Task<bool> AddGroup(string groupNumber)
         {
-            Models.Group group = new Models.Group(groupNumber);
-            group.SetPassword();
-            await DataBaseControl.GroupTableCommand.AddGroup(group);
-        }
-        public static string GetGroupNumberFromPath(string path)
-        {
-            return path.Substring(path.LastIndexOf('\\') + 1).Split('.')[0];
+            if (!await DataBaseControl.GroupTableCommand.HasGroup(groupNumber))
+            {
+                Models.Group group = new Models.Group(groupNumber);
+                group.SetPassword();
+                await DataBaseControl.GroupTableCommand.AddGroup(group);
+                return true;
+            }
+            return false;
         }
         public static bool IsCorrectGroupNumber(string groupNumber)
         {

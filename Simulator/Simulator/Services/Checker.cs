@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
+using System.IO;
 
 namespace Simulator.Services
 {
@@ -28,7 +28,7 @@ namespace Simulator.Services
         
         public static bool IsCorrectFileExtension(string path, FileType fileType)
         {
-            string extension = path.Split('.').Last();
+            string extension = Path.GetExtension(path);
             switch (fileType)
             {
                 case FileType.ExcelTable:

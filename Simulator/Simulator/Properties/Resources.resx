@@ -207,4 +207,19 @@
   <data name="ToMenu" xml:space="preserve">
     <value>Можно вернуться в меню</value>
   </data>
+  <data name="WrongFormat" xml:space="preserve">
+    <value>Свойств должно быть 4: *ID* *Имя* *Фамилия* *Группа*</value>
+  </data>
+  <data name="WrongFormatGroup" xml:space="preserve">
+    <value>Неверный формат группы</value>
+  </data>
+  <data name="WrongFormatID" xml:space="preserve">
+    <value>Неверный формат ID. Должен быть целым положительным числом</value>
+  </data>
+  <data name="WrongFormatName" xml:space="preserve">
+    <value>Неверный формат имени. Только символы кириллцы</value>
+  </data>
+  <data name="WrongFormatSurname" xml:space="preserve">
+    <value>Неверный формат фамилии. Только символы кириллицы</value>
+  </data>
 </root>

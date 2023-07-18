@@ -44,7 +44,7 @@ namespace Simulator.Commands
 
             await botClient.SendTextMessageAsync(chatId: userId,
                         text: Resources.ToMenu,
-                        replyMarkup: CommandKeyboard.ToMainMenuAdmin);
+                        replyMarkup: CommandKeyboard.ToMainMenu);
         }
     }
 }

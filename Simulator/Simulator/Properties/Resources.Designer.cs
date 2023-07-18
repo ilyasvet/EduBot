@@ -322,6 +322,51 @@ namespace Simulator.Properties {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на Свойств должно быть 4: *ID* *Имя* *Фамилия* *Группа*.
+        /// </summary>
+        internal static string WrongFormat {
+            get {
+                return ResourceManager.GetString("WrongFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Неверный формат группы.
+        /// </summary>
+        internal static string WrongFormatGroup {
+            get {
+                return ResourceManager.GetString("WrongFormatGroup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Неверный формат ID. Должен быть целым положительным числом.
+        /// </summary>
+        internal static string WrongFormatID {
+            get {
+                return ResourceManager.GetString("WrongFormatID", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Неверный формат имени. Только символы кириллцы.
+        /// </summary>
+        internal static string WrongFormatName {
+            get {
+                return ResourceManager.GetString("WrongFormatName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Неверный формат фамилии. Только символы кириллицы.
+        /// </summary>
+        internal static string WrongFormatSurname {
+            get {
+                return ResourceManager.GetString("WrongFormatSurname", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на Пароль неверный, попробуйте ещё раз.
         /// </summary>
         internal static string WrongPassword {

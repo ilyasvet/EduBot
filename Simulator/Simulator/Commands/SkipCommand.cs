@@ -27,7 +27,7 @@ namespace Simulator.Commands
 
                     if (await DataBaseControl.UserTableCommand.IsLogedIn(userId))
                     {
-                        markup = CommandKeyboard.ToMainMenuUser;
+                        markup = CommandKeyboard.ToMainMenu;
                     }
                     else
                     {

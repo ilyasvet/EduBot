@@ -24,7 +24,7 @@ namespace Simulator.Commands
                     await botClient.SendTextMessageAsync(
                         chatId: userId,
                         text: Resources.WelcomeKnownAdmin,
-                        replyMarkup: CommandKeyboard.ToMainMenuAdmin);
+                        replyMarkup: CommandKeyboard.ToMainMenu);
                 }
             }
             else

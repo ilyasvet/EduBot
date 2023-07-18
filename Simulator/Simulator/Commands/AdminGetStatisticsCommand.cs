@@ -26,7 +26,7 @@ namespace Simulator.Commands
                     await botClient.SendDocumentAsync(
                         chatId: userId,
                         document: new InputOnlineFile(fs, "Statistics.xlsx"),
-                        replyMarkup: CommandKeyboard.ToMainMenuAdmin
+                        replyMarkup: CommandKeyboard.ToMainMenu
                         );
                 }
             }

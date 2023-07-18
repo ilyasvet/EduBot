@@ -8,6 +8,7 @@ using Simulator.Case;
 using Telegram.Bot.Types.InputFiles;
 using System.IO.Compression;
 using System.IO;
+using Simulator.Models;
 
 namespace Simulator.BotControl
 {
@@ -91,22 +92,33 @@ namespace Simulator.BotControl
         private async static Task AddNewUsersTable(long userId, ITelegramBotClient botClient, string path)
         {
             string callBackMessage = "";
+            string groupNumber = null;
             try
             {
                 if (!Checker.IsCorrectFileExtension(path, FileType.ExcelTable)) 
                     throw new ArgumentException("Файл должен быть exel");
 
-                string groupNumber = GroupHandler.GetGroupNumberFromPath(path); // Получаем номер группы из названия файла
-                
-                if (!GroupHandler.IsCorrectGroupNumber(groupNumber))
-                    throw new ArgumentException("Неверный формат номера группы");
-               
-                if (!await DataBaseControl.GroupTableCommand.HasGroup(groupNumber)) // Проверяем, есть ли такая группа
+                UserType senderType = await DataBaseControl.UserTableCommand.GetUserType(userId);
+                if (senderType == UserType.ClassLeader)
                 {
-                    await GroupHandler.AddGroup(groupNumber); //Если нет, то создаём её
-                    callBackMessage += $"\nГруппа \"{groupNumber}\" была добавлена";
+                    groupNumber = await DataBaseControl.UserTableCommand.GetGroupNumber(userId);
+                    // Номер группы = номер группы старосты
+                    // В этом случае группа уже существует, и она корректна
                 }
-                
+                else if (senderType == UserType.Admin)
+                {
+                    groupNumber = Path.GetFileNameWithoutExtension(path);
+                    // Получаем номер группы из названия файла
+
+                    if (!GroupHandler.IsCorrectGroupNumber(groupNumber))
+                        throw new ArgumentException("Неверный формат номера группы");
+
+                    if (await GroupHandler.AddGroup(groupNumber)) // Вернёт true, если добавили группу
+                    {
+                        callBackMessage += $"\nГруппа \"{groupNumber}\" была добавлена";
+                    }
+                }
+
                 int count = await ExcelHandler.AddUsersFromExcel(path, groupNumber);
                 // Добавляем пользователей из файла в группу
                
@@ -128,7 +140,7 @@ namespace Simulator.BotControl
             await botClient.SendTextMessageAsync(
                        chatId: userId,
                        text: message,
-                       replyMarkup: CommandKeyboard.ToMainMenuAdmin);
+                       replyMarkup: CommandKeyboard.ToMainMenu);
         }
         private async static Task BotCallBackWithFile(long userId, ITelegramBotClient botClient, string filePath)
         {
@@ -137,7 +149,7 @@ namespace Simulator.BotControl
                 await botClient.SendDocumentAsync(
                     chatId: userId,
                     document: new InputOnlineFile(fs, filePath),
-                    replyMarkup: CommandKeyboard.ToMainMenuAdmin
+                    replyMarkup: CommandKeyboard.ToMainMenu
                     );
                 File.Delete(filePath);
             }

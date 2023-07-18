@@ -30,8 +30,7 @@ namespace Simulator.Services
             Dictionary<string, string> result = new()
             {
                 { "Login", "LogInCommand" },
-                { "MainMenuUser", "GoToMainMenuUserCommand" },
-                { "MainMenuAdmin", "AdminGoToMainMenuCommand" },
+                { "MainMenu", "GoToMainMenuCommand" },
                 { "UserCard", "UserCardCommand" },
                 { "ShowUsersInfo", "AdminShowUsersInfoCommand" },
                 { "ListGroups", "AdminShowGroupsInfoCommand" },

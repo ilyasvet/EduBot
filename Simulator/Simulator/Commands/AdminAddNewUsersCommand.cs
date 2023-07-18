@@ -14,7 +14,7 @@ namespace Simulator.Commands
             await botClient.SendTextMessageAsync(
                  chatId: userId,
                  text: Resources.AddNewGroupOfUsers,
-                 replyMarkup: CommandKeyboard.ToMainMenuAdmin);
+                 replyMarkup: CommandKeyboard.ToMainMenu);
         }
     }
 }

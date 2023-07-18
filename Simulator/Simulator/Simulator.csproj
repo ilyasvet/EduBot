@@ -106,6 +106,7 @@
     <Compile Include="Case\StagesControl.cs" />
     <Compile Include="Case\UpdateControlCase.cs" />
     <Compile Include="Commands\AdminAddCaseCommand.cs" />
+    <Compile Include="Commands\AdminAddGroupLiderCommand.cs" />
     <Compile Include="Commands\AdminAddNewUsersCommand.cs" />
     <Compile Include="Commands\AdminAnswersCommand.cs" />
     <Compile Include="Commands\AdminAnswersTypesCommand.cs" />
@@ -114,8 +115,7 @@
     <Compile Include="Commands\AdminShowGroupsInfoCommand.cs" />
     <Compile Include="Commands\AdminCreateCaseCommand.cs" />
     <Compile Include="Commands\Command.cs" />
-    <Compile Include="Commands\AdminGoToMainMenuCommand.cs" />
-    <Compile Include="Commands\GoToMainMenuUserCommand.cs" />
+    <Compile Include="Commands\GoToMainMenuCommand.cs" />
     <Compile Include="Commands\LogInCommand.cs" />
     <Compile Include="Commands\AdminShowUsersInfoCommand.cs" />
     <Compile Include="Commands\SkipCommand.cs" />
