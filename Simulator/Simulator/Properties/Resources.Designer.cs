@@ -88,6 +88,16 @@ namespace Simulator.Properties {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на Отправьте строку в формате: *ID* *Имя* *Фамилия* *Группа*
+        ///Например: 3256357 Василий Пупкин 5565834-10002.
+        /// </summary>
+        internal static string AddGroupLeader {
+            get {
+                return ResourceManager.GetString("AddGroupLeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на Отправтье файл excel. Формат названия &lt;1ч.группы&gt;-&lt;2ч.группы&gt;. Таблица имеет 3 столбца (Имя, фамилия, telegramID).
         /// </summary>
         internal static string AddNewGroupOfUsers {
@@ -174,6 +184,24 @@ namespace Simulator.Properties {
         internal static string GroupPassword {
             get {
                 return ResourceManager.GetString("GroupPassword", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Пользователь был сделан старостой.
+        /// </summary>
+        internal static string MadeGroupLeader {
+            get {
+                return ResourceManager.GetString("MadeGroupLeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Пользователь добавлен и сделан старостой.
+        /// </summary>
+        internal static string MadeNewGroupLeader {
+            get {
+                return ResourceManager.GetString("MadeNewGroupLeader", resourceCulture);
             }
         }
         
@@ -322,6 +350,15 @@ namespace Simulator.Properties {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на Ты чё скинул....
+        /// </summary>
+        internal static string WrongArgumentMessage {
+            get {
+                return ResourceManager.GetString("WrongArgumentMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на Свойств должно быть 4: *ID* *Имя* *Фамилия* *Группа*.
         /// </summary>
         internal static string WrongFormat {
@@ -349,7 +386,7 @@ namespace Simulator.Properties {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Неверный формат имени. Только символы кириллцы.
+        ///   Ищет локализованную строку, похожую на Неверный формат имени.
         /// </summary>
         internal static string WrongFormatName {
             get {
@@ -358,7 +395,7 @@ namespace Simulator.Properties {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Неверный формат фамилии. Только символы кириллицы.
+        ///   Ищет локализованную строку, похожую на Неверный формат фамилии..
         /// </summary>
         internal static string WrongFormatSurname {
             get {

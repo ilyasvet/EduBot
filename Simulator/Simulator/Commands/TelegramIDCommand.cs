@@ -12,22 +12,12 @@ namespace Simulator.Commands
             string userTelegramIdString = Resources.TelegramId;
             userTelegramIdString += $"\n{userId}";
 
+            await DataBaseControl.UserTableCommand.SetDialogState(userId, BotControl.State.DialogState.None);
             if (await DataBaseControl.UserTableCommand.HasUser(userId))
             {
-                await DataBaseControl.UserTableCommand.SetDialogState(userId, BotControl.State.DialogState.None);
-                if (await DataBaseControl.UserTableCommand.GetUserType(userId) == Models.UserType.Admin)
-                {
-                    await botClient.SendTextMessageAsync(chatId: userId,
-                        text: userTelegramIdString,
-                        replyMarkup: CommandKeyboard.AdminMenu);
-                }
-                else
-                {
-                    await botClient.SendTextMessageAsync(
-                                   chatId: userId,
-                                   text: userTelegramIdString,
-                                   replyMarkup: CommandKeyboard.UserMenu);
-                }
+                await botClient.SendTextMessageAsync(chatId: userId,
+                    text: userTelegramIdString,
+                    replyMarkup: CommandKeyboard.ToMainMenu);
             }
             else
             {

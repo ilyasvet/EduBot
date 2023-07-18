@@ -217,9 +217,22 @@
     <value>Неверный формат ID. Должен быть целым положительным числом</value>
   </data>
   <data name="WrongFormatName" xml:space="preserve">
-    <value>Неверный формат имени. Только символы кириллцы</value>
+    <value>Неверный формат имени</value>
   </data>
   <data name="WrongFormatSurname" xml:space="preserve">
-    <value>Неверный формат фамилии. Только символы кириллицы</value>
+    <value>Неверный формат фамилии.</value>
+  </data>
+  <data name="AddGroupLeader" xml:space="preserve">
+    <value>Отправьте строку в формате: *ID* *Имя* *Фамилия* *Группа*
+Например: 3256357 Василий Пупкин 5565834-10002</value>
+  </data>
+  <data name="MadeGroupLeader" xml:space="preserve">
+    <value>Пользователь был сделан старостой</value>
+  </data>
+  <data name="MadeNewGroupLeader" xml:space="preserve">
+    <value>Пользователь добавлен и сделан старостой</value>
+  </data>
+  <data name="WrongArgumentMessage" xml:space="preserve">
+    <value>Ты чё скинул...</value>
   </data>
 </root>

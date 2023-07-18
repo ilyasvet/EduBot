@@ -35,7 +35,8 @@ namespace Simulator.BotControl
                             await CreateCase(userId, botClient, path);
                             break;
                         default:
-                            throw new ArgumentException("Unknown state");
+                            await BotCallBack(userId, botClient, Resources.WrongArgumentMessage);
+                            break;
                     }
                 }
                 finally
@@ -53,7 +54,8 @@ namespace Simulator.BotControl
             {
                 if (!Checker.IsCorrectFileExtension(path, FileType.ExcelTable))
                 {
-                    throw new ArgumentException("File must be excel");
+                    await BotCallBack(userId, botClient, "File must be excel");
+                    return;
                 }
                 fileCasePath = await ExcelHandler.CreateCaseAsync(path);
                 await BotCallBackWithFile(userId, botClient, fileCasePath);
@@ -69,8 +71,11 @@ namespace Simulator.BotControl
             try
             {
                 if (!Checker.IsCorrectFileExtension(path, FileType.Case))
-                    throw new ArgumentException("Файл должен быть .zip");
-                
+                {
+                    await BotCallBack(userId, botClient, "Файл должен быть .zip");
+                    return;
+                }
+
                 StagesControl.DeleteCaseFiles(); //Удаляем старые файлы перед добавлением новых
                 ZipFile.ExtractToDirectory(path, ControlSystem.caseDirectory);
 
@@ -95,8 +100,11 @@ namespace Simulator.BotControl
             string groupNumber = null;
             try
             {
-                if (!Checker.IsCorrectFileExtension(path, FileType.ExcelTable)) 
-                    throw new ArgumentException("Файл должен быть exel");
+                if (!Checker.IsCorrectFileExtension(path, FileType.ExcelTable))
+                {
+                    await BotCallBack(userId, botClient, "Файл должен быть exel");
+                    return;
+                }
 
                 UserType senderType = await DataBaseControl.UserTableCommand.GetUserType(userId);
                 if (senderType == UserType.ClassLeader)
@@ -111,7 +119,10 @@ namespace Simulator.BotControl
                     // Получаем номер группы из названия файла
 
                     if (!GroupHandler.IsCorrectGroupNumber(groupNumber))
-                        throw new ArgumentException("Неверный формат номера группы");
+                    {
+                        await BotCallBack(userId, botClient, "Неверный формат номера группы");
+                        return;
+                    }
 
                     if (await GroupHandler.AddGroup(groupNumber)) // Вернёт true, если добавили группу
                     {

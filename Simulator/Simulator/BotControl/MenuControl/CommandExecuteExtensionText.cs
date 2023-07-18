@@ -2,7 +2,6 @@
 using Simulator.Models;
 using Simulator.Properties;
 using Simulator.Services;
-using System;
 using System.Threading.Tasks;
 using Telegram.Bot;
 
@@ -26,6 +25,7 @@ namespace Simulator.BotControl
                         await AddClassLeader(userId, botClient, message);
                         break;
                     default:
+                        await BotCallBack(userId, botClient, Resources.WrongArgumentMessage);
                         break;
                 }
             });
@@ -34,56 +34,48 @@ namespace Simulator.BotControl
         private static async Task AddClassLeader(long userId, ITelegramBotClient botClient, string message)
         {
             string[] userProperties = message.Split(' ');
-            string errorMessage = null;
-            if (userProperties.Length == 4)
+            string callBackMessage = string.Empty;
+
+            if (!long.TryParse(userProperties[0], out long longId) || longId < 0)
             {
-                string telegramId = userProperties[0];
-                if(long.TryParse(telegramId, out long longId) && longId >= 0)
-                {
-                    string name = userProperties[1];
-                    if (UserHandler.IsCorrectName(name))
-                    {
-                        string surname = userProperties[2];
-                        if (UserHandler.IsCorrectName(surname))
-                        {
-                            string group = userProperties[3];
-                            if (GroupHandler.IsCorrectGroupNumber(group))
-                            {
-                                User groupLeader = new(longId, name, surname);
-                                await DataBaseControl.UserTableCommand.AddUser(groupLeader, UserType.ClassLeader);
-                                await GroupHandler.AddGroup(group);
-                                await DataBaseControl.UserTableCommand.SetGroup(longId, group);
-                                await botClient.SendTextMessageAsync(
-                                    chatId: userId,
-                                    text: Resources.SuccessAddGroup);
-                            }
-                            else
-                            {
-                                errorMessage = Resources.WrongFormatGroup;
-                            }
-                        }
-                        else
-                        {
-                            errorMessage = Resources.WrongFormatSurname;
-                        }
-                    }
-                    else
-                    {
-                        errorMessage = Resources.WrongFormatName;
-                    }
-                }
-                else
-                {
-                    errorMessage = Resources.WrongFormatID;
-                }
+                callBackMessage = Resources.WrongFormatID;
+            }
+            else if(await DataBaseControl.UserTableCommand.HasUser(longId))
+            {
+                await DataBaseControl.UserTableCommand.SetType(longId, UserType.ClassLeader);
+                callBackMessage = Resources.MadeGroupLeader;
+            }
+            else if (userProperties.Length != 4)
+            {
+                callBackMessage = Resources.WrongFormat;  
+            }
+            else if (!UserHandler.IsCorrectName(userProperties[1]))
+            {
+                callBackMessage = Resources.WrongFormatName;
+            }
+            else if (!UserHandler.IsCorrectName(userProperties[2]))
+            {
+                callBackMessage = Resources.WrongFormatSurname;
+            }
+            else if (!GroupHandler.IsCorrectGroupNumber(userProperties[3]))
+            {
+                callBackMessage = Resources.WrongFormatGroup;
             }
             else
             {
-                errorMessage = Resources.WrongFormat;
+                string name = userProperties[1];
+                string surname = userProperties[2];
+                string group = userProperties[3];
+
+                User groupLeader = new(longId, name, surname);
+                await DataBaseControl.UserTableCommand.AddUser(groupLeader, UserType.ClassLeader);
+                callBackMessage = Resources.MadeNewGroupLeader;
+
+                await GroupHandler.AddGroup(group);
+                await DataBaseControl.UserTableCommand.SetGroup(longId, group);
+
             }
-            await botClient.SendTextMessageAsync(
-                            chatId: userId,
-                            text: errorMessage);
+            await BotCallBack(userId, botClient, callBackMessage);
         }
 
         private static async Task CheckPassword(long userId, ITelegramBotClient botClient, string password)
@@ -94,10 +86,7 @@ namespace Simulator.BotControl
             {
                 await DataBaseControl.UserTableCommand.SetLogedIn(userId, true);
                 await DataBaseControl.UserTableCommand.SetDialogState(userId, DialogState.None);
-                await botClient.SendTextMessageAsync(
-                            chatId: userId,
-                            text: Resources.RightPassword,
-                            replyMarkup: CommandKeyboard.ToMainMenu);
+                await BotCallBack(userId, botClient, Resources.RightPassword);
             }
             else
             {
@@ -105,6 +94,14 @@ namespace Simulator.BotControl
                             chatId: userId,
                             text: Resources.WrongPassword);
             }
+        }
+
+        private async static Task BotCallBack(long userId, ITelegramBotClient botClient, string message)
+        {
+            await botClient.SendTextMessageAsync(
+                       chatId: userId,
+                       text: message,
+                       replyMarkup: CommandKeyboard.ToMainMenu);
         }
     }
 }

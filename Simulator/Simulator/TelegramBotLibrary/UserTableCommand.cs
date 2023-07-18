@@ -52,6 +52,12 @@ namespace Simulator.TelegramBotLibrary
             await ExecuteNonQueryCommand(commandText);
         }
 
+        public async Task SetType(long userId, UserType type)
+        {
+            string commandText = $"UPDATE UsersState SET UserType = {(int)type} WHERE UserID = {userId}";
+            await ExecuteNonQueryCommand(commandText);
+        }
+
         public async Task<DialogState> GetDialogState(long userId)
         {
             string commandText = $"SELECT DialogState FROM UsersState WHERE UserID = {userId}";

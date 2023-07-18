@@ -13,7 +13,7 @@ namespace Simulator.Commands
             await DataBaseControl.UserTableCommand.SetDialogState(userId, DialogState.AddingGroupLeader);
             await botClient.SendTextMessageAsync(
                 chatId: userId,
-                text: Resources.AddNewGroupOfUsers,
+                text: Resources.AddGroupLeader,
                 replyMarkup: CommandKeyboard.ToMainMenu);
         }
     }
