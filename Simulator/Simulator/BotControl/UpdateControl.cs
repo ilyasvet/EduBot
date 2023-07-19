@@ -13,14 +13,11 @@ namespace Simulator.BotControl
         public static async Task MessageHandling(Message message, ITelegramBotClient botClient)
         {
             long userId = message.Chat.Id;
-            int messageId = message.MessageId;
-            bool onCourse = false;
             try
             {
                 if (await DataBaseControl.UserTableCommand.HasUser(userId)
                     && await DataBaseControl.UserCaseTableCommand.IsOnCourse(userId))
                 {
-                    onCourse = true;
                     await UpdateControlCase.MessageHandlingCase(message, botClient);
                 }
                 else
@@ -31,18 +28,6 @@ namespace Simulator.BotControl
             catch(Exception ex)
             {
                 await ErrorHandling(userId, botClient, ex);
-            }
-            finally //Удаляется 2 сообщения (бота и пользователя)
-            {
-                try
-                {
-                    if (!onCourse)
-                    {
-                        await botClient.DeleteMessageAsync(userId, messageId - 1);
-                        await botClient.DeleteMessageAsync(userId, messageId);
-                    }
-                }
-                catch { }
             }
         }
         public static async Task CallbackQueryHandling(CallbackQuery query, ITelegramBotClient botClient)
@@ -64,14 +49,6 @@ namespace Simulator.BotControl
             {
                 await ErrorHandling(userId, botClient, ex);
             }
-            finally //Удаляется только сообщение бота
-            {
-                try
-                {
-                    await botClient.DeleteMessageAsync(userId, query.Message.MessageId);
-                }
-                catch { }
-            }
         }
         public static async Task PollAnswerHandling(PollAnswer answer, ITelegramBotClient botClient)
         {
@@ -91,7 +68,10 @@ namespace Simulator.BotControl
         private static async Task ErrorHandling(long userId, ITelegramBotClient botClient, Exception inerException)
         {
             SkipCommand skip = new();
-            ControlSystem.ShowExceptionConsole(inerException);
+            if(inerException is not ArgumentException)
+            {
+                ControlSystem.ShowExceptionConsole(inerException);
+            }
             try
             {
                 await skip.Execute(

@@ -14,7 +14,7 @@ namespace Simulator.BotControl
 {
     public static class CommandExecuteExtensionFile
     {
-        public static async Task Execute(long userId, ITelegramBotClient botClient, string path)
+        public static async Task Execute(long userId, ITelegramBotClient botClient, string path, int messageId)
         {
             await Task.Run(async () =>
             {
@@ -26,13 +26,13 @@ namespace Simulator.BotControl
                         case DialogState.None:
                             break;
                         case DialogState.AddingUsersToGroup:
-                            await AddNewUsersTable(userId, botClient, path);
+                            await AddNewUsersTable(userId, botClient, path, messageId - 1);
                             break;
                         case DialogState.AddingCase:
-                            await AddCase(userId, botClient, path);
+                            await AddCase(userId, botClient, path, messageId - 1);              
                             break;
                         case DialogState.CreatingCase:
-                            await CreateCase(userId, botClient, path);
+                            await CreateCase(userId, botClient, path, messageId - 1);
                             break;
                         default:
                             await BotCallBack(userId, botClient, Resources.WrongArgumentMessage);
@@ -41,13 +41,12 @@ namespace Simulator.BotControl
                 }
                 finally
                 {
-                    await DataBaseControl.UserTableCommand.SetDialogState(userId, DialogState.None);
-                    // в любом случае скипаем стадию отправки файла
+                    await botClient.DeleteMessageAsync(userId, messageId);
                 }
             });
         }
 
-        private async static Task CreateCase(long userId, ITelegramBotClient botClient, string path)
+        private async static Task CreateCase(long userId, ITelegramBotClient botClient, string path, int messageId)
         {
             string fileCasePath = string.Empty;
             try
@@ -59,6 +58,12 @@ namespace Simulator.BotControl
                 }
                 fileCasePath = await ExcelHandler.CreateCaseAsync(path);
                 await BotCallBackWithFile(userId, botClient, fileCasePath);
+                await botClient.DeleteMessageAsync(userId, messageId);
+                await DataBaseControl.UserTableCommand.SetDialogState(userId, DialogState.None);
+            }
+            catch (ArgumentException ex)
+            {
+                await BotCallBack(userId, botClient, ex.Message);
             }
             finally
             {
@@ -66,7 +71,7 @@ namespace Simulator.BotControl
             }
         }
 
-        private async static Task AddCase(long userId, ITelegramBotClient botClient, string path)
+        private async static Task AddCase(long userId, ITelegramBotClient botClient, string path, int messageId)
         {
             try
             {
@@ -87,6 +92,8 @@ namespace Simulator.BotControl
                 {
                     await BotCallBack(userId, botClient, Resources.FileCaseNotFound);
                 }
+                await botClient.DeleteMessageAsync(userId, messageId);
+                await DataBaseControl.UserTableCommand.SetDialogState(userId, DialogState.None);
             }
             finally
             {
@@ -94,7 +101,7 @@ namespace Simulator.BotControl
             }
         }
 
-        private async static Task AddNewUsersTable(long userId, ITelegramBotClient botClient, string path)
+        private async static Task AddNewUsersTable(long userId, ITelegramBotClient botClient, string path, int messageId)
         {
             string callBackMessage = "";
             string groupNumber = null;
@@ -135,7 +142,12 @@ namespace Simulator.BotControl
                
                 callBackMessage += $"\nДобавлено пользователей в группу \"{groupNumber}\": {count}\n";
                 await BotCallBack(userId, botClient, callBackMessage.Insert(0, Resources.SuccessAddGroup));
-                // сообщение об успехе операции
+                await botClient.DeleteMessageAsync(userId, messageId);
+                await DataBaseControl.UserTableCommand.SetDialogState(userId, DialogState.None);
+            }
+            catch (ArgumentException ex)
+            {
+                await BotCallBack(userId, botClient, ex.Message);
             }
             catch (Exception ex)
             {

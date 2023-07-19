@@ -23,17 +23,17 @@ namespace Simulator.BotControl
             long userId = message.Chat.Id;
             if (message.Text != null) //Бот принимает сообщение от пользователя
             {
-                string messageText = message.Text;
-                if (Checker.TextIsCommand(accordanceDictionaryTextCommand, messageText))
+                if (Checker.TextIsCommand(accordanceDictionaryTextCommand, message.Text))
                 {
                     //Тут бот выполняет команду, введённую пользователем
-                    await commandsDictionary[accordanceDictionaryTextCommand[messageText]].Execute(userId, botClient);
+                    await commandsDictionary[accordanceDictionaryTextCommand[message.Text]].Execute(userId, botClient);
+                    await botClient.DeleteMessageAsync(userId, message.MessageId);
                 }
                 else
                 {
                     //Тут бот принимает от пользователя какие-то данные
                     //Обработка идёт на основе DialogState отправителя
-                    await CommandExecuteExtensionText.Execute(userId, botClient, messageText);
+                    await CommandExecuteExtensionText.Execute(userId, botClient, message);
                 }
             }
             else if (message.Document != null)
@@ -45,7 +45,7 @@ namespace Simulator.BotControl
                 string path = await BotHandler.FileHandle(botClient, messageDocument);
 
                 //Обработка идёт на основе DialogState отправителя
-                await CommandExecuteExtensionFile.Execute(userId, botClient, path);
+                await CommandExecuteExtensionFile.Execute(userId, botClient, path, message.MessageId);
             }
         }
         public async static Task CallbackQueryHandlingMenu(CallbackQuery query, ITelegramBotClient botClient)
@@ -60,8 +60,14 @@ namespace Simulator.BotControl
                     userId,
                     botClient,
                     param);
+
+                await botClient.DeleteMessageAsync(userId, query.Message.MessageId);
             }
-            catch(KeyNotFoundException) { }
+            catch(KeyNotFoundException)
+            {
+                // Не все CallbackQuery соответствуют командам
+                // В этом случае не делаем ничего
+            }
         }
     }
 }

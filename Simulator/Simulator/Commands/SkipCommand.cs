@@ -18,7 +18,7 @@ namespace Simulator.Commands
                     await botClient.SendTextMessageAsync(
                                 chatId: userId,
                                 text: param + "\nПереход в меню",
-                                replyMarkup: CommandKeyboard.AdminMenu);
+                                replyMarkup: CommandKeyboard.ToMainMenu);
                 }
                 else
                 {
