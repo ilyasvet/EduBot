@@ -208,7 +208,7 @@
     <value>Можно вернуться в меню</value>
   </data>
   <data name="WrongFormat" xml:space="preserve">
-    <value>Свойств должно быть 4: *ID* *Имя* *Фамилия* *Группа*</value>
+    <value>Неправильный формат, посмотрите ещё раз на образец</value>
   </data>
   <data name="WrongFormatGroup" xml:space="preserve">
     <value>Неверный формат группы</value>
@@ -236,7 +236,8 @@
     <value>Ты чё скинул...</value>
   </data>
   <data name="EnterUserInfo" xml:space="preserve">
-    <value>Введите новые имя и фамилию через пробел</value>
+    <value>Введите новые имя и фамилию через пробел
+Привет: Василий Пупкин</value>
   </data>
   <data name="SuccessEditing" xml:space="preserve">
     <value>Данные успешно изменены</value>

@@ -115,6 +115,7 @@
     <Compile Include="Commands\AdminShowGroupsInfoCommand.cs" />
     <Compile Include="Commands\AdminCreateCaseCommand.cs" />
     <Compile Include="Commands\Command.cs" />
+    <Compile Include="Commands\EditUserInfoCommand.cs" />
     <Compile Include="Commands\GoToMainMenuCommand.cs" />
     <Compile Include="Commands\LogInCommand.cs" />
     <Compile Include="Commands\AdminShowUsersInfoCommand.cs" />

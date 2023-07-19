@@ -14,7 +14,8 @@ namespace Simulator.Commands
             string userCardString = Resources.UserCard;
             User user = await DataBaseControl.UserTableCommand.GetUserById(userId);
             userCardString += $"\n{user}";
-            userCardString += $"\nВаша группа: {user.GroupNumber}\n";
+            userCardString += $"\nВаша группа: {user.GroupNumber}";
+            userCardString += $"\nВаш telegramID: {user.UserID}\n";
             await botClient.SendTextMessageAsync(chatId: userId,
                 text: userCardString,
                 replyMarkup: CommandKeyboard.UserCardMenu);

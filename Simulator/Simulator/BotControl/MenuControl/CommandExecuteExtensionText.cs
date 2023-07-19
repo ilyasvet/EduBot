@@ -41,7 +41,7 @@ namespace Simulator.BotControl
 
             if (userProperties.Length != 2)
             {
-                callBackMessage = Resources.WrongArgumentMessage;
+                callBackMessage = Resources.WrongFormat;
             }
             else if (!UserHandler.IsCorrectName(userProperties[0]))
             {

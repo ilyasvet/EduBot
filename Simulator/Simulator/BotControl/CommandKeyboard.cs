@@ -65,7 +65,6 @@ namespace Simulator.BotControl
         {
             new[] { UserCard },
             new[] { GoToCase },
-            new[] { CheckTelegramId },
         });
 
         public static InlineKeyboardMarkup BackToUserCard = new(new[]
@@ -77,7 +76,6 @@ namespace Simulator.BotControl
         {
             new[] { UserCard },
             new[] { GoToCase },
-            new[] { CheckTelegramId },
             new[] { AddUsers },
             new[] { MyGroup },
         });
