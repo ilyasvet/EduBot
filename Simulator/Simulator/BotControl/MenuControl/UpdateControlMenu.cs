@@ -61,7 +61,11 @@ namespace Simulator.BotControl
                     botClient,
                     param);
 
-                await botClient.DeleteMessageAsync(userId, query.Message.MessageId);
+                try
+                {
+                    await botClient.DeleteMessageAsync(userId, query.Message.MessageId);
+                }
+                catch { }
             }
             catch(KeyNotFoundException)
             {

@@ -15,31 +15,37 @@ namespace Simulator.BotControl
             await Task.Run(async () =>
             {
                 DialogState state = await DataBaseControl.UserTableCommand.GetDialogState(userId);
+                bool resultOperation = false;
                 switch (state)
                 {
                     case DialogState.None:
                         await botClient.DeleteMessageAsync(userId, message.MessageId);
                         break;
                     case DialogState.EnterPassword:
-                        await CheckPassword(userId, botClient, message);
+                        resultOperation = await CheckPassword(userId, botClient, message);
                         break;
                     case DialogState.AddingGroupLeader:
-                        await AddClassLeader(userId, botClient, message);
+                        resultOperation = await AddClassLeader(userId, botClient, message);
                         break;
                     case DialogState.EditingUserInfo:
-                        await EditUserInfo(userId, botClient, message);
+                        resultOperation = await EditUserInfo(userId, botClient, message);
                         break;
                     default:
-                        await botClient.DeleteMessageAsync(userId, message.MessageId);
+                        await BotCallBack(userId, botClient, Resources.WrongArgumentMessage);
                         break;
+                }
+                if (resultOperation)
+                {
+                    await DataBaseControl.UserTableCommand.SetDialogState(userId, DialogState.None);
                 }
             });
         }
 
-        private static async Task EditUserInfo(long userId, ITelegramBotClient botClient, Message message)
+        private static async Task<bool> EditUserInfo(long userId, ITelegramBotClient botClient, Message message)
         {
             string[] userProperties = message.Text.Split(' ');
             string callBackMessage = string.Empty;
+            bool result = false;
 
             if (userProperties.Length != 2)
             {
@@ -58,18 +64,18 @@ namespace Simulator.BotControl
                 callBackMessage += Resources.SuccessEditing;
                 await DataBaseControl.UserTableCommand.SetName(userId, userProperties[0]);
                 await DataBaseControl.UserTableCommand.SetSurname(userId, userProperties[1]);
-                await botClient.DeleteMessageAsync(userId, message.MessageId);
-                await botClient.DeleteMessageAsync(userId, message.MessageId - 1);
-                await DataBaseControl.UserTableCommand.SetDialogState(userId, DialogState.None);
+                result = true;
 
             }
             await BotCallBack(userId, botClient, callBackMessage);
+            return result;
         }
 
-        private static async Task AddClassLeader(long userId, ITelegramBotClient botClient, Message message)
+        private static async Task<bool> AddClassLeader(long userId, ITelegramBotClient botClient, Message message)
         {
             string[] userProperties = message.Text.Split(' ');
             string callBackMessage = string.Empty;
+            bool result = false;
 
             if (!long.TryParse(userProperties[0], out long longId) || longId < 0)
             {
@@ -79,6 +85,7 @@ namespace Simulator.BotControl
             {
                 await DataBaseControl.UserTableCommand.SetType(longId, UserType.ClassLeader);
                 callBackMessage = Resources.MadeGroupLeader;
+                result = true;
             }
             else if (userProperties.Length != 4)
             {
@@ -108,14 +115,13 @@ namespace Simulator.BotControl
 
                 await GroupHandler.AddGroup(group);
                 await DataBaseControl.UserTableCommand.SetGroup(longId, group);
-                await botClient.DeleteMessageAsync(userId, message.MessageId);
-                await botClient.DeleteMessageAsync(userId, message.MessageId - 1);
-                await DataBaseControl.UserTableCommand.SetDialogState(userId, DialogState.None);
+                result = true;
             }
             await BotCallBack(userId, botClient, callBackMessage);
+            return result;
         }
 
-        private static async Task CheckPassword(long userId, ITelegramBotClient botClient, Message message)
+        private static async Task<bool> CheckPassword(long userId, ITelegramBotClient botClient, Message message)
         {
             Models.User user = await DataBaseControl.UserTableCommand.GetUserById(userId);
             string groupPassword = await DataBaseControl.GroupTableCommand.GetPassword(user.GroupNumber);
@@ -124,14 +130,14 @@ namespace Simulator.BotControl
                 await DataBaseControl.UserTableCommand.SetLogedIn(userId, true);
                 await DataBaseControl.UserTableCommand.SetDialogState(userId, DialogState.None);
                 await BotCallBack(userId, botClient, Resources.RightPassword);
-                await botClient.DeleteMessageAsync(userId, message.MessageId);
-                await botClient.DeleteMessageAsync(userId, message.MessageId - 1);
+                return true;
             }
             else
             {
                 await botClient.SendTextMessageAsync(
                             chatId: userId,
                             text: Resources.WrongPassword);
+                return false;
             }
         }
 

@@ -135,6 +135,28 @@ namespace Simulator.TelegramBotLibrary
             return result;
         }
 
+        public async Task SetMessageStartDialogId(long userId, int messageId)
+        {
+            string commandText = $"UPDATE UsersState SET StartDialogId = {messageId} WHERE UserID = {userId}";
+            await ExecuteNonQueryCommand(commandText);
+        }
+
+        public async Task<int> GetMessageStartDialogId(long userId)
+        {
+            string commandText = $"SELECT StartDialogId FROM UsersState WHERE UserID = {userId}";
+
+            int result = (int)await ExecuteReaderCommand(commandText, (reader) =>
+            {
+                if (reader.Read())
+                {
+                    return (int)reader[0];
+                }
+                return null;
+            });
+
+            return result;
+        }
+
         public async Task SetLogedIn(long userId, bool logedIn)
         {
             string commandText = $"UPDATE UsersState SET LogedIn = '{logedIn}' WHERE UserID = {userId}";

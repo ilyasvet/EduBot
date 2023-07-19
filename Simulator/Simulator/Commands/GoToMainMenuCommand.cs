@@ -3,6 +3,7 @@ using Simulator.Models;
 using Simulator.Properties;
 using System.Threading.Tasks;
 using Telegram.Bot;
+using Telegram.Bot.Exceptions;
 
 namespace Simulator.Commands
 {
@@ -11,29 +12,46 @@ namespace Simulator.Commands
         public override async Task Execute(long userId, ITelegramBotClient botClient, string param = "")
         {
             UserType userType = await DataBaseControl.UserTableCommand.GetUserType(userId);
+            int startDialogMessageId = await DataBaseControl.UserTableCommand.GetMessageStartDialogId(userId);
+            int endDialogMessageId = 0;
             switch (userType)
             {
                 case UserType.Admin:
-                    await botClient.SendTextMessageAsync(
+                    endDialogMessageId = (await botClient.SendTextMessageAsync(
                             chatId: userId,
                             text: Resources.AdminMenu,
-                            replyMarkup: CommandKeyboard.AdminMenu);
+                            replyMarkup: CommandKeyboard.AdminMenu)).MessageId;
                     break;
                 case UserType.ClassLeader:
-                    await botClient.SendTextMessageAsync(
+                    endDialogMessageId = (await botClient.SendTextMessageAsync(
                             chatId: userId,
                             text: Resources.UserMenu,
-                            replyMarkup: CommandKeyboard.GroupLeaderMenu);
+                            replyMarkup: CommandKeyboard.GroupLeaderMenu)).MessageId;
                     break;
                 case UserType.User:
-                    await botClient.SendTextMessageAsync(
-                            chatId: userId,
-                            text: Resources.UserMenu,
-                            replyMarkup: CommandKeyboard.UserMenu);
+                    endDialogMessageId = (await botClient.SendTextMessageAsync(
+                        chatId: userId,
+                        text: Resources.UserMenu,
+                        replyMarkup: CommandKeyboard.UserMenu)).MessageId;
                     break;
                 default:
                     break;
             }
+            endDialogMessageId--;
+            if (startDialogMessageId != -1)
+            {
+                while (startDialogMessageId < endDialogMessageId)
+                {
+                    try
+                    {
+                        await botClient.DeleteMessageAsync(userId, startDialogMessageId);
+                    }
+                    catch { }
+                    
+                    startDialogMessageId++;
+                }
+            }
+            await DataBaseControl.UserTableCommand.SetMessageStartDialogId(userId, -1);
         }
     }
 }

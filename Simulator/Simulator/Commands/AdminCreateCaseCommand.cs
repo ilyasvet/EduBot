@@ -11,11 +11,11 @@ namespace Simulator.Commands
         public async override Task Execute(long userId, ITelegramBotClient botClient, string param = "")
         {
             await DataBaseControl.UserTableCommand.SetDialogState(userId, DialogState.CreatingCase);
-            await botClient.SendTextMessageAsync(
+            int messageId = (await botClient.SendTextMessageAsync(
                 chatId: userId,
                 text: Resources.CreateCase,
-                replyMarkup: CommandKeyboard.ToMainMenu);
-
+                replyMarkup: CommandKeyboard.ToMainMenu)).MessageId;
+            await DataBaseControl.UserTableCommand.SetMessageStartDialogId(userId, messageId);
         }
     }
 }
