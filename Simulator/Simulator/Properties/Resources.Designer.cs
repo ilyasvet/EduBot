@@ -387,6 +387,15 @@ namespace Simulator.Properties {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на Ошибка при сохранении файла. Возможно, не тот формат.
+        /// </summary>
+        internal static string WrongFormatFile {
+            get {
+                return ResourceManager.GetString("WrongFormatFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на Неверный формат группы.
         /// </summary>
         internal static string WrongFormatGroup {

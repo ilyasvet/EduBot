@@ -15,8 +15,8 @@ namespace Simulator.TelegramBotLibrary
                 $" VALUES ('{user.UserID}','{user.Name}','{user.Surname}')";
             await ExecuteNonQueryCommand(commandText);
 
-            commandText = $"INSERT INTO UsersState (UserID, DialogState, UserType, LogedIn)" +
-                $" VALUES ('{user.UserID}', 0, {(int)type}, 0)";
+            commandText = $"INSERT INTO UsersState (UserID, DialogState, UserType, LogedIn, StartDialogId)" +
+                $" VALUES ('{user.UserID}', 0, {(int)type}, 0, -1)";
             await ExecuteNonQueryCommand(commandText);
 
             commandText = $"INSERT INTO UserCourseState (UserId, Point, HealthPoints, Rate, OnCourse)" +

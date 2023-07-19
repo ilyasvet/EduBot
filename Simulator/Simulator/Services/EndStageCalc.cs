@@ -50,7 +50,7 @@ namespace Simulator.Services
             {
                 int newHealthPoints = 0;
                 if(descriptor.ModuleNumber == 1 &&
-                    await DataBaseControl.UserCaseTableCommand.GetHealthPoints(userId) ==3)
+                    await DataBaseControl.UserCaseTableCommand.GetHealthPoints(userId) == 3)
                 {
                     newHealthPoints = 2;
                     //Снимается дополнительная попытка на 1 модуль

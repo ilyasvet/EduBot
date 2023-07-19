@@ -72,12 +72,6 @@ namespace Simulator.Case
         public static async Task MessageHandlingCase(Message message, ITelegramBotClient botClient)
         {
             long userId = message.Chat.Id;
-            if (message.Text == "/skip")
-            {
-                SkipCommand s = new();
-                await s.Execute(userId, botClient);
-                return;
-            }
 
             if (StagesControl.Stages[await DataBaseControl.UserCaseTableCommand.GetPoint(userId)]
                 is CaseStageMessage currentStage)
@@ -98,6 +92,13 @@ namespace Simulator.Case
                             // Если сообщение не соответсвует ответу - ничего не делаем
                         }
 
+                        if (message.Video.FileSize >= 20 * Math.Pow(2, 20))
+                        {
+                            await botClient.SendTextMessageAsync(userId, Resources.TooBigFile);
+                            return;
+                            // Если сообщение не соответсвует ответу - ничего не делаем
+                        }
+
                         file = await botClient.GetFileAsync(message.Video.FileId);
                         filePath += "/videos/";
                         fileName += ".mp4";
@@ -106,16 +107,16 @@ namespace Simulator.Case
                         break;
                 }
 
-                if (file.FileSize >= 20 * Math.Pow(2, 20))
-                {
-                    await botClient.SendTextMessageAsync(userId, Resources.TooBigFile);
-                    return;
-                    // Если сообщение не соответсвует ответу - ничего не делаем
-                }
-
                 using (var stream = new FileStream(filePath + fileName, FileMode.Create))
                 {
-                    await botClient.DownloadFileAsync(file.FilePath, stream);
+                    try
+                    {
+                        await botClient.DownloadFileAsync(file.FilePath, stream);
+                    } catch (Exception ex)
+                    {
+                        await botClient.SendTextMessageAsync(userId, Resources.WrongFormatFile);
+                        return;
+                    }
                 }
 
                 // добавляем птс
@@ -127,6 +128,10 @@ namespace Simulator.Case
 
                 var nextStage = StagesControl.Stages[currentStage.NextStage]; //next уже установлено
                 await SetAndMovePoint(userId, nextStage, botClient);
+            }
+            else
+            {
+                await botClient.DeleteMessageAsync(userId, message.MessageId);
             }
         }
 

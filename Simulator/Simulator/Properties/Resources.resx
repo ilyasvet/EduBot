@@ -242,4 +242,7 @@
   <data name="SuccessEditing" xml:space="preserve">
     <value>Данные успешно изменены</value>
   </data>
+  <data name="WrongFormatFile" xml:space="preserve">
+    <value>Ошибка при сохранении файла. Возможно, не тот формат</value>
+  </data>
 </root>
