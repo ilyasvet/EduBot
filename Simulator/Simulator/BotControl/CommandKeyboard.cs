@@ -21,6 +21,7 @@ namespace Simulator.BotControl
         private static InlineKeyboardButton LogInButton = InlineKeyboardButton.WithCallbackData("Войти", "Login");
         private static InlineKeyboardButton AnswersButton = InlineKeyboardButton.WithCallbackData("Ответы пользователей", "AnswersFirst");
         private static InlineKeyboardButton MyGroup = InlineKeyboardButton.WithCallbackData("Группа", "ShowUsersInfo");
+        private static InlineKeyboardButton Edit = InlineKeyboardButton.WithCallbackData("Изменить данные", "EditUserInfo");
 
         public static InlineKeyboardButton ToFinishButton = InlineKeyboardButton.WithCallbackData("Выйти", "ToOut");
         public static InlineKeyboardButton NextButton = InlineKeyboardButton.WithCallbackData("Далее", "MoveNext");
@@ -67,6 +68,11 @@ namespace Simulator.BotControl
             new[] { CheckTelegramId },
         });
 
+        public static InlineKeyboardMarkup BackToUserCard = new(new[]
+        {
+            new[] { UserCard },
+        });
+
         public static InlineKeyboardMarkup GroupLeaderMenu = new(new[]
         {
             new[] { UserCard },
@@ -74,6 +80,12 @@ namespace Simulator.BotControl
             new[] { CheckTelegramId },
             new[] { AddUsers },
             new[] { MyGroup },
+        });
+
+        public static InlineKeyboardMarkup UserCardMenu = new(new[]
+        {
+            new[] { Edit },
+            new[] { ToMenu },
         });
 
         public static InlineKeyboardMarkup GroupsList;

@@ -44,6 +44,7 @@ namespace Simulator.Services
                 { "AnswersFirst", "AdminAnswersCommand" },
                 { "AnswersTypes", "AdminAnswersTypesCommand" },
                 { "ShowAnswers", "AdminShowAnswersCommand" },
+                { "EditUserInfo", "EditUserInfoCommand" },
             };
             return result;
         }

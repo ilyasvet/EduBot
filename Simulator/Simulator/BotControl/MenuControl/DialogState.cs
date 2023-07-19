@@ -8,5 +8,6 @@ namespace Simulator.BotControl.State
         AddingCase,
         AddingGroupLeader,
         CreatingCase,
+        EditingUserInfo
     }
 }

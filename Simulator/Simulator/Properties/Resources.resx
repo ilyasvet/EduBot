@@ -220,7 +220,7 @@
     <value>Неверный формат имени</value>
   </data>
   <data name="WrongFormatSurname" xml:space="preserve">
-    <value>Неверный формат фамилии.</value>
+    <value>Неверный формат фамилии</value>
   </data>
   <data name="AddGroupLeader" xml:space="preserve">
     <value>Отправьте строку в формате: *ID* *Имя* *Фамилия* *Группа*
@@ -234,5 +234,11 @@
   </data>
   <data name="WrongArgumentMessage" xml:space="preserve">
     <value>Ты чё скинул...</value>
+  </data>
+  <data name="EnterUserInfo" xml:space="preserve">
+    <value>Введите новые имя и фамилию через пробел</value>
+  </data>
+  <data name="SuccessEditing" xml:space="preserve">
+    <value>Данные успешно изменены</value>
   </data>
 </root>

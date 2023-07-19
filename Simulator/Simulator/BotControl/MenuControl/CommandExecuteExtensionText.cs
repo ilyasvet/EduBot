@@ -24,11 +24,40 @@ namespace Simulator.BotControl
                     case DialogState.AddingGroupLeader:
                         await AddClassLeader(userId, botClient, message);
                         break;
+                    case DialogState.EditingUserInfo:
+                        await EditUserInfo(userId, botClient, message);
+                        break;
                     default:
                         await BotCallBack(userId, botClient, Resources.WrongArgumentMessage);
                         break;
                 }
             });
+        }
+
+        private static async Task EditUserInfo(long userId, ITelegramBotClient botClient, string message)
+        {
+            string[] userProperties = message.Split(' ');
+            string callBackMessage = string.Empty;
+
+            if (userProperties.Length != 2)
+            {
+                callBackMessage = Resources.WrongArgumentMessage;
+            }
+            else if (!UserHandler.IsCorrectName(userProperties[0]))
+            {
+                callBackMessage = Resources.WrongFormatName;
+            }
+            else if (!UserHandler.IsCorrectName(userProperties[1]))
+            {
+                callBackMessage = Resources.WrongFormatSurname;
+            }
+            else
+            {
+                callBackMessage += Resources.SuccessEditing;
+                await DataBaseControl.UserTableCommand.SetName(userId, userProperties[0]);
+                await DataBaseControl.UserTableCommand.SetSurname(userId, userProperties[1]);
+            }
+            await BotCallBack(userId, botClient, callBackMessage);
         }
 
         private static async Task AddClassLeader(long userId, ITelegramBotClient botClient, string message)

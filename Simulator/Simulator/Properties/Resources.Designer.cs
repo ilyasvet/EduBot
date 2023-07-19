@@ -161,6 +161,15 @@ namespace Simulator.Properties {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на Введите новые имя и фамилию через пробел.
+        /// </summary>
+        internal static string EnterUserInfo {
+            get {
+                return ResourceManager.GetString("EnterUserInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на Возникла неизвестная ошибка. Наберите /start.
         /// </summary>
         internal static string Error {
@@ -256,6 +265,15 @@ namespace Simulator.Properties {
         internal static string SuccessAddGroup {
             get {
                 return ResourceManager.GetString("SuccessAddGroup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Данные успешно изменены.
+        /// </summary>
+        internal static string SuccessEditing {
+            get {
+                return ResourceManager.GetString("SuccessEditing", resourceCulture);
             }
         }
         
@@ -395,7 +413,7 @@ namespace Simulator.Properties {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Неверный формат фамилии..
+        ///   Ищет локализованную строку, похожую на Неверный формат фамилии.
         /// </summary>
         internal static string WrongFormatSurname {
             get {

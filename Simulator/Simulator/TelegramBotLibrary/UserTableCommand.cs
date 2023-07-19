@@ -24,6 +24,18 @@ namespace Simulator.TelegramBotLibrary
             await ExecuteNonQueryCommand(commandText);
         }
 
+        public async Task SetName(long userId, string name)
+        {
+            string commandText = $"UPDATE Users SET Name = '{name}' WHERE UserID = {userId}";
+            await ExecuteNonQueryCommand(commandText);
+        }
+
+        public async Task SetSurname(long userId, string surname)
+        {
+            string commandText = $"UPDATE Users SET Surname = '{surname}' WHERE UserID = {userId}";
+            await ExecuteNonQueryCommand(commandText);
+        }
+
         public async Task<bool> HasUser(long userId)
         {
             string commandText = $"SELECT COUNT(UserID) FROM Users WHERE UserID = {userId}";

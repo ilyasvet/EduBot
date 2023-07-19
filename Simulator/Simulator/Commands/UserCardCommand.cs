@@ -10,14 +10,14 @@ namespace Simulator.Commands
     {
         public override async Task Execute(long userId, ITelegramBotClient botClient, string param = "")
         {
+            await DataBaseControl.UserTableCommand.SetDialogState(userId, BotControl.State.DialogState.None);
             string userCardString = Resources.UserCard;
             User user = await DataBaseControl.UserTableCommand.GetUserById(userId);
             userCardString += $"\n{user}";
             userCardString += $"\nВаша группа: {user.GroupNumber}\n";
             await botClient.SendTextMessageAsync(chatId: userId,
                 text: userCardString,
-                replyMarkup: CommandKeyboard.ToMainMenu);
-
+                replyMarkup: CommandKeyboard.UserCardMenu);
         }
     }
 }
