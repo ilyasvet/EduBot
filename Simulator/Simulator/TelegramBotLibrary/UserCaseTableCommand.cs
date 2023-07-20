@@ -49,28 +49,6 @@ namespace Simulator.TelegramBotLibrary
             return result;
         }
 
-        public async Task SetOnCourse(long userId, bool boolOnCourse)
-        {
-            string commandText = $"UPDATE UserCourseState SET OnCourse = '{boolOnCourse}' WHERE UserID = {userId}";
-            await ExecuteNonQueryCommand(commandText);
-        }
-
-        public async Task<bool> IsOnCourse(long userId)
-        {
-            string commandText = $"SELECT OnCourse FROM UserCourseState WHERE UserID = {userId}";
-            
-            bool result = (bool)await ExecuteReaderCommand(commandText, (reader) =>
-            {
-                if (reader.Read())
-                {
-                    return (bool)reader[0];
-                }
-                return null;
-            });
-
-            return result;
-        }
-
         public async Task SetHealthPoints(long userId, int healthPoints = 3)
         {
             string commandText = $"UPDATE UserCourseState SET HealthPoints = {healthPoints} WHERE UserID = {userId}";
@@ -86,28 +64,6 @@ namespace Simulator.TelegramBotLibrary
                 if (reader.Read())
                 {
                     return (int)reader[0];
-                }
-                return null;
-            });
-
-            return result;
-        }
-
-        public async Task SetStartTime(long userId, DateTime time)
-        {
-            string commandText = $"UPDATE UserCourseState SET StartQuestTime = '{time}' WHERE UserID = {userId}";
-            await ExecuteNonQueryCommand(commandText);
-        }
-
-        public async Task<DateTime> GetStartTime(long userId)
-        {
-            string commandText = $"SELECT StartQuestTime FROM UserCourseState WHERE UserID = {userId}";
-
-            DateTime result = (DateTime)await ExecuteReaderCommand(commandText, (reader) =>
-            {
-                if (reader.Read())
-                {
-                    return (DateTime)reader[0];
                 }
                 return null;
             });

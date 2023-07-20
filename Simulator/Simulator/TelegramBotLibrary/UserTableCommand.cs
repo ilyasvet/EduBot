@@ -15,12 +15,16 @@ namespace Simulator.TelegramBotLibrary
                 $" VALUES ('{user.UserID}','{user.Name}','{user.Surname}')";
             await ExecuteNonQueryCommand(commandText);
 
-            commandText = $"INSERT INTO UsersState (UserID, DialogState, UserType, LogedIn, StartDialogId)" +
-                $" VALUES ('{user.UserID}', 0, {(int)type}, 0, -1)";
+            commandText = $"INSERT INTO UsersState (UserID, DialogState, UserType, LogedIn)" +
+                $" VALUES ('{user.UserID}', 0, {(int)type}, 0)";
             await ExecuteNonQueryCommand(commandText);
 
-            commandText = $"INSERT INTO UserCourseState (UserId, Point, HealthPoints, Rate, OnCourse)" +
-                $" VALUES ('{user.UserID}', 0, 3, 0, 0)";
+            commandText = $"INSERT INTO UserCourseState (UserId, Point, HealthPoints, Rate)" +
+                $" VALUES ('{user.UserID}', 0, 3, 0)";
+            await ExecuteNonQueryCommand(commandText);
+
+            commandText = $"INSERT INTO UserFlags (UserId, StartDialogId, CalculatedEndStage, OnCourse)" +
+                $" VALUES ('{user.UserID}', 0, 0, 0)";
             await ExecuteNonQueryCommand(commandText);
         }
 
@@ -55,6 +59,8 @@ namespace Simulator.TelegramBotLibrary
             commandText = $"DELETE FROM UsersState WHERE UserId = {userId}";
             await ExecuteNonQueryCommand(commandText);
             commandText = $"DELETE FROM UserCourseState WHERE UserId = {userId}";
+            await ExecuteNonQueryCommand(commandText);
+            commandText = $"DELETE FROM UserFlags WHERE UserId = {userId}";
             await ExecuteNonQueryCommand(commandText);
         }
 
@@ -128,28 +134,6 @@ namespace Simulator.TelegramBotLibrary
                 if (reader.Read())
                 {
                     return (bool)reader[0];
-                }
-                return null;
-            });
-
-            return result;
-        }
-
-        public async Task SetMessageStartDialogId(long userId, int messageId)
-        {
-            string commandText = $"UPDATE UsersState SET StartDialogId = {messageId} WHERE UserID = {userId}";
-            await ExecuteNonQueryCommand(commandText);
-        }
-
-        public async Task<int> GetMessageStartDialogId(long userId)
-        {
-            string commandText = $"SELECT StartDialogId FROM UsersState WHERE UserID = {userId}";
-
-            int result = (int)await ExecuteReaderCommand(commandText, (reader) =>
-            {
-                if (reader.Read())
-                {
-                    return (int)reader[0];
                 }
                 return null;
             });

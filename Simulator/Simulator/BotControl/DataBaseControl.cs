@@ -13,10 +13,12 @@ namespace Simulator.BotControl
             UserTableCommand = new();
             UserCaseTableCommand = new();
             GroupTableCommand = new();
+            UserFlagsTableCommand = new();
         }
 
         public static UserTableCommand UserTableCommand { get; private set; }
         public static UserCaseTableCommand UserCaseTableCommand { get; private set; }
         public static GroupTableCommand GroupTableCommand { get; private set; }
+        public static UserFlagsTableCommand UserFlagsTableCommand { get; private set; }
     }
 }

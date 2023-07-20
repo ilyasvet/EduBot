@@ -154,6 +154,7 @@
     <Compile Include="TelegramBotLibrary\JsonUserStats\UserCaseJsonExcelHandler.cs" />
     <Compile Include="TelegramBotLibrary\Connection.cs" />
     <Compile Include="TelegramBotLibrary\UserCaseTableCommand.cs" />
+    <Compile Include="TelegramBotLibrary\UserFlagsTableCommand.cs" />
     <Compile Include="TelegramBotLibrary\UserTableCommand.cs" />
   </ItemGroup>
   <ItemGroup>

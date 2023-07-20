@@ -106,7 +106,7 @@ namespace Simulator.Case
             switch (nextStage)
             {
                 case CaseStagePoll poll:
-                    await DataBaseControl.UserCaseTableCommand.SetStartTime(userId, DateTime.Now);
+                    await DataBaseControl.UserFlagsTableCommand.SetStartTime(userId, DateTime.Now);
                     await ShowAdditionalInfo(botClient, poll, userId);
                     await botClient.SendPollAsync(
                         chatId: userId,
@@ -120,7 +120,7 @@ namespace Simulator.Case
                 case CaseStageMessage message:
                     string answerGuide = GetAnsweGuide(message.MessageTypeAnswer);
 
-                    await DataBaseControl.UserCaseTableCommand.SetStartTime(userId, DateTime.Now);
+                    await DataBaseControl.UserFlagsTableCommand.SetStartTime(userId, DateTime.Now);
                     await ShowAdditionalInfo(botClient, message, userId);
                     await botClient.SendTextMessageAsync(
                         chatId: userId,
