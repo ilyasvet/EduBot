@@ -114,6 +114,7 @@ namespace Simulator.Case
                         allowsMultipleAnswers: poll.ManyAnswers,
                         replyMarkup: new InlineKeyboardMarkup(CommandKeyboard.ToFinishButton)
                         );
+
                     break;
                 case CaseStageMessage message:
                     string answerGuide = GetAnsweGuide(message.MessageTypeAnswer);
@@ -125,6 +126,7 @@ namespace Simulator.Case
                         text: message.TextBefore + answerGuide,
                         replyMarkup: new InlineKeyboardMarkup(CommandKeyboard.ToFinishButton)
                         );
+
                     break;
                 case CaseStageNone none:
                     if(await DataBaseControl.UserCaseTableCommand.IsNullAttempts(userId))
@@ -137,14 +139,28 @@ namespace Simulator.Case
                     await botClient.SendTextMessageAsync(userId,
                         none.TextBefore,
                         replyMarkup: CommandKeyboard.StageMenu);
+
                     break;
                 case CaseStageEndModule endStage:
                     var resultsCallback = await EndStageCalc.GetResultOfModule(endStage, userId);
-                    
-                    await DataBaseControl.UserCaseTableCommand.SetEndCaseTime(userId, DateTime.Now);
+
+                    await DataBaseControl.UserCaseTableCommand.SetPoint(userId, resultsCallback.Item2);
+
+                    IReplyMarkup replyMarkup;
+                    if (resultsCallback.Item2 == -1) // Последний этап и попыток больше нет
+                    {
+                        await DataBaseControl.UserCaseTableCommand.SetEndCaseTime(userId, DateTime.Now);
+                        replyMarkup = new InlineKeyboardMarkup(CommandKeyboard.ToFinishButton);
+                    }
+                    else
+                    {
+                        replyMarkup = CommandKeyboard.StageMenu;
+                    }
+
                     await botClient.SendTextMessageAsync(userId,
                         resultsCallback.Item1,
-                        replyMarkup: null);
+                        replyMarkup: replyMarkup);
+
                     break;
                 default:
                     break;

@@ -90,7 +90,7 @@ namespace Simulator.Services
 
             if (endCase)
             {
-                result.Item2 = 0;
+                result.Item2 = attemptsRemain == 0 ? -1 : 0;
             }
             else
             {
