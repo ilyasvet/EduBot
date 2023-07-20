@@ -12,7 +12,7 @@ namespace Simulator.Commands
         public override async Task Execute(long userId, ITelegramBotClient botClient, string param = "")
         {
             UserType userType = await DataBaseControl.UserTableCommand.GetUserType(userId);
-            int startDialogMessageId = await DataBaseControl.UserTableCommand.GetMessageStartDialogId(userId);
+            int startDialogMessageId = await DataBaseControl.UserFlagsTableCommand.GetMessageStartDialogId(userId);
             int endDialogMessageId = 0;
             switch (userType)
             {
@@ -51,7 +51,7 @@ namespace Simulator.Commands
                     startDialogMessageId++;
                 }
             }
-            await DataBaseControl.UserTableCommand.SetMessageStartDialogId(userId, -1);
+            await DataBaseControl.UserFlagsTableCommand.SetMessageStartDialogId(userId, -1);
         }
     }
 }

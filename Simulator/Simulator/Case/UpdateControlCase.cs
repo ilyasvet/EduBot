@@ -142,7 +142,7 @@ namespace Simulator.Case
             int moduleNumber = currentStage.ModuleNumber;
             int questionNumber = currentStage.Number;
 
-            var time = DateTime.Now - await DataBaseControl.UserCaseTableCommand.GetStartTime(userId);
+            var time = DateTime.Now - await DataBaseControl.UserFlagsTableCommand.GetStartTime(userId);
 
             StageResults results = new StageResults();
             results.Time = time;
@@ -164,7 +164,7 @@ namespace Simulator.Case
 
         private static async Task GoOut(long userId, ITelegramBotClient botClient)
         {
-            await DataBaseControl.UserCaseTableCommand.SetOnCourse(userId, false);
+            await DataBaseControl.UserFlagsTableCommand.SetOnCourse(userId, false);
             var outCommand = new GoToMainMenuCommand();
             await outCommand.Execute(userId, botClient);
         }

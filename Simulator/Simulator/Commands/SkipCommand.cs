@@ -23,7 +23,7 @@ namespace Simulator.Commands
                 else
                 {
                     IReplyMarkup markup;
-                    await DataBaseControl.UserCaseTableCommand.SetOnCourse(userId, false);
+                    await DataBaseControl.UserFlagsTableCommand.SetOnCourse(userId, false);
 
                     if (await DataBaseControl.UserTableCommand.IsLogedIn(userId))
                     {

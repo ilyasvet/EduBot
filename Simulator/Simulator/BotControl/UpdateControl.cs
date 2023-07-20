@@ -16,7 +16,7 @@ namespace Simulator.BotControl
             try
             {
                 if (await DataBaseControl.UserTableCommand.HasUser(userId)
-                    && await DataBaseControl.UserCaseTableCommand.IsOnCourse(userId))
+                    && await DataBaseControl.UserFlagsTableCommand.IsOnCourse(userId))
                 {
                     await UpdateControlCase.MessageHandlingCase(message, botClient);
                 }
@@ -36,7 +36,7 @@ namespace Simulator.BotControl
             try
             {
                 if (await DataBaseControl.UserTableCommand.HasUser(userId)
-                    && await DataBaseControl.UserCaseTableCommand.IsOnCourse(userId))
+                    && await DataBaseControl.UserFlagsTableCommand.IsOnCourse(userId))
                 {
                     await UpdateControlCase.CallbackQueryHandlingCase(query, botClient);
                 }
@@ -55,7 +55,7 @@ namespace Simulator.BotControl
             long userId = answer.User.Id;
             try
             {
-                if(await DataBaseControl.UserCaseTableCommand.IsOnCourse(userId))
+                if(await DataBaseControl.UserFlagsTableCommand.IsOnCourse(userId))
                 {
                     await UpdateControlCase.PollAnswerHandlingCase(answer, botClient);
                 }

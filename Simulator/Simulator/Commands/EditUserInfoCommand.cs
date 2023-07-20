@@ -15,7 +15,7 @@ namespace Simulator.Commands
                 chatId: userId,
                 text: Resources.EnterUserInfo,
                 replyMarkup: CommandKeyboard.BackToUserCard)).MessageId;
-            await DataBaseControl.UserTableCommand.SetMessageStartDialogId(userId, messageId);
+            await DataBaseControl.UserFlagsTableCommand.SetMessageStartDialogId(userId, messageId);
         }
     }
 }

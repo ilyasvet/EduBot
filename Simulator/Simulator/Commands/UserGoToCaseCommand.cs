@@ -30,7 +30,7 @@ namespace Simulator.Commands
             }
             else
             {
-                await DataBaseControl.UserCaseTableCommand.SetOnCourse(userId, true);
+                await DataBaseControl.UserFlagsTableCommand.SetOnCourse(userId, true);
                 CaseStage currentStage = StagesControl.Stages[await DataBaseControl.UserCaseTableCommand.GetPoint(userId)];
                 await StagesControl.Move(userId, currentStage, botClient);
             }
