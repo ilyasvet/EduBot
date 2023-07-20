@@ -49,21 +49,56 @@ namespace Simulator.TelegramBotLibrary
             return result;
         }
 
-        public async Task SetHealthPoints(long userId, int healthPoints = 3)
+        public async Task SetAttempts(long userId, int attempts)
         {
-            string commandText = $"UPDATE UserCourseState SET HealthPoints = {healthPoints} WHERE UserID = {userId}";
+            string commandText = $"UPDATE UserCourseState SET Attempts = {attempts} WHERE UserID = {userId}";
             await ExecuteNonQueryCommand(commandText);
         }
 
-        public async Task<int> GetHealthPoints(long userId)
+        public async Task<int> GetAttempts(long userId)
         {
-            string commandText = $"SELECT HealthPoints FROM UserCourseState WHERE UserID = {userId}";
+            string commandText = $"SELECT Attempts FROM UserCourseState WHERE UserID = {userId}";
 
             int result = (int)await ExecuteReaderCommand(commandText, (reader) =>
             {
                 if (reader.Read())
                 {
                     return (int)reader[0];
+                }
+                return null;
+            });
+
+            return result;
+        }
+
+        public async Task<bool> IsNullAttempts(long userId)
+        {
+            string commandText = $"SELECT COUNT(UserID) FROM UserCourseState WHERE UserID = {userId} AND Attempts is NULL";
+
+            bool result = (bool)await ExecuteReaderCommand(commandText, (reader) =>
+            {
+                reader.Read();
+                return (int)reader[0] != 0;
+            });
+
+            return result;
+        }
+
+        public async Task SetExtraAttempt(long userId, bool extraAttempt)
+        {
+            string commandText = $"UPDATE UserCourseState SET ExtraAttempt = '{extraAttempt}' WHERE UserID = {userId}";
+            await ExecuteNonQueryCommand(commandText);
+        }
+
+        public async Task<bool> GetExtraAttempt(long userId)
+        {
+            string commandText = $"SELECT ExtraAttempt FROM UserCourseState WHERE UserID = {userId} AND ExtraAttempt IS NOT NULL";
+
+            bool result = (bool)await ExecuteReaderCommand(commandText, (reader) =>
+            {
+                if (reader.Read())
+                {
+                    return (bool)reader[0];
                 }
                 return null;
             });

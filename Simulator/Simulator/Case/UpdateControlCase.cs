@@ -33,7 +33,7 @@ namespace Simulator.Case
                     }
                     else
                     {
-                        if (await DataBaseControl.UserCaseTableCommand.GetHealthPoints(userId) != 0)
+                        if (await DataBaseControl.UserCaseTableCommand.GetAttempts(userId) != 0)
                         {
                             return;
                         }
@@ -48,7 +48,9 @@ namespace Simulator.Case
         public static async Task PollAnswerHandlingCase(PollAnswer answer, ITelegramBotClient botClient)
         {
             long userId = answer.User.Id;
-            int attemptNo = await DataBaseControl.UserCaseTableCommand.GetHealthPoints(userId) > 1 ? 1 : 2;
+            int attemptNo = StagesControl.Stages.AttemptCount
+                - await DataBaseControl.UserCaseTableCommand.GetAttempts(userId) + 1;
+
             CaseStagePoll currentStage = (CaseStagePoll)StagesControl.
                 Stages[await DataBaseControl.UserCaseTableCommand.GetPoint(userId)];
             //Так как мы получаем PollAnswer, то очевидно, что текущий этап - опросник
@@ -76,7 +78,9 @@ namespace Simulator.Case
             if (StagesControl.Stages[await DataBaseControl.UserCaseTableCommand.GetPoint(userId)]
                 is CaseStageMessage currentStage)
             {
-                int attemptNo = await DataBaseControl.UserCaseTableCommand.GetHealthPoints(userId) > 1 ? 1 : 2;
+                int attemptNo = StagesControl.Stages.AttemptCount
+                - await DataBaseControl.UserCaseTableCommand.GetAttempts(userId) + 1;
+
                 string fileName = $"{userId}-{currentStage.Number}";
                 string filePath = ControlSystem.messageAnswersDirectory;
                 Telegram.Bot.Types.File file = null;

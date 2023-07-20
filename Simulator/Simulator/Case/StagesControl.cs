@@ -101,8 +101,6 @@ namespace Simulator.Case
         }
         public static async Task Move(long userId, CaseStage nextStage, ITelegramBotClient botClient)
         {
-            int hp = await DataBaseControl.UserCaseTableCommand.GetHealthPoints(userId);
-
             switch (nextStage)
             {
                 case CaseStagePoll poll:
@@ -129,8 +127,10 @@ namespace Simulator.Case
                         );
                     break;
                 case CaseStageNone none:
-                    if(hp == 3) // начальное значение
+                    if(await DataBaseControl.UserCaseTableCommand.IsNullAttempts(userId))
                     {
+                        await DataBaseControl.UserCaseTableCommand.SetAttempts(userId, Stages.AttemptCount);
+                        await DataBaseControl.UserCaseTableCommand.SetExtraAttempt(userId, Stages.ExtraAttempt);
                         await DataBaseControl.UserCaseTableCommand.SetStartCaseTime(userId, DateTime.Now);
                         await CaseJsonCommand.CheckJsonFile($"{ControlSystem.statsDirectory}\\{userId}.json");
                     }
@@ -140,13 +140,11 @@ namespace Simulator.Case
                     break;
                 case CaseStageEndModule endStage:
                     var resultsCallback = await EndStageCalc.GetResultOfModule(endStage, userId);
-                    if(endStage.IsEndOfCase && hp <= 1) // На этом моменте hp в базе будет уже 0
-                    {
-                        await DataBaseControl.UserCaseTableCommand.SetEndCaseTime(userId, DateTime.Now);
-                    }
+                    
+                    await DataBaseControl.UserCaseTableCommand.SetEndCaseTime(userId, DateTime.Now);
                     await botClient.SendTextMessageAsync(userId,
                         resultsCallback.Item1,
-                        replyMarkup: resultsCallback.Item2);
+                        replyMarkup: null);
                     break;
                 default:
                     break;

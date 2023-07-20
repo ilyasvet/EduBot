@@ -1,128 +1,103 @@
 ﻿using Simulator.BotControl;
 using Simulator.Models;
-using Simulator.TelegramBotLibrary;
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
-using Telegram.Bot.Types.ReplyMarkups;
 
 namespace Simulator.Services
 {
-    enum ResultType
-    {
-        FirstFail,
-        SecondFail,
-        Success,
-    }
-
     internal static class EndStageCalc
     {
-        public async static Task<ValueTuple<string, InlineKeyboardMarkup>> GetResultOfModule(CaseStageEndModule descriptor, long userId)
+        public async static Task<ValueTuple<string, int>> GetResultOfModule(CaseStageEndModule descriptor, long userId)
         {
             double currentRate;
-            List<InlineKeyboardButton[]> buttons = new List<InlineKeyboardButton[]>();
-            var result = new ValueTuple<string, InlineKeyboardMarkup>();
+            var result = new ValueTuple<string, int>();
             
             currentRate = await DataBaseControl.UserCaseTableCommand.GetRate(userId);
-            int attemptNumber = await DataBaseControl.UserCaseTableCommand.GetHealthPoints(userId) > 1 ? 1 : 2;
-            //Если жизней больше, чем 1, то это первая попытка, иначе 2.
-            
-            if(descriptor.IsEndOfCase)
+            int attemptsRemain = await DataBaseControl.UserCaseTableCommand.GetAttempts(userId);
+
+            bool extraAttempt = false;
+            if (descriptor.ModuleNumber == 1)
             {
-                int ratePlace;
-                if (currentRate < descriptor.Rates[0])
+                if(await DataBaseControl.UserCaseTableCommand.GetExtraAttempt(userId))
                 {
-                    ratePlace = 0;
+                    extraAttempt = true;
                 }
-                else if(currentRate < descriptor.Rates[1])
+            }
+
+            int ratePlace = 0;
+            if (descriptor.IsEndOfCase)
+            {
+                foreach(double rateGrade in descriptor.Rates)
                 {
-                    ratePlace = 1;
+                    if (currentRate > rateGrade)
+                    {
+                        ratePlace++;
+                    }
+                    else break;
+                }
+                if (extraAttempt)
+                {
+                    await DataBaseControl.UserCaseTableCommand.SetExtraAttempt(userId, false);
                 }
                 else
                 {
-                    ratePlace = 2;
+                    await DataBaseControl.UserCaseTableCommand.SetAttempts(userId, --attemptsRemain);
                 }
-                result = GetResultEnd(attemptNumber, descriptor, buttons, ratePlace);
-                await DataBaseControl.UserCaseTableCommand.SetHealthPoints(userId, 2-attemptNumber);
-                //Если была первая попытка, то поставится 1, если вторая, то 0
+                result = GetResult(attemptsRemain, descriptor, ratePlace, true);
             }
             else if(currentRate < descriptor.Rates[0])
             {
-                int newHealthPoints = 0;
-                if(descriptor.ModuleNumber == 1 &&
-                    await DataBaseControl.UserCaseTableCommand.GetHealthPoints(userId) == 3)
+                if (extraAttempt)
                 {
-                    newHealthPoints = 2;
-                    //Снимается дополнительная попытка на 1 модуль
-
-                    result = GetResult(buttons, descriptor, ResultType.FirstFail);
+                    await DataBaseControl.UserCaseTableCommand.SetExtraAttempt(userId, false);
                 }
-                else if(attemptNumber == 1)
+                else
                 {
-                    newHealthPoints = 1;
-                    result = GetResult(buttons, descriptor, ResultType.FirstFail);
+                    await DataBaseControl.UserCaseTableCommand.SetAttempts(userId, --attemptsRemain);
                 }
-                else if(attemptNumber == 2)
-                {
-                    newHealthPoints = 0;
-                    result = GetResult(buttons, descriptor, ResultType.SecondFail);
-                }
-                await DataBaseControl.UserCaseTableCommand.SetHealthPoints(userId, newHealthPoints);
+                result = GetResult(attemptsRemain, descriptor, ratePlace, false);
             }
             else
             {
-                result = GetResult(buttons, descriptor, ResultType.Success);
+                ratePlace = 1;
+                result = GetResult(attemptsRemain, descriptor, ratePlace, false);
+                if (extraAttempt)
+                {
+                    await DataBaseControl.UserCaseTableCommand.SetExtraAttempt(userId, false);
+                }
             }
             return result;
         }
-        private static ValueTuple<string, InlineKeyboardMarkup> GetResultEnd(
-            int attemptNumber,
+        private static ValueTuple<string, int> GetResult(
+            int attemptsRemain,
             CaseStageEndModule descriptor,
-            List<InlineKeyboardButton[]> buttons,
-            int ratePlace)
+            int ratePlace,
+            bool endCase)
         {
-            var result = new ValueTuple<string, InlineKeyboardMarkup>();
+            var result = new ValueTuple<string, int>();
             result.Item1 = descriptor.Texts[ratePlace] + "\n"; //Информация о результате
-            if (attemptNumber == 1)
+
+            int textAboutAttempts = descriptor.Rates.Count + 1;
+            
+            if (attemptsRemain == 0)
             {
-                result.Item1 += descriptor.Texts[4]; //Сказать, что есть ещё попытка
-                buttons.Add(new[] { CommandKeyboard.ToBeginButton });
+                result.Item1 += descriptor.Texts[textAboutAttempts];      
             }
             else
             {
-                result.Item1 += descriptor.Texts[3]; //Сказать, что попыток больше нет
-                buttons.Add(new[] { CommandKeyboard.ToFinishButton });
+                result.Item1 += descriptor.Texts[textAboutAttempts + 1];
             }
-            result.Item2 = new InlineKeyboardMarkup(buttons);
-            return result;
-        }
-        private static ValueTuple<string, InlineKeyboardMarkup> GetResult(
-            List<InlineKeyboardButton[]> buttons,
-            CaseStageEndModule descriptor,
-            ResultType resultType
-            )
-        {
-            var result = new ValueTuple<string, InlineKeyboardMarkup>();
-            switch (resultType)
-            {
-                case ResultType.FirstFail:
-                    result.Item1 = descriptor.Texts[0] + "\n" + descriptor.Texts[3];
-                    buttons.Add(new[] { CommandKeyboard.ToBeginButton });
-                    break;
-                case ResultType.SecondFail:
-                    result.Item1 = descriptor.Texts[0] + "\n" + descriptor.Texts[2];
-                    buttons.Add(new[] { CommandKeyboard.NextButton });
-                    break;
-                case ResultType.Success:
-                    result.Item1 = descriptor.Texts[1];
-                    buttons.Add(new[] { CommandKeyboard.NextButton });
-                    break;
-                default:
-                    break;
-            }
-            result.Item2 = new InlineKeyboardMarkup(buttons);
-            return result;
 
+            if (endCase)
+            {
+                result.Item2 = 0;
+            }
+            else
+            {
+                result.Item2 = ratePlace == 0 && attemptsRemain != 0 ? 0 : descriptor.NextStage;
+            }
+
+            return result;
         }
     }
 }

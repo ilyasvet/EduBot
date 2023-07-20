@@ -84,8 +84,8 @@ namespace Simulator.TelegramBotLibrary.JsonUserStats
                 worksheet.Cells[line, 5] = endCaseTime.ToString();
             } catch { }
 
-            int hp = await DataBaseControl.UserCaseTableCommand.GetHealthPoints(userId);
-            int attemptsUsed = hp == 0 ? 2 : hp == 1 ? 1 : 0;
+            int hp = await DataBaseControl.UserCaseTableCommand.GetAttempts(userId);
+            int attemptsUsed = StagesControl.Stages.AttemptCount - hp;
 
             worksheet.Cells[line, 1] = nameSurname;
             worksheet.Cells[line, 2] = userId.ToString();
