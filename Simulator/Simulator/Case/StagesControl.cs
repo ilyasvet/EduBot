@@ -93,10 +93,6 @@ namespace Simulator.Case
                 await DataBaseControl.UserCaseTableCommand.SetRate(query.From.Id, 0);
                 return Stages.StagesNone.Min();
             }
-            else if(query.Data == "ToOut")
-            {
-                return null;
-            }
             throw new ArgumentException();
         }
         public static async Task Move(long userId, CaseStage nextStage, ITelegramBotClient botClient)
@@ -146,20 +142,21 @@ namespace Simulator.Case
 
                     await DataBaseControl.UserCaseTableCommand.SetPoint(userId, resultsCallback.Item2);
 
-                    IReplyMarkup replyMarkup;
                     if (resultsCallback.Item2 == -1) // Последний этап и попыток больше нет
                     {
                         await DataBaseControl.UserCaseTableCommand.SetEndCaseTime(userId, DateTime.Now);
-                        replyMarkup = new InlineKeyboardMarkup(CommandKeyboard.ToFinishButton);
+                        IReplyMarkup replyMarkup = new InlineKeyboardMarkup(CommandKeyboard.ToFinishButton);
+                        await botClient.SendTextMessageAsync(userId,
+                            resultsCallback.Item1,
+                            replyMarkup: replyMarkup);
                     }
                     else
                     {
-                        replyMarkup = CommandKeyboard.StageMenu;
+                        await botClient.SendTextMessageAsync(userId,
+                            resultsCallback.Item1);
+                        CaseStage newNextStage = Stages[resultsCallback.Item2];
+                        await Move(userId, newNextStage, botClient);
                     }
-
-                    await botClient.SendTextMessageAsync(userId,
-                        resultsCallback.Item1,
-                        replyMarkup: replyMarkup);
 
                     break;
                 default:

@@ -19,9 +19,7 @@ namespace Simulator.Commands
                 replyMarkup: CommandKeyboard.UserMenu);
 
             }
-            else if (await DataBaseControl.UserCaseTableCommand.GetAttempts(userId) == 0
-                && await DataBaseControl.UserCaseTableCommand.GetPoint(userId) == StagesControl.Stages.StagesEnd.
-                    Find(s => s.IsEndOfCase == true).Number)
+            else if (await DataBaseControl.UserCaseTableCommand.GetPoint(userId) == -1)
             {
                 await botClient.SendTextMessageAsync(
                 userId,

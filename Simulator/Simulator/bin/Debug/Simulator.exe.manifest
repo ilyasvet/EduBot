@@ -54,14 +54,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Simulator.exe" size="201136">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Simulator.exe" size="200624">
       <assemblyIdentity name="Simulator" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>4mGBM4Vk4tmOUEiNa80gSSCiuY4e0RcCFDEhonAn4eY=</dsig:DigestValue>
+        <dsig:DigestValue>Xw2EuLMkC+JxkYLuBwpoANlKzqIyBaGWcBBLCk4er1c=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>

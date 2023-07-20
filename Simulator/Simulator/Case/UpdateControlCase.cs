@@ -17,31 +17,18 @@ namespace Simulator.Case
         public static async Task CallbackQueryHandlingCase(CallbackQuery query, ITelegramBotClient botClient)
         {
             long userId = query.Message.Chat.Id;
-            CaseStage currentStage = StagesControl.Stages[await DataBaseControl.UserCaseTableCommand.GetPoint(userId)];
+            int currentPoint = await DataBaseControl.UserCaseTableCommand.GetPoint(userId);
+            
+            if(currentPoint == -1 || query.Data == "ToOut")
+            {
+                await GoOut(userId, botClient);
+                return;
+            }
+            CaseStage currentStage = StagesControl.Stages[currentPoint];
             //Получили этап, который пользователь только что прошёл, нажав на кнопку
 
             CaseStage nextStage = await StagesControl.GetNextStage(currentStage, query);
             //Получаем следующий этап, исходя из кнопки, на которую нажал пользователь
-
-            if(nextStage == null)
-            {
-                if (currentStage is CaseStageEndModule endModule)
-                {
-                    if(!endModule.IsEndOfCase)
-                    {
-                        return;
-                    }
-                    else
-                    {
-                        if (await DataBaseControl.UserCaseTableCommand.GetAttempts(userId) != 0)
-                        {
-                            return;
-                        }
-                    }
-                }
-                await GoOut(userId, botClient);
-                return;
-            }
 
             await SetAndMovePoint(userId, nextStage, botClient);
         }
