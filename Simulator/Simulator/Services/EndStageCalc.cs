@@ -41,7 +41,11 @@ namespace Simulator.Services
                 }
                 else
                 {
-                    await DataBaseControl.UserCaseTableCommand.SetAttempts(userId, --attemptsRemain);
+                    if(attemptsRemain != 0)
+                    {
+                        --attemptsRemain;
+                    }
+                    await DataBaseControl.UserCaseTableCommand.SetAttempts(userId, attemptsRemain);
                 }
                 result = GetResult(attemptsRemain, descriptor, ratePlace, true);
             }
@@ -53,7 +57,11 @@ namespace Simulator.Services
                 }
                 else
                 {
-                    await DataBaseControl.UserCaseTableCommand.SetAttempts(userId, --attemptsRemain);
+                    if (attemptsRemain != 0)
+                    {
+                        --attemptsRemain;
+                    }
+                    await DataBaseControl.UserCaseTableCommand.SetAttempts(userId, attemptsRemain);
                 }
                 result = GetResult(attemptsRemain, descriptor, ratePlace, false);
             }

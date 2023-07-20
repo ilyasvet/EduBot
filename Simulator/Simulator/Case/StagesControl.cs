@@ -4,6 +4,7 @@ using Simulator.Properties;
 using Simulator.Services;
 using Simulator.TelegramBotLibrary;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -155,6 +156,10 @@ namespace Simulator.Case
                         await botClient.SendTextMessageAsync(userId,
                             resultsCallback.Item1);
                         CaseStage newNextStage = Stages[resultsCallback.Item2];
+                        if(resultsCallback.Item2 == 0)
+                        {
+                            await DataBaseControl.UserCaseTableCommand.SetRate(userId, 0);
+                        }
                         await Move(userId, newNextStage, botClient);
                     }
 

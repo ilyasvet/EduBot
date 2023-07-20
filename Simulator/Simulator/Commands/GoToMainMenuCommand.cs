@@ -38,7 +38,7 @@ namespace Simulator.Commands
                     break;
             }
             endDialogMessageId--;
-            if (startDialogMessageId != -1)
+            if (startDialogMessageId != 0)
             {
                 while (startDialogMessageId < endDialogMessageId)
                 {
@@ -51,7 +51,7 @@ namespace Simulator.Commands
                     startDialogMessageId++;
                 }
             }
-            await DataBaseControl.UserFlagsTableCommand.SetMessageStartDialogId(userId, -1);
+            await DataBaseControl.UserFlagsTableCommand.SetMessageStartDialogId(userId, 0);
         }
     }
 }
