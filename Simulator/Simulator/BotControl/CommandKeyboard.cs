@@ -25,7 +25,6 @@ namespace Simulator.BotControl
 
         public static InlineKeyboardButton ToFinishButton = InlineKeyboardButton.WithCallbackData("Выйти", "ToOut");
         public static InlineKeyboardButton NextButton = InlineKeyboardButton.WithCallbackData("Далее", "MoveNext");
-        public static InlineKeyboardButton ToBeginButton = InlineKeyboardButton.WithCallbackData("Сначала", "ToBegin");
 
         public static InlineKeyboardMarkup StageMenu = new(new List<InlineKeyboardButton[]>
         {

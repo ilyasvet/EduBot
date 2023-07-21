@@ -22,15 +22,17 @@ namespace Simulator.Case
             if(currentPoint == -1 || query.Data == "ToOut")
             {
                 await GoOut(userId, botClient);
-                return;
+                await botClient.DeleteMessageAsync(userId, query.Message.MessageId);
             }
-            CaseStage currentStage = StagesControl.Stages[currentPoint];
-            //Получили этап, который пользователь только что прошёл, нажав на кнопку
-
-            CaseStage nextStage = await StagesControl.GetNextStage(currentStage, query);
-            //Получаем следующий этап, исходя из кнопки, на которую нажал пользователь
-
-            await SetAndMovePoint(userId, nextStage, botClient);
+            else if( query.Data == "MoveNext")
+            {
+                CaseStage currentStage = StagesControl.Stages[currentPoint];
+                if (currentStage is CaseStageNone)
+                {
+                    CaseStage nextStage = StagesControl.Stages[currentStage.NextStage];
+                    await SetAndMovePoint(userId, nextStage, botClient);
+                }
+            }
         }
         public static async Task PollAnswerHandlingCase(PollAnswer answer, ITelegramBotClient botClient)
         {

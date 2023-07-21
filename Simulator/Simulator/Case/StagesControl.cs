@@ -4,13 +4,11 @@ using Simulator.Properties;
 using Simulator.Services;
 using Simulator.TelegramBotLibrary;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Telegram.Bot;
-using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.InputFiles;
 using Telegram.Bot.Types.ReplyMarkups;
@@ -82,19 +80,6 @@ namespace Simulator.Case
             } 
             //Если переход безусловный, то NextStage уже установлено
             //Если нет, то на основе свойств и ответа выбираем NextStage
-        }
-        public async static Task<CaseStage> GetNextStage(CaseStage current, CallbackQuery query)
-        {
-            if (query.Data == "MoveNext")
-            {
-                return Stages[current.NextStage];
-            }
-            else if(query.Data == "ToBegin")
-            {
-                await DataBaseControl.UserCaseTableCommand.SetRate(query.From.Id, 0);
-                return Stages.StagesNone.Min();
-            }
-            throw new ArgumentException();
         }
         public static async Task Move(long userId, CaseStage nextStage, ITelegramBotClient botClient)
         {

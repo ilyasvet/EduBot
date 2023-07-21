@@ -25,31 +25,7 @@ namespace Simulator.Services
             }
 
             int ratePlace = 0;
-            if (descriptor.IsEndOfCase)
-            {
-                foreach(double rateGrade in descriptor.Rates)
-                {
-                    if (currentRate > rateGrade)
-                    {
-                        ratePlace++;
-                    }
-                    else break;
-                }
-                if (extraAttempt)
-                {
-                    await DataBaseControl.UserCaseTableCommand.SetExtraAttempt(userId, false);
-                }
-                else
-                {
-                    if(attemptsRemain != 0)
-                    {
-                        --attemptsRemain;
-                    }
-                    await DataBaseControl.UserCaseTableCommand.SetAttempts(userId, attemptsRemain);
-                }
-                result = GetResult(attemptsRemain, descriptor, ratePlace, true);
-            }
-            else if(currentRate < descriptor.Rates[0])
+            if (descriptor.IsEndOfCase || currentRate < descriptor.Rates[0])
             {
                 if (extraAttempt)
                 {
@@ -63,7 +39,24 @@ namespace Simulator.Services
                     }
                     await DataBaseControl.UserCaseTableCommand.SetAttempts(userId, attemptsRemain);
                 }
-                result = GetResult(attemptsRemain, descriptor, ratePlace, false);
+
+                if (descriptor.IsEndOfCase)
+                {
+                    foreach (double rateGrade in descriptor.Rates)
+                    {
+                        if (currentRate > rateGrade)
+                        {
+                            ratePlace++;
+                        }
+                        else break;
+                    }
+
+                    result = GetResult(attemptsRemain, descriptor, ratePlace, true);
+                }
+                else if(currentRate < descriptor.Rates[0])
+                {
+                    result = GetResult(attemptsRemain, descriptor, ratePlace, false);
+                }    
             }
             else
             {
