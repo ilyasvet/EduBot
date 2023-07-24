@@ -37,7 +37,10 @@ namespace Simulator.Services
                 {
                     using (StreamWriter sw = new(fs))
                     {
-                        await sw.WriteAsync(await AddCaseStageIterative(worksheet, urRows.Count));
+                        var stageList = new StageList();
+                        await MakeCaseHeader(worksheet, stageList);
+                        await AddCaseStageIterative(worksheet, urRows.Count, stageList);
+                        await sw.WriteAsync(JObject.FromObject(stageList).ToString());
                     }
                 }
                 return caseFileName;
@@ -52,29 +55,48 @@ namespace Simulator.Services
             }
         }
 
-        private static async Task<string> AddCaseStageIterative(Worksheet worksheet, int count)
+        private static async Task MakeCaseHeader(Worksheet worksheet, StageList stageList)
         {
-            var stageList = new StageList();
-
             await Task.Run(() =>
             {
+                int lineNumber = 1;
+                int columnNumber = 2;
+
+                stageList.AttemptCount = int.Parse(worksheet.Cells[lineNumber, columnNumber].Value?.ToString());
+                lineNumber++;
+
+                string extraAttempt = worksheet.Cells[lineNumber, columnNumber].Value?.ToString() ?? string.Empty;
+                stageList.ExtraAttempt = extraAttempt.ToLower() == "true";
+                lineNumber++;
+
+                string deletePollAfterAnswer = worksheet.Cells[lineNumber, columnNumber].Value?.ToString() ?? string.Empty;
+                stageList.DeletePollAfterAnswer = deletePollAfterAnswer.ToLower() == "true";
+                lineNumber++;
+            });
+        }
+
+        private static async Task AddCaseStageIterative(Worksheet worksheet, int count, StageList stageList)
+        {
+            await Task.Run(() =>
+            {
+                int skipLinesCount = StageList.HEADER_PROPERTIES_COUNT + 1;
                 // Общие свойства - свойства, которые есть у всех вопросов
                 // Специализированные свойства - свойства, пренадлежащие к отдельному типу вопроса
-                for (int i = 2; i <= count; i++)
+                for (int lineNumber = skipLinesCount + 1; lineNumber <= count; lineNumber++)
                 {
-                    int j = 1; // Номер столбца
+                    int columnNumber = 1; // Номер столбца
                     try
                     {   
                         string stageType; // Тип вопроса
 
                         // Находится в 1 столбце
-                        stageType = worksheet.Cells[i, j].Value.ToLower();
-                        j = 7; // Сначала заполняются специализированные свойства, они начинаются с 8 столбца
+                        stageType = worksheet.Cells[lineNumber, columnNumber].Value.ToLower();
+                        columnNumber = 7; // Сначала заполняются специализированные свойства, они начинаются с 8 столбца
 
                         CaseStage newStage = null;
                         // Ссылка на новый объект вопроса
 
-                        // j передаётся по ссылке
+                        // columnNumber передаётся по ссылке
                         switch (stageType)
                         {
                             case "none":
@@ -82,39 +104,39 @@ namespace Simulator.Services
                                 stageList.StagesNone.Add(newStage as CaseStageNone);
                                 break;
                             case "poll":
-                                newStage = CreatePollStage(worksheet, i, ref j);
+                                newStage = CreatePollStage(worksheet, lineNumber, ref columnNumber);
                                 stageList.StagesPoll.Add(newStage as CaseStagePoll);
                                 break;
                             case "end":
-                                newStage = CreateEndStage(worksheet, i, ref j);
+                                newStage = CreateEndStage(worksheet, lineNumber, ref columnNumber);
                                 stageList.StagesEnd.Add(newStage as CaseStageEndModule);
                                 break;
                             case "message":
-                                newStage = CreateMessageStage(worksheet, i, ref j);
+                                newStage = CreateMessageStage(worksheet, lineNumber, ref columnNumber);
                                 stageList.StagesMessage.Add(newStage as CaseStageMessage);
                                 break;
                             default:
-                                j = 1;
+                                columnNumber = 1;
                                 throw new ArgumentException($"No Such parameter");
                         }
 
-                        j = 2; // Теперь заполняем общие свойства
+                        columnNumber = 2; // Теперь заполняем общие свойства
 
                         // Номер вопроса
-                        newStage.Number = int.Parse(worksheet.Cells[i, j].Value?.ToString());
-                        j++;
+                        newStage.Number = int.Parse(worksheet.Cells[lineNumber, columnNumber].Value?.ToString());
+                        columnNumber++;
 
                         // Номер модуля
-                        newStage.ModuleNumber = int.Parse(worksheet.Cells[i, j].Value?.ToString());
-                        j++;
+                        newStage.ModuleNumber = int.Parse(worksheet.Cells[lineNumber, columnNumber].Value?.ToString());
+                        columnNumber++;
 
                         // Номер следующего вопроса
-                        newStage.NextStage = int.Parse(worksheet.Cells[i, j].Value?.ToString());
-                        j++;
+                        newStage.NextStage = int.Parse(worksheet.Cells[lineNumber, columnNumber].Value?.ToString());
+                        columnNumber++;
 
                         // Основной тест вопроса
-                        newStage.TextBefore = worksheet.Cells[i, j].Value?.ToString();
-                        j++;
+                        newStage.TextBefore = worksheet.Cells[lineNumber, columnNumber].Value?.ToString();
+                        columnNumber++;
                         if(stageType == "poll" && newStage.TextBefore.Length >= 300)
                         {
                             throw new ArgumentException("Poll question lenght must be no more 300 characters");
@@ -122,7 +144,7 @@ namespace Simulator.Services
 
 
                         // Если дополнительная информация имеется, то последовательность имён файлов
-                        List<string> additionalFiles = new List<string>(worksheet.Cells[i, j].Value?.ToString().Split(';') ?? 0);
+                        List<string> additionalFiles = new List<string>(worksheet.Cells[lineNumber, columnNumber].Value?.ToString().Split(';') ?? 0);
                         foreach (string fileName in additionalFiles)
                         {
                             newStage.AddAdditionalFile(fileName);
@@ -130,11 +152,10 @@ namespace Simulator.Services
                     }
                     catch (Exception ex)
                     {
-                        throw new Exception($"{ex.Message}\nLine {i} column {j}");
+                        throw new Exception($"{ex.Message}\nLine {lineNumber} column {columnNumber}");
                     }
                 }
             });
-            return JObject.FromObject(stageList).ToString();
         }
 
         private static CaseStageMessage CreateMessageStage(Worksheet worksheet, int lineNumber, ref int j)
@@ -155,18 +176,8 @@ namespace Simulator.Services
             CaseStageEndModule newStage = new();
 
             // Является ли концом курса. Обязательное поле
-            string isEndOfCase = worksheet.Cells[i, j].Value?.ToString();
-            switch (isEndOfCase.ToLower())
-            {
-                case "false":
-                    newStage.IsEndOfCase = false;
-                    break;
-                case "true":
-                    newStage.IsEndOfCase = true;
-                    break;
-                default:
-                    throw new ArgumentException("No such parameter");
-            }
+            string isEndOfCase = worksheet.Cells[i, j].Value?.ToString() ?? string.Empty;
+            newStage.IsEndOfCase = isEndOfCase.ToLower() == "true";
             j++;
 
             // Градации по рейтингу. Обязательное поле

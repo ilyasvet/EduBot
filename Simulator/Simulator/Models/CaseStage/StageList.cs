@@ -5,9 +5,10 @@ namespace Simulator.Models
 {
     internal class StageList
     {
-        //Инициализация временная
-        public int AttemptCount { get; set; } = 2;
-        public bool ExtraAttempt { get; set; } = true;
+        public const int HEADER_PROPERTIES_COUNT = 3;
+        public int AttemptCount { get; set; }
+        public bool ExtraAttempt { get; set; }
+        public bool DeletePollAfterAnswer { get; set; }
         public List<CaseStagePoll> StagesPoll { get; set; } = new List<CaseStagePoll>();
 
         public List<CaseStageNone> StagesNone { get; set; } = new List<CaseStageNone>();

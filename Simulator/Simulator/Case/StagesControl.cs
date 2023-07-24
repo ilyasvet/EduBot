@@ -88,14 +88,15 @@ namespace Simulator.Case
                 case CaseStagePoll poll:
                     await DataBaseControl.UserFlagsTableCommand.SetStartTime(userId, DateTime.Now);
                     await ShowAdditionalInfo(botClient, poll, userId);
-                    await botClient.SendPollAsync(
+                    int activePollMessageId = (await botClient.SendPollAsync(
                         chatId: userId,
                         question: poll.TextBefore,
                         options: poll.Options,
                         isAnonymous: false,
                         allowsMultipleAnswers: poll.ManyAnswers,
                         replyMarkup: new InlineKeyboardMarkup(CommandKeyboard.ToFinishButton)
-                        );
+                        )).MessageId;
+                    await DataBaseControl.UserFlagsTableCommand.SetActivePollMessageId(userId, activePollMessageId);
 
                     break;
                 case CaseStageMessage message:

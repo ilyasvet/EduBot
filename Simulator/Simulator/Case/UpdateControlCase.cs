@@ -50,6 +50,13 @@ namespace Simulator.Case
             double rate = StagesControl.CalculateRatePoll(currentStage, answer.OptionIds);
             double currentUserRate = await DataBaseControl.UserCaseTableCommand.GetRate(userId);
             currentUserRate += rate;
+
+            if (StagesControl.Stages.DeletePollAfterAnswer)
+            {
+                int messageId = await DataBaseControl.UserFlagsTableCommand.GetActivePollMessageId(userId);
+                await botClient.DeleteMessageAsync(userId, messageId);
+            }
+
             await DataBaseControl.UserCaseTableCommand.SetRate(userId, currentUserRate);
             //Считаем на основе ответа очки пользователя и добавляем их к общим
 

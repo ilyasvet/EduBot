@@ -71,7 +71,7 @@ namespace Simulator.TelegramBotLibrary
 
             return result;
         }
-
+        
         public async Task SetStartTime(long userId, DateTime time)
         {
             string commandText = $"UPDATE UserFlags SET StartQuestTime = '{time}' WHERE UserID = {userId}";
@@ -87,6 +87,28 @@ namespace Simulator.TelegramBotLibrary
                 if (reader.Read())
                 {
                     return (DateTime)reader[0];
+                }
+                return null;
+            });
+
+            return result;
+        }
+
+        public async Task SetActivePollMessageId(long userId, int activePollMessageId)
+        {
+            string commandText = $"UPDATE UserFlags SET ActivePollMessageId = {activePollMessageId} WHERE UserID = {userId}";
+            await ExecuteNonQueryCommand(commandText);
+        }
+
+        public async Task<int> GetActivePollMessageId(long userId)
+        {
+            string commandText = $"SELECT ActivePollMessageId FROM UserFlags WHERE UserID = {userId}";
+
+            int result = (int)await ExecuteReaderCommand(commandText, (reader) =>
+            {
+                if (reader.Read())
+                {
+                    return (int)reader[0];
                 }
                 return null;
             });
