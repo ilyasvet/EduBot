@@ -9,6 +9,7 @@ using Telegram.Bot.Types.InputFiles;
 using System.IO.Compression;
 using System.IO;
 using Simulator.Models;
+using Simulator.TelegramBotLibrary;
 
 namespace Simulator.BotControl
 {
@@ -80,12 +81,20 @@ namespace Simulator.BotControl
                     return false;
                 }
 
-                StagesControl.DeleteCaseFiles(); //Удаляем старые файлы перед добавлением новых
+                StagesControl.DeleteCaseFiles(); // Удаляем старые файлы перед добавлением новых
                 ZipFile.ExtractToDirectory(path, ControlSystem.caseDirectory);
 
                 if (StagesControl.Make())
                 {
-                    await BotCallBack(userId, botClient, Resources.AddCaseSuccess); //сообщение об успехе операции
+                    // Сообщение об успехе операции
+                    await BotCallBack(userId, botClient, Resources.AddCaseSuccess);
+
+                    // Проверяем, изменилась ли структура курса. Надо ли пересоздавать таблицы.
+                    if (await UserStatsControl.ChangedCourse(StagesControl.Stages))
+                    {
+                        // Делаем таблицы со статистикой на основе содержимоно курса
+                        await UserStatsControl.MakeStatsTables(StagesControl.Stages);
+                    }
                 }
                 else
                 {

@@ -155,6 +155,7 @@
     <Compile Include="TelegramBotLibrary\Connection.cs" />
     <Compile Include="TelegramBotLibrary\UserCaseTableCommand.cs" />
     <Compile Include="TelegramBotLibrary\UserFlagsTableCommand.cs" />
+    <Compile Include="TelegramBotLibrary\UserStatsControl.cs" />
     <Compile Include="TelegramBotLibrary\UserTableCommand.cs" />
   </ItemGroup>
   <ItemGroup>
