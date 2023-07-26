@@ -149,6 +149,7 @@
     <Compile Include="Services\GroupHandler.cs" />
     <Compile Include="Services\UserHandler.cs" />
     <Compile Include="TelegramBotLibrary\CommandTable.cs" />
+    <Compile Include="TelegramBotLibrary\CourseTableCommand.cs" />
     <Compile Include="TelegramBotLibrary\GroupTableCommand.cs" />
     <Compile Include="TelegramBotLibrary\JsonUserStats\CaseJsonCommand.cs" />
     <Compile Include="TelegramBotLibrary\JsonUserStats\UserCaseJsonExcelHandler.cs" />

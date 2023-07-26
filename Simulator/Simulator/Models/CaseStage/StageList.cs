@@ -5,7 +5,9 @@ namespace Simulator.Models
 {
     internal class StageList
     {
-        public const int HEADER_PROPERTIES_COUNT = 3;
+        public const int HEADER_PROPERTIES_COUNT = 5;
+        public string CourseName { get; set; }
+        public bool ReCreateStats { get; set; }
         public int AttemptCount { get; set; }
         public bool ExtraAttempt { get; set; }
         public bool DeletePollAfterAnswer { get; set; }
@@ -41,6 +43,7 @@ namespace Simulator.Models
             }
             return result;
         }
+
         public List<int> GetStageNumbers(int moduleNumber)
         {
             var result = new List<int>(StagesPoll.

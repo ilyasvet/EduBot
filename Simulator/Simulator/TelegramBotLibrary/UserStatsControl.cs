@@ -1,19 +1,45 @@
-﻿using Simulator.Models;
+﻿using DbBotLibrary;
+using Simulator.Models;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Simulator.TelegramBotLibrary
 {
-    public class UserStatsControl
+    public enum StatsTableType
     {
-        internal static async Task<bool> ChangedCourse(StageList stages)
+        Rate,
+        Answers,
+        Time,
+        Base,
+        State,
+    }
+    public class UserStatsControl : CommandTable
+    {
+        private List<string> _tableNames;
+        private void FillTableNames(string courseName)
         {
-            throw new NotImplementedException();
+            foreach (string typeName in Enum.GetNames(typeof(StatsTableType)))
+            {
+                string pattern = $"Stats{courseName}{typeName}";
+                _tableNames.Add(pattern);
+            }
+        }
+        public async Task DeleteStatsTables(string courseName)
+        {
+            FillTableNames(courseName);
+            string commandText = string.Empty;
+            foreach(string tableName in _tableNames)
+            {
+                commandText += $"DROP TABLE {tableName}\n";
+            }
+            await ExecuteNonQueryCommand(commandText);
         }
 
-        internal static async Task MakeStatsTables(StageList stages)
+        internal async Task MakeStatsTables(StageList stages)
         {
-            throw new NotImplementedException();
+            FillTableNames(stages.CourseName);
+
         }
     }
 }

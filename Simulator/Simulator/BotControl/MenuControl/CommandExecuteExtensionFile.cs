@@ -89,11 +89,14 @@ namespace Simulator.BotControl
                     // Сообщение об успехе операции
                     await BotCallBack(userId, botClient, Resources.AddCaseSuccess);
 
-                    // Проверяем, изменилась ли структура курса. Надо ли пересоздавать таблицы.
-                    if (await UserStatsControl.ChangedCourse(StagesControl.Stages))
+                    bool newCourse = await DataBaseControl.CourseTableCommand.AddCourse(StagesControl.Stages.CourseName);
+                    if (newCourse || StagesControl.Stages.ReCreateStats)
                     {
-                        // Делаем таблицы со статистикой на основе содержимоно курса
-                        await UserStatsControl.MakeStatsTables(StagesControl.Stages);
+                        if (!newCourse)
+                        {
+                            await DataBaseControl.UserStatsControl.DeleteStatsTables(StagesControl.Stages.CourseName);
+                        }
+                        await DataBaseControl.UserStatsControl.MakeStatsTables(StagesControl.Stages);
                     }
                 }
                 else

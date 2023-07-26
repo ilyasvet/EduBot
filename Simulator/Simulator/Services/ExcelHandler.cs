@@ -62,6 +62,13 @@ namespace Simulator.Services
                 int lineNumber = 1;
                 int columnNumber = 2;
 
+                stageList.CourseName = worksheet.Cells[lineNumber, columnNumber].Value.ToString();
+                lineNumber++;
+
+                string reCreateStats = worksheet.Cells[lineNumber, columnNumber].Value?.ToString() ?? string.Empty;
+                stageList.ReCreateStats = reCreateStats.ToLower() == "true";
+                lineNumber++;
+
                 stageList.AttemptCount = int.Parse(worksheet.Cells[lineNumber, columnNumber].Value?.ToString());
                 lineNumber++;
 
