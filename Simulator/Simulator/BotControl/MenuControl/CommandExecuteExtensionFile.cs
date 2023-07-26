@@ -9,7 +9,6 @@ using Telegram.Bot.Types.InputFiles;
 using System.IO.Compression;
 using System.IO;
 using Simulator.Models;
-using Simulator.TelegramBotLibrary;
 
 namespace Simulator.BotControl
 {
@@ -89,10 +88,10 @@ namespace Simulator.BotControl
                     // Сообщение об успехе операции
                     await BotCallBack(userId, botClient, Resources.AddCaseSuccess);
 
-                    bool newCourse = await DataBaseControl.CourseTableCommand.AddCourse(StagesControl.Stages.CourseName);
-                    if (newCourse || StagesControl.Stages.ReCreateStats)
+                    bool isNew = await DataBaseControl.CourseTableCommand.AddCourse(StagesControl.Stages.CourseName);
+                    if (isNew || StagesControl.Stages.ReCreateStats)
                     {
-                        if (!newCourse)
+                        if (!isNew)
                         {
                             await DataBaseControl.UserStatsControl.DeleteStatsTables(StagesControl.Stages.CourseName);
                         }

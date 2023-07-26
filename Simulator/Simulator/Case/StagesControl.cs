@@ -211,15 +211,5 @@ namespace Simulator.Case
                 }     
             }
         }
-
-        public static Dictionary<int, int> GetTaskCountDictionary()
-        {
-            return Stages.GetTaskCountDictionary();
-        }
-
-        public static List<int> GetStageNumbers(int moduleNumber)
-        {
-            return Stages.GetStageNumbers(moduleNumber);
-        }
     }
 }
