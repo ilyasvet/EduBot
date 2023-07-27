@@ -19,7 +19,7 @@ namespace Simulator.BotControl
         }
 
         public static UserTableCommand UserTableCommand { get; private set; }
-        public static UserCaseTableCommand UserCaseTableCommand { get; private set; }
+        public static StatsStateTableCommand UserCaseTableCommand { get; private set; }
         public static GroupTableCommand GroupTableCommand { get; private set; }
         public static UserFlagsTableCommand UserFlagsTableCommand { get; private set; }
         public static CourseTableCommand CourseTableCommand { get; private set; }

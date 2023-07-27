@@ -5,6 +5,7 @@ namespace Simulator.TelegramBotLibrary
 {
     public class CourseTableCommand : CommandTable
     {
+        private const string TABLE_NAME = "Courses";
         public async Task<bool> AddCourse(string courseName)
         {
             if (await HasCourse(courseName))
@@ -13,7 +14,7 @@ namespace Simulator.TelegramBotLibrary
             }
             else
             {
-                string commandText = $"INSERT INTO Courses (CourseName)" +
+                string commandText = $"INSERT INTO {TABLE_NAME} (CourseName)" +
                     $" VALUES ('{courseName}')";
                 await ExecuteNonQueryCommand(commandText);
                 return true;
@@ -22,7 +23,7 @@ namespace Simulator.TelegramBotLibrary
 
         private async Task<bool> HasCourse(string courseName)
         {
-            string commandText = $"SELECT COUNT(CourseName) FROM Courses WHERE CourseName = {courseName}";
+            string commandText = $"SELECT COUNT(CourseName) FROM {TABLE_NAME} WHERE CourseName = {courseName}";
             bool result = (bool)await ExecuteReaderCommand(commandText, (reader) =>
             {
                 reader.Read();

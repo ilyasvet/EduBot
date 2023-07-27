@@ -8,16 +8,17 @@ namespace Simulator.TelegramBotLibrary
 {
     public class GroupTableCommand : CommandTable
     {
+        private const string TABLE_NAME = "Groups";
         public async Task AddGroup(Group group)
         {
-            string commandText = $"INSERT INTO Groups (GroupNumber, Password)" +
+            string commandText = $"INSERT INTO {TABLE_NAME} (GroupNumber, Password)" +
                                  $" VALUES ('{group.GroupNumber}','{group.Password}')";
             await ExecuteNonQueryCommand(commandText);
         }
 
         public async Task<Group> GetGroup(string groupNumber)
         {
-            string commandText = $"SELECT * FROM Groups WHERE GroupNumber = {groupNumber}";
+            string commandText = $"SELECT * FROM {TABLE_NAME} WHERE GroupNumber = {groupNumber}";
 
             Group result = await ExecuteReaderCommand(commandText, (reader) =>
             {
@@ -30,7 +31,7 @@ namespace Simulator.TelegramBotLibrary
 
         public async Task<List<Group>> GetAllGroups()
         {
-            string commandText = $"SELECT * FROM Groups";
+            string commandText = $"SELECT * FROM {TABLE_NAME}";
 
             List<Group> result = await ExecuteReaderCommand(commandText, (reader) =>
             {
@@ -47,7 +48,7 @@ namespace Simulator.TelegramBotLibrary
 
         public async Task<bool> HasGroup(string groupNumber)
         {
-            string commandText = $"SELECT COUNT(GroupNumber) FROM Groups WHERE GroupNumber = '{groupNumber}'";
+            string commandText = $"SELECT COUNT(GroupNumber) FROM {TABLE_NAME} WHERE GroupNumber = '{groupNumber}'";
 
             bool result = (bool)await ExecuteReaderCommand(commandText, (reader) =>
             {
@@ -60,13 +61,13 @@ namespace Simulator.TelegramBotLibrary
 
         public async Task DeleteGroup(string groupNumber)
         {
-            string commandText = $"DELETE FROM Groups WHERE GroupNumber = '{groupNumber}'";
+            string commandText = $"DELETE FROM {TABLE_NAME} WHERE GroupNumber = '{groupNumber}'";
             await ExecuteNonQueryCommand(commandText);
         }
 
         public async Task<string> GetPassword(string groupNumber)
         {
-            string commandText = $"SELECT Password FROM Groups WHERE GroupNumber = '{groupNumber}'";
+            string commandText = $"SELECT Password FROM {TABLE_NAME} WHERE GroupNumber = '{groupNumber}'";
 
             string result = await ExecuteReaderCommand(commandText, (reader) =>
             {

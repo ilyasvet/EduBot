@@ -151,9 +151,10 @@
     <Compile Include="TelegramBotLibrary\CommandTable.cs" />
     <Compile Include="TelegramBotLibrary\CourseTableCommand.cs" />
     <Compile Include="TelegramBotLibrary\GroupTableCommand.cs" />
-    <Compile Include="TelegramBotLibrary\JsonUserStats\JsonHandler.cs" />
+    <Compile Include="Services\JsonHandler.cs" />
     <Compile Include="TelegramBotLibrary\Connection.cs" />
-    <Compile Include="TelegramBotLibrary\UserCaseTableCommand.cs" />
+    <Compile Include="TelegramBotLibrary\StatsTableCommand\StatsBaseTableCommand.cs" />
+    <Compile Include="TelegramBotLibrary\StatsTableCommand\StatsStateTableCommand.cs" />
     <Compile Include="TelegramBotLibrary\UserFlagsTableCommand.cs" />
     <Compile Include="TelegramBotLibrary\UserStatsControl.cs" />
     <Compile Include="TelegramBotLibrary\UserTableCommand.cs" />
