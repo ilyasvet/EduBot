@@ -11,6 +11,7 @@ namespace Simulator.Commands
     {
         public override async Task Execute(long userId, ITelegramBotClient botClient, string param = "")
         {
+            string courseName = StagesControl.Stages.CourseName;
             if (StagesControl.Stages == null)
             {
                 await botClient.SendTextMessageAsync(
@@ -19,7 +20,7 @@ namespace Simulator.Commands
                 replyMarkup: CommandKeyboard.UserMenu);
 
             }
-            else if (await DataBaseControl.UserCaseTableCommand.GetPoint(userId) == -1)
+            else if (await DataBaseControl.StatsStateTableCommand.GetPoint(courseName ,userId) == -1)
             {
                 await botClient.SendTextMessageAsync(
                 userId,
@@ -29,7 +30,9 @@ namespace Simulator.Commands
             else
             {
                 await DataBaseControl.UserFlagsTableCommand.SetOnCourse(userId, true);
-                CaseStage currentStage = StagesControl.Stages[await DataBaseControl.UserCaseTableCommand.GetPoint(userId)];
+                CaseStage currentStage = StagesControl.Stages[
+                    await DataBaseControl.StatsStateTableCommand.GetPoint(courseName, userId)
+                    ];
                 await StagesControl.Move(userId, currentStage, botClient);
             }
         }

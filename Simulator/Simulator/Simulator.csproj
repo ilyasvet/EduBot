@@ -102,7 +102,8 @@
     <Compile Include="BotControl\MenuControl\UpdateControlMenu.cs" />
     <Compile Include="BotControl\UpdateControl.cs" />
     <Compile Include="Case\CaseConverter.cs" />
-    <Compile Include="Case\StageResults.cs" />
+    <Compile Include="Case\StatsSetter.cs" />
+    <Compile Include="TelegramBotLibrary\StatsTableCommand\StageResults.cs" />
     <Compile Include="Case\StagesControl.cs" />
     <Compile Include="Case\UpdateControlCase.cs" />
     <Compile Include="Commands\AdminAddCaseCommand.cs" />
@@ -153,6 +154,7 @@
     <Compile Include="TelegramBotLibrary\GroupTableCommand.cs" />
     <Compile Include="Services\JsonHandler.cs" />
     <Compile Include="TelegramBotLibrary\Connection.cs" />
+    <Compile Include="TelegramBotLibrary\StatsTableCommand\StatsAnswersTableCommand.cs" />
     <Compile Include="TelegramBotLibrary\StatsTableCommand\StatsBaseTableCommand.cs" />
     <Compile Include="TelegramBotLibrary\StatsTableCommand\StatsStateTableCommand.cs" />
     <Compile Include="TelegramBotLibrary\UserFlagsTableCommand.cs" />

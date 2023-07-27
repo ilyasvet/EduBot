@@ -7,18 +7,19 @@ namespace Simulator.Services
 {
     internal static class EndStageCalc
     {
-        public async static Task<ValueTuple<string, int>> GetResultOfModule(CaseStageEndModule descriptor, long userId)
+        public async static Task<ValueTuple<string, int>> GetResultOfModule(
+            CaseStageEndModule descriptor, long userId, string courseName)
         {
             double currentRate;
-            var result = new ValueTuple<string, int>();
-            
-            currentRate = await DataBaseControl.UserCaseTableCommand.GetRate(userId);
-            int attemptsRemain = await DataBaseControl.UserCaseTableCommand.GetAttempts(userId);
+            var result = new ValueTuple<string, int>(); 
+
+            currentRate = await DataBaseControl.StatsStateTableCommand.GetRate(courseName, userId);
+            int attemptsRemain = await DataBaseControl.StatsStateTableCommand.GetAttempts(courseName, userId);
 
             bool extraAttempt = false;
             if (descriptor.ModuleNumber == 1)
             {
-                if(await DataBaseControl.UserCaseTableCommand.GetExtraAttempt(userId))
+                if(await DataBaseControl.StatsStateTableCommand.GetExtraAttempt(courseName, userId))
                 {
                     extraAttempt = true;
                 }
@@ -29,7 +30,7 @@ namespace Simulator.Services
             {
                 if (extraAttempt)
                 {
-                    await DataBaseControl.UserCaseTableCommand.SetExtraAttempt(userId, false);
+                    await DataBaseControl.StatsStateTableCommand.SetExtraAttempt(courseName, userId, false);
                 }
                 else
                 {
@@ -37,7 +38,8 @@ namespace Simulator.Services
                     {
                         --attemptsRemain;
                     }
-                    await DataBaseControl.UserCaseTableCommand.SetAttempts(userId, attemptsRemain);
+                    await DataBaseControl.StatsStateTableCommand.SetAttempts(courseName, userId, attemptsRemain);
+                    await DataBaseControl.StatsBaseTableCommand.SetAttemptsUsed(courseName, userId);
                 }
 
                 if (descriptor.IsEndOfCase)
@@ -64,7 +66,7 @@ namespace Simulator.Services
                 result = GetResult(attemptsRemain, descriptor, ratePlace, false);
                 if (extraAttempt)
                 {
-                    await DataBaseControl.UserCaseTableCommand.SetExtraAttempt(userId, false);
+                    await DataBaseControl.StatsStateTableCommand.SetExtraAttempt(courseName, userId, false);
                 }
             }
             return result;

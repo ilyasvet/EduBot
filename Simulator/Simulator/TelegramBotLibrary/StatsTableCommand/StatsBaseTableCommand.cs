@@ -37,11 +37,8 @@ namespace Simulator.TelegramBotLibrary.StatsTableCommand
 
         public async Task SetAttemptRate(string courseName, long userId, int attemptNumber, double rate)
         {
-            double oldValue = await GetAttemptRate(courseName, userId, attemptNumber);
-            oldValue += rate;
-
             string commandText = $"UPDATE Stats{courseName}{TABLE_TYPE} " +
-                $"SET RateAttempt{attemptNumber} = {oldValue} WHERE UserID = {userId}";
+                $"SET RateAttempt{attemptNumber} = {rate} WHERE UserID = {userId}";
             await ExecuteNonQueryCommand(commandText);
         }
 

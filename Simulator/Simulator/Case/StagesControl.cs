@@ -2,9 +2,7 @@
 using Simulator.Models;
 using Simulator.Properties;
 using Simulator.Services;
-using Simulator.TelegramBotLibrary;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -86,7 +84,8 @@ namespace Simulator.Case
             {
                 case CaseStagePoll poll:
 
-                    await DataBaseControl.UserFlagsTableCommand.SetStartTime(userId, DateTime.Now);
+                    await DataBaseControl.StatsStateTableCommand.
+                        SetStartTime(Stages.CourseName, userId, DateTime.Now);
 
                     await ShowAdditionalInfo(botClient, poll, userId);
                     int activePollMessageId = (await botClient.SendPollAsync(
@@ -97,14 +96,16 @@ namespace Simulator.Case
                         allowsMultipleAnswers: poll.ManyAnswers,
                         replyMarkup: new InlineKeyboardMarkup(CommandKeyboard.ToFinishButton)
                         )).MessageId;
-                    await DataBaseControl.UserFlagsTableCommand.SetActivePollMessageId(userId, activePollMessageId);
+                    await DataBaseControl.UserFlagsTableCommand.
+                        SetActivePollMessageId(userId, activePollMessageId);
 
                     break;
                 case CaseStageMessage message:
 
-                    string answerGuide = GetAnsweGuide(message.MessageTypeAnswer);
+                    string answerGuide = GetAnswerGuide(message.MessageTypeAnswer);
 
-                    await DataBaseControl.UserFlagsTableCommand.SetStartTime(userId, DateTime.Now);
+                    await DataBaseControl.StatsStateTableCommand.
+                        SetStartTime(Stages.CourseName, userId, DateTime.Now);
 
                     await ShowAdditionalInfo(botClient, message, userId);
                     await botClient.SendTextMessageAsync(
@@ -117,7 +118,8 @@ namespace Simulator.Case
                 case CaseStageNone none:
 
                     // Ставится только если не было поставлено ранее
-                    await DataBaseControl.UserCaseTableCommand.SetStartCaseTime(userId, DateTime.Now);
+                    await DataBaseControl.StatsBaseTableCommand.
+                        SetStartCaseTime(Stages.CourseName, userId, DateTime.Now);
 
                     await botClient.SendTextMessageAsync(userId,
                         none.TextBefore,
@@ -126,13 +128,17 @@ namespace Simulator.Case
                     break;
                 case CaseStageEndModule endStage:
 
-                    var resultsCallback = await EndStageCalc.GetResultOfModule(endStage, userId);
+                    var resultsCallback = await EndStageCalc.
+                        GetResultOfModule(endStage, userId, Stages.CourseName);
 
-                    await DataBaseControl.UserCaseTableCommand.SetPoint(userId, resultsCallback.Item2);
+                    await DataBaseControl.StatsStateTableCommand.
+                        SetPoint(Stages.CourseName, userId, resultsCallback.Item2);
 
                     if (resultsCallback.Item2 == -1) // Последний этап и попыток больше нет
                     {
-                        await DataBaseControl.UserCaseTableCommand.SetEndCaseTime(userId, DateTime.Now);
+                        await DataBaseControl.StatsBaseTableCommand.
+                            SetEndCaseTime(Stages.CourseName, userId, DateTime.Now);
+
                         IReplyMarkup replyMarkup = new InlineKeyboardMarkup(CommandKeyboard.ToFinishButton);
                         await botClient.SendTextMessageAsync(userId,
                             resultsCallback.Item1,
@@ -145,7 +151,7 @@ namespace Simulator.Case
                         CaseStage newNextStage = Stages[resultsCallback.Item2];
                         if(resultsCallback.Item2 == 0)
                         {
-                            await DataBaseControl.UserCaseTableCommand.SetRate(userId, 0);
+                            await DataBaseControl.StatsStateTableCommand.SetRate(Stages.CourseName, userId, 0);
                         }
                         await Move(userId, newNextStage, botClient);
                     }
@@ -156,7 +162,7 @@ namespace Simulator.Case
             }
         }
 
-        private static string GetAnsweGuide(MessageType messageTypeAnswer)
+        private static string GetAnswerGuide(MessageType messageTypeAnswer)
         {
             string answerGuide = $"\n\n{Resources.AnswerGuidePt1}";
 

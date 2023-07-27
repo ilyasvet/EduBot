@@ -3,7 +3,6 @@ using Simulator.Models;
 using System.Threading.Tasks;
 using Telegram.Bot;
 using Telegram.Bot.Types;
-using Simulator.TelegramBotLibrary;
 using System;
 using System.IO;
 using Simulator.Properties;
@@ -17,7 +16,8 @@ namespace Simulator.Case
         public static async Task CallbackQueryHandlingCase(CallbackQuery query, ITelegramBotClient botClient)
         {
             long userId = query.Message.Chat.Id;
-            int currentPoint = await DataBaseControl.UserCaseTableCommand.GetPoint(userId);
+            int currentPoint = await DataBaseControl.StatsStateTableCommand.
+                GetPoint(StagesControl.Stages.CourseName, userId);
             
             if(currentPoint == -1 || query.Data == "ToOut")
             {
@@ -37,19 +37,16 @@ namespace Simulator.Case
         public static async Task PollAnswerHandlingCase(PollAnswer answer, ITelegramBotClient botClient)
         {
             long userId = answer.User.Id;
-            int attemptNo = StagesControl.Stages.AttemptCount
-                - await DataBaseControl.UserCaseTableCommand.GetAttempts(userId) + 1;
 
             CaseStagePoll currentStage = (CaseStagePoll)StagesControl.
-                Stages[await DataBaseControl.UserCaseTableCommand.GetPoint(userId)];
+                Stages[await DataBaseControl.StatsStateTableCommand.
+                GetPoint(StagesControl.Stages.CourseName, userId)];
             //Так как мы получаем PollAnswer, то очевидно, что текущий этап - опросник
 
             StagesControl.SetStageForMove(currentStage, answer.OptionIds);
             //По свойствам опросника и ответу определояем свойство NextStage
 
             double rate = StagesControl.CalculateRatePoll(currentStage, answer.OptionIds);
-            double currentUserRate = await DataBaseControl.UserCaseTableCommand.GetRate(userId);
-            currentUserRate += rate;
 
             if (StagesControl.Stages.DeletePollAfterAnswer)
             {
@@ -57,10 +54,7 @@ namespace Simulator.Case
                 await botClient.DeleteMessageAsync(userId, messageId);
             }
 
-            await DataBaseControl.UserCaseTableCommand.SetRate(userId, currentUserRate);
-            //Считаем на основе ответа очки пользователя и добавляем их к общим
-
-            await SetResultsJson(userId, currentStage, rate, attemptNo, answer.OptionIds);
+            await SaveResultsToStats(userId, currentStage, rate, answer.OptionIds);
 
             var nextStage = StagesControl.Stages[currentStage.NextStage]; //next уже установлено
             //await botClient.message
@@ -71,12 +65,12 @@ namespace Simulator.Case
         {
             long userId = message.Chat.Id;
 
-            if (StagesControl.Stages[await DataBaseControl.UserCaseTableCommand.GetPoint(userId)]
+            if (StagesControl.Stages[
+                await DataBaseControl.StatsStateTableCommand.
+                GetPoint(StagesControl.Stages.CourseName, userId)
+                ]
                 is CaseStageMessage currentStage)
             {
-                int attemptNo = StagesControl.Stages.AttemptCount
-                - await DataBaseControl.UserCaseTableCommand.GetAttempts(userId) + 1;
-
                 string fileName = $"{userId}-{currentStage.Number}";
                 string filePath = ControlSystem.messageAnswersDirectory;
                 Telegram.Bot.Types.File file = null;
@@ -120,11 +114,8 @@ namespace Simulator.Case
                 }
 
                 // добавляем птс
-                double currentUserRate = await DataBaseControl.UserCaseTableCommand.GetRate(userId);
-                currentUserRate += currentStage.Rate;
-                await DataBaseControl.UserCaseTableCommand.SetRate(userId, currentUserRate);
 
-                await SetResultsJson(userId, currentStage, currentStage.Rate, attemptNo, null);
+                await SaveResultsToStats(userId, currentStage, currentStage.Rate, null);
 
                 var nextStage = StagesControl.Stages[currentStage.NextStage]; //next уже установлено
                 await SetAndMovePoint(userId, nextStage, botClient);
@@ -135,31 +126,36 @@ namespace Simulator.Case
             }
         }
 
-        private static async Task SetResultsJson(
-            long userId, CaseStage currentStage, double rate, int attemptNo, int[] optionsIds
+        private static async Task SaveResultsToStats(
+            long userId, CaseStage currentStage, double rate, int[] optionsIds
             )
         {
-            int moduleNumber = currentStage.ModuleNumber;
-            int questionNumber = currentStage.Number;
+            string courseName = StagesControl.Stages.CourseName;
 
-            var time = DateTime.Now - await DataBaseControl.UserFlagsTableCommand.GetStartTime(userId);
+            // Мы должны сохранить (должны знать номер попытки, модуля и вопроса)
+            // Ответы
+            // Время
+            // Очки
 
-            StageResults results = new StageResults();
-            results.Time = time;
-            results.Rate = rate;
-           
-            //варианты ответа
-            if (currentStage is CaseStagePoll)
-            {
-                string jsonUserAnswers = "";
-                foreach (int option in optionsIds)
-                {
-                    jsonUserAnswers += $"{option + 1};";
-                    // счёт идёт от 0, а надо от 1, поэтому +1
-                }
-                results.Answers = jsonUserAnswers; 
-            }
-            //await JsonHandler.AddValueToJsonFile(userId, (moduleNumber, questionNumber), results, attemptNo);
+            // Обновить общие очки
+            // Обновить общие очки за попытку
+
+            StageResults stats;
+            stats.Rate = rate;
+            stats.ModuleNumber = currentStage.ModuleNumber;
+            stats.StageNumber = currentStage.Number;
+            stats.OptionsIds = optionsIds;
+
+            double time = (DateTime.Now - 
+                await DataBaseControl.StatsStateTableCommand.GetStartTime(courseName, userId)).TotalMinutes;
+
+            stats.Time = time;
+            
+            int attempt = await DataBaseControl.StatsBaseTableCommand.GetAttemptsUsed(courseName, userId) + 1;
+
+            stats.AttemptNumber = attempt;
+
+            await StatsSetter.SetResults(courseName, userId, stats);
         }
 
         private static async Task GoOut(long userId, ITelegramBotClient botClient)
@@ -170,7 +166,8 @@ namespace Simulator.Case
         }
         private async static Task SetAndMovePoint(long userId, CaseStage nextStage, ITelegramBotClient botClient)
         {
-            await DataBaseControl.UserCaseTableCommand.SetPoint(userId, nextStage.Number);
+            await DataBaseControl.StatsStateTableCommand.
+                SetPoint(StagesControl.Stages.CourseName, userId, nextStage.Number);
             //Ставим в базе для пользователя следующий его этап
 
             await StagesControl.Move(userId, nextStage, botClient);
