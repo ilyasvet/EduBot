@@ -48,6 +48,24 @@ namespace Simulator.TelegramBotLibrary
             }
             await MakeBaseStatsTable(stages.AttemptCount, tableNames[3]);
             await MakeStateStatsTable(tableNames[4]);
+            await FillTablesDefaultInformation(tableNames);
+            await FillBaseStatsTable(stages.AttemptCount, stages.ExtraAttempt, tableNames[3]);
+        }
+
+        private async Task FillBaseStatsTable(int attemptCount, bool extraAttempt, string tableName)
+        {
+            string commandText = $"UPDATE {tableName} SET ExtraAttempt = '{extraAttempt}', Attempts = {attemptCount}";
+            await ExecuteNonQueryCommand(commandText);
+        }
+
+        private async Task FillTablesDefaultInformation(List<string> tableNames)
+        {
+            string commandText;
+            foreach(string tableName in tableNames)
+            {
+                commandText = $"INSERT INTO {tableName} (UserID) SELECT UserID from Users";
+                await ExecuteNonQueryCommand(commandText);
+            }
         }
 
         private async Task MakeStateStatsTable(string tableName)

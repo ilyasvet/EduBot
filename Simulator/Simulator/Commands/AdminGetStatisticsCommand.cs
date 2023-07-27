@@ -1,6 +1,5 @@
 ﻿using Simulator.BotControl;
 using Simulator.Services;
-using Simulator.TelegramBotLibrary.JsonUserStats;
 using System;
 using System.IO;
 using System.Threading.Tasks;
@@ -19,7 +18,7 @@ namespace Simulator.Commands
 
             try
             {
-                await UserCaseJsonExcelHandler.CreateAndEditExcelFile(statsFilePath);
+                //await UserCaseJsonExcelHandler.CreateAndEditExcelFile(statsFilePath);
 
                 using (Stream fs = new FileStream(statsFilePath, FileMode.Open))
                 {

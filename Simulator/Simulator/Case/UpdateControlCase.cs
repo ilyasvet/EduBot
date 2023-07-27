@@ -159,7 +159,7 @@ namespace Simulator.Case
                 }
                 results.Answers = jsonUserAnswers; 
             }
-            await CaseJsonCommand.AddValueToJsonFile(userId, (moduleNumber, questionNumber), results, attemptNo);
+            //await JsonHandler.AddValueToJsonFile(userId, (moduleNumber, questionNumber), results, attemptNo);
         }
 
         private static async Task GoOut(long userId, ITelegramBotClient botClient)

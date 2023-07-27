@@ -19,8 +19,7 @@ namespace Simulator.Case
     {
         public static StageList Stages { get; set; } = new StageList();
         public static bool Make()
-        {
-            
+        {    
             string path = ControlSystem.caseDirectory +
                 "\\" + ControlSystem.caseInfoFileName;
 
@@ -30,7 +29,7 @@ namespace Simulator.Case
                 {
                     CaseConverter.FromFile(path);
                 }
-                catch
+                catch // TODO сделать обработку
                 {
                     DeleteCaseFiles();
                     return false;
@@ -86,7 +85,9 @@ namespace Simulator.Case
             switch (nextStage)
             {
                 case CaseStagePoll poll:
+
                     await DataBaseControl.UserFlagsTableCommand.SetStartTime(userId, DateTime.Now);
+
                     await ShowAdditionalInfo(botClient, poll, userId);
                     int activePollMessageId = (await botClient.SendPollAsync(
                         chatId: userId,
@@ -100,9 +101,11 @@ namespace Simulator.Case
 
                     break;
                 case CaseStageMessage message:
+
                     string answerGuide = GetAnsweGuide(message.MessageTypeAnswer);
 
                     await DataBaseControl.UserFlagsTableCommand.SetStartTime(userId, DateTime.Now);
+
                     await ShowAdditionalInfo(botClient, message, userId);
                     await botClient.SendTextMessageAsync(
                         chatId: userId,
@@ -112,19 +115,17 @@ namespace Simulator.Case
 
                     break;
                 case CaseStageNone none:
-                    if(await DataBaseControl.UserCaseTableCommand.IsNullAttempts(userId))
-                    {
-                        await DataBaseControl.UserCaseTableCommand.SetAttempts(userId, Stages.AttemptCount);
-                        await DataBaseControl.UserCaseTableCommand.SetExtraAttempt(userId, Stages.ExtraAttempt);
-                        await DataBaseControl.UserCaseTableCommand.SetStartCaseTime(userId, DateTime.Now);
-                        await CaseJsonCommand.CheckJsonFile($"{ControlSystem.statsDirectory}\\{userId}.json");
-                    }
+
+                    // Ставится только если не было поставлено ранее
+                    await DataBaseControl.UserCaseTableCommand.SetStartCaseTime(userId, DateTime.Now);
+
                     await botClient.SendTextMessageAsync(userId,
                         none.TextBefore,
                         replyMarkup: CommandKeyboard.StageMenu);
 
                     break;
                 case CaseStageEndModule endStage:
+
                     var resultsCallback = await EndStageCalc.GetResultOfModule(endStage, userId);
 
                     await DataBaseControl.UserCaseTableCommand.SetPoint(userId, resultsCallback.Item2);

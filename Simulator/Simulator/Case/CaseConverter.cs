@@ -8,7 +8,7 @@ namespace Simulator.Case
     {
         public static async void FromFile(string path)
         {
-            JObject jsonOnject = await CaseJsonCommand.ReadJsonFile(path);
+            JObject jsonOnject = await JsonHandler.ReadJsonFile(path);
             StagesControl.Stages = jsonOnject.ToObject<StageList>();
         }
     }
