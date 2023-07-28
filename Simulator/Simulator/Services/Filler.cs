@@ -38,6 +38,7 @@ namespace Simulator.Services
                 { "AddCase", "AdminAddCaseCommand" },
                 { "ToCase", "UserGoToCaseCommand" },
                 { "GetStatistics", "AdminGetStatisticsCommand" },
+                { "GetListCourses", "AdminShowListCoursesForStatistics" },
                 { "CreateCase", "AdminCreateCaseCommand" },
                 { "CheckTelegramId", "TelegramIDCommand" },
                 { "AddGroupLider", "AdminAddGroupLiderCommand" },

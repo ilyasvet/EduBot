@@ -19,6 +19,7 @@ namespace Simulator.BotControl
             StatsStateTableCommand = new();
             StatsBaseTableCommand = new();
             StatsAnswersTableCommand = new();
+            StatsBuilderCommand = new();
         }
 
         public static UserTableCommand UserTableCommand { get; private set; }
@@ -29,6 +30,7 @@ namespace Simulator.BotControl
         public static StatsAnswersTableCommand StatsAnswersTableCommand { get; private set; }
         public static StatsBaseTableCommand StatsBaseTableCommand { get; private set; }
         public static StatsStateTableCommand StatsStateTableCommand { get; private set; }
+        public static StatsBuilderCommand StatsBuilderCommand { get; private set; }
 
     }
 }

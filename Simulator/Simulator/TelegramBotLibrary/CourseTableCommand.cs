@@ -1,4 +1,5 @@
 ﻿using DbBotLibrary;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Simulator.TelegramBotLibrary
@@ -19,6 +20,21 @@ namespace Simulator.TelegramBotLibrary
                 await ExecuteNonQueryCommand(commandText);
                 return true;
             }
+        }
+
+        public async Task<List<string>> GetListCourses()
+        {
+            string commandText = $"SELECT CourseName FROM {TABLE_NAME}";
+            List<string> result = await ExecuteReaderCommand(commandText, (reader) =>
+            {
+                var result = new List<string>();
+                while (reader.Read())
+                {
+                    result.Add((string)reader[0]);
+                }
+                return result;
+            }) as List<string>;
+            return result;
         }
 
         private async Task<bool> HasCourse(string courseName)

@@ -103,6 +103,7 @@
     <Compile Include="BotControl\UpdateControl.cs" />
     <Compile Include="Case\CaseConverter.cs" />
     <Compile Include="Case\StatsSetter.cs" />
+    <Compile Include="Commands\AdminShowListCoursesForStatistics.cs" />
     <Compile Include="TelegramBotLibrary\StatsTableCommand\StageResults.cs" />
     <Compile Include="Case\StagesControl.cs" />
     <Compile Include="Case\UpdateControlCase.cs" />

@@ -134,6 +134,15 @@ namespace Simulator.Properties {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на Выберите курс из списка.
+        /// </summary>
+        internal static string ChoosingCourse {
+            get {
+                return ResourceManager.GetString("ChoosingCourse", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на Добавьте файл формата электроной таблицы, которая содержит материалы курса по заданному шаблону.
         /// </summary>
         internal static string CreateCase {

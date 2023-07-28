@@ -14,7 +14,7 @@ namespace Simulator.BotControl
         private static InlineKeyboardButton GoToCase = InlineKeyboardButton.WithCallbackData("Перейти к курсу", "ToCase");
         private static InlineKeyboardButton UserCard = InlineKeyboardButton.WithCallbackData("Карточка пользователя", "UserCard");
         private static InlineKeyboardButton AddCase = InlineKeyboardButton.WithCallbackData("Добавить кейс", "AddCase");
-        private static InlineKeyboardButton GetStatistics = InlineKeyboardButton.WithCallbackData("Сатистика", "GetStatistics");
+        private static InlineKeyboardButton GetStatistics = InlineKeyboardButton.WithCallbackData("Сатистика", "GetListCourses");
         private static InlineKeyboardButton CreateCase = InlineKeyboardButton.WithCallbackData("Создать кейс", "CreateCase");
         private static InlineKeyboardButton CheckTelegramId = InlineKeyboardButton.WithCallbackData("Узнать свой Telegram ID", "CheckTelegramId");
         private static InlineKeyboardButton AddGroupLider = InlineKeyboardButton.WithCallbackData("Добавить старосту на курс", "AddGroupLider");
@@ -87,6 +87,7 @@ namespace Simulator.BotControl
 
         public static InlineKeyboardMarkup GroupsList;
         public static InlineKeyboardMarkup AnswersTypesList;
+        public static InlineKeyboardMarkup Courses;
         public async static Task MakeGroupList(string command)
         {
             List<Group> groups = await DataBaseControl.GroupTableCommand.GetAllGroups();
@@ -109,6 +110,19 @@ namespace Simulator.BotControl
                 new[] { InlineKeyboardButton.WithCallbackData("Другой документ", $"{commandName}|{groupNumber}-/other/") },
                 new[] { InlineKeyboardButton.WithCallbackData("К группам", "AnswersFirst") },
             };
+            AnswersTypesList = new InlineKeyboardMarkup(inlineKeyboardButtons);
+        }
+
+        public static async Task MakeCourses(string command)
+        {
+            List<string> courses = await DataBaseControl.CourseTableCommand.GetListCourses();
+            List<InlineKeyboardButton[]> inlineKeyboardButtons = courses.Select(courseName => new[]
+            {
+                InlineKeyboardButton.WithCallbackData(courseName, $"{command}|{courseName}")
+            }).ToList();
+
+            inlineKeyboardButtons.Add(new[] { ToMenu });
+
             AnswersTypesList = new InlineKeyboardMarkup(inlineKeyboardButtons);
         }
     }

@@ -245,4 +245,7 @@
   <data name="WrongFormatFile" xml:space="preserve">
     <value>Ошибка при сохранении файла. Возможно, не тот формат</value>
   </data>
+  <data name="ChoosingCourse" xml:space="preserve">
+    <value>Выберите курс из списка</value>
+  </data>
 </root>

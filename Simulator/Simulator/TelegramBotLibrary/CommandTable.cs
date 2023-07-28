@@ -8,14 +8,17 @@ namespace DbBotLibrary
     {
         private static string _serverName;
         private static string _dataBaseName;
+
         public static void SetServerName(string serverName)
         {
             _serverName = serverName;
         }
+
         public static void SetDataBaseName(string dataBaseName)
         {
             _dataBaseName = dataBaseName;
         }
+
         protected async Task ExecuteNonQueryCommand(string commandText)
         {
             using (Connection connection = new(_serverName, _dataBaseName))
@@ -27,6 +30,7 @@ namespace DbBotLibrary
                 }       
             }
         }
+
         protected async Task<object> ExecuteReaderCommand(string commandText, Func<SqlDataReader, object> func)
         {
             using (Connection connection = new(_serverName, _dataBaseName))

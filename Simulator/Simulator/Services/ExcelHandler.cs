@@ -13,6 +13,68 @@ namespace Simulator.Services
 {
     internal static class ExcelHandler
     {
+        public static async Task<string> MakeStatistics(string courseName)
+        {
+            string path = AppDomain.CurrentDomain.BaseDirectory;
+            Excel.Application excelApp = new();
+            Excel.Workbooks workbooks = null;
+            Excel.Workbook workbook = null;
+            try
+            {
+                workbooks = excelApp.Workbooks;
+                workbook = workbooks.Add();
+
+                AddSheet(workbook, "BaseStats", $"Stats{courseName}Base");
+                AddSheet(workbook, "RateStats", $"Stats{courseName}Rate");
+                AddSheet(workbook, "TimeStats", $"Stats{courseName}Time");
+                AddSheet(workbook, "AnswersStats", $"Stats{courseName}Answers");
+
+                workbook.SaveAs(path);
+                return path;
+            }
+            finally
+            {
+                //освобождаем неуправляемые ресурсы
+                workbooks.Close();
+                excelApp.Quit();
+                ControlSystem.KillProcess("EXCEL"); //и завершаем процесс, чтобы он не висел
+            }
+        }
+
+        private static async void AddSheet(
+            Workbook workbook, string sheetName, string tableName)
+        {
+            Worksheet worksheet = new Worksheet();
+            worksheet.Cells.WrapText = true;
+            worksheet.Columns.ColumnWidth = 15;
+            workbook.Sheets.Add(worksheet);
+
+            List<string> header = await DataBaseControl.StatsBuilderCommand.GetColumnsName(tableName);
+            for (int i = 1; i <= header.Count; i++)
+            {
+                worksheet.Cells[1, i] = header[i];
+            }
+
+            List<List<object>> statsData = await DataBaseControl.StatsBuilderCommand.GetAllTable(tableName);
+            Dictionary<long, string> usersData = await DataBaseControl.StatsBuilderCommand.GetUsers();
+
+            int lineNumber = 1;
+            int columnNumber;
+
+            foreach(var userLine in statsData)
+            {
+                columnNumber = 1;
+                // Заменяем userID на его имя и фамилию
+                userLine[0] = usersData[(long)userLine[0]];
+                foreach(var userProperty in userLine)
+                {
+                    worksheet.Cells[lineNumber, columnNumber] = (string)userProperty;
+                    columnNumber++;
+                }
+                lineNumber++;
+            }
+        }
+
         public static async Task<string> CreateCaseAsync(string path)
         {
             Excel.Application excelApp = new();
