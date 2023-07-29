@@ -96,13 +96,13 @@ namespace Simulator.TelegramBotLibrary
 
         public async Task SetStartTime(string courseName, long userId, DateTime time)
         {
-            string commandText = $"UPDATE Stats{courseName}{TABLE_TYPE} SET StartQuestTime = '{time}' WHERE UserID = {userId}";
+            string commandText = $"UPDATE Stats{courseName}{TABLE_TYPE} SET StartTime = '{time}' WHERE UserID = {userId}";
             await ExecuteNonQueryCommand(commandText);
         }
 
         public async Task<DateTime> GetStartTime(string courseName, long userId)
         {
-            string commandText = $"SELECT StartQuestTime FROM Stats{courseName}{TABLE_TYPE} WHERE UserID = {userId}";
+            string commandText = $"SELECT StartTime FROM Stats{courseName}{TABLE_TYPE} WHERE UserID = {userId}";
 
             DateTime result = (DateTime)await ExecuteReaderCommand(commandText, (reader) =>
             {

@@ -61,14 +61,30 @@ namespace Simulator.TelegramBotLibrary.StatsTableCommand
 
         public async Task SetStartCaseTime(string courseName, long userId, DateTime time)
         {
-            string commandText = $"UPDATE Stats{courseName}{TABLE_TYPE} " +
-                $"SET StartCourse = '{time}' WHERE UserID = {userId}";
-            await ExecuteNonQueryCommand(commandText);
+            if (await StartTimeIsNull(courseName, userId))
+            {
+                string commandText = $"UPDATE Stats{courseName}{TABLE_TYPE} " +
+                    $"SET StartCourseTime = '{time}' WHERE UserID = {userId}";
+                await ExecuteNonQueryCommand(commandText);
+            }
+        }
+
+        private async Task<bool> StartTimeIsNull(string courseName, long userId)
+        {
+            string commandText = $"SELECT COUNT(UserID) FROM Stats{courseName}{TABLE_TYPE} " +
+                $"WHERE StartCourseTime IS NULL AND UserID = {userId}";
+
+            bool result = (bool)await ExecuteReaderCommand(commandText, (reader) =>
+            {
+                reader.Read();
+                return (int)reader[0] != 0;
+            });
+            return result;
         }
 
         public async Task<DateTime> GetStartCaseTime(string courseName, long userId)
         {
-            string commandText = $"SELECT StartCourse FROM Stats{courseName}{TABLE_TYPE} " +
+            string commandText = $"SELECT StartCourseTime FROM Stats{courseName}{TABLE_TYPE} " +
                 $"WHERE UserID = {userId}";
 
             DateTime result = (DateTime)await ExecuteReaderCommand(commandText, (reader) =>
@@ -86,12 +102,12 @@ namespace Simulator.TelegramBotLibrary.StatsTableCommand
         public async Task SetEndCaseTime(string courseName, long userId, DateTime time)
         {
             string commandText = $"UPDATE Stats{courseName}{TABLE_TYPE} " +
-                $"SET EndCourse = '{time}' WHERE UserID = {userId}";
+                $"SET EndCourseTime = '{time}' WHERE UserID = {userId}";
             await ExecuteNonQueryCommand(commandText);
         }
         public async Task<DateTime> GetEndCaseTime(string courseName, long userId)
         {
-            string commandText = $"SELECT EndCourse FROM Stats{courseName}{TABLE_TYPE} " +
+            string commandText = $"SELECT EndCourseTime FROM Stats{courseName}{TABLE_TYPE} " +
                 $"WHERE UserID = {userId}";
 
             DateTime result = (DateTime)await ExecuteReaderCommand(commandText, (reader) =>

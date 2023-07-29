@@ -31,13 +31,16 @@ namespace Simulator.TelegramBotLibrary
             List<List<object>> result = (await ExecuteReaderCommand(commandText, (reader) =>
             {
                 var result = new List<List<object>>();
-                for (int i = 0; reader.Read(); i++)
+
+                int i = 0;
+                while(reader.Read())
                 {
                     result.Add(new List<object>());
-                    foreach(object property in reader)
+                    for (int j = 0; j < reader.FieldCount; j++)
                     {
-                        result[i].Add(property);
+                        result[i].Add(reader[j]);
                     }
+                    i++;
                 }
 
                 return result;
@@ -55,8 +58,8 @@ namespace Simulator.TelegramBotLibrary
                 var result = new Dictionary<long, string>();
                 while (reader.Read())
                 {
-                    string userInfo = (string)reader["Name"] + (string)reader["Surname"];
-                    result.Add((long)reader[0], userInfo);
+                    string userInfo = $"{(string)reader["Name"]} {(string)reader["Surname"]}";
+                    result.Add((int)reader["UserID"], userInfo);
                 }
 
                 return result;

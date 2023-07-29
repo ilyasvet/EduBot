@@ -39,7 +39,7 @@ namespace Simulator.TelegramBotLibrary
 
         private async Task<bool> HasCourse(string courseName)
         {
-            string commandText = $"SELECT COUNT(CourseName) FROM {TABLE_NAME} WHERE CourseName = {courseName}";
+            string commandText = $"SELECT COUNT(CourseName) FROM {TABLE_NAME} WHERE CourseName = '{courseName}'";
             bool result = (bool)await ExecuteReaderCommand(commandText, (reader) =>
             {
                 reader.Read();

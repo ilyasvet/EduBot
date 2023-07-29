@@ -123,7 +123,7 @@ namespace Simulator.BotControl
 
             inlineKeyboardButtons.Add(new[] { ToMenu });
 
-            AnswersTypesList = new InlineKeyboardMarkup(inlineKeyboardButtons);
+            Courses = new InlineKeyboardMarkup(inlineKeyboardButtons);
         }
     }
 }

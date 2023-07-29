@@ -15,7 +15,9 @@ namespace Simulator.Services
     {
         public static async Task<string> MakeStatistics(string courseName)
         {
-            string path = AppDomain.CurrentDomain.BaseDirectory;
+            string path = AppDomain.CurrentDomain.BaseDirectory + 
+                ControlSystem.caseDirectory + $"Statistics-{courseName}.xlsx";
+
             Excel.Application excelApp = new();
             Excel.Workbooks workbooks = null;
             Excel.Workbook workbook = null;
@@ -24,10 +26,13 @@ namespace Simulator.Services
                 workbooks = excelApp.Workbooks;
                 workbook = workbooks.Add();
 
-                AddSheet(workbook, "BaseStats", $"Stats{courseName}Base");
-                AddSheet(workbook, "RateStats", $"Stats{courseName}Rate");
-                AddSheet(workbook, "TimeStats", $"Stats{courseName}Time");
-                AddSheet(workbook, "AnswersStats", $"Stats{courseName}Answers");
+                await AddSheet(workbook, "BaseStats", $"Stats{courseName}Base");
+                await AddSheet(workbook, "RateStats", $"Stats{courseName}Rate");
+                await AddSheet(workbook, "TimeStats", $"Stats{courseName}Time");
+                await AddSheet(workbook, "AnswersStats", $"Stats{courseName}Answers");
+
+                Worksheet first = workbook.ActiveSheet;
+                first.Delete();
 
                 workbook.SaveAs(path);
                 return path;
@@ -41,34 +46,36 @@ namespace Simulator.Services
             }
         }
 
-        private static async void AddSheet(
+        private static async Task AddSheet(
             Workbook workbook, string sheetName, string tableName)
         {
-            Worksheet worksheet = new Worksheet();
+            Worksheet worksheet = workbook.ActiveSheet;
             worksheet.Cells.WrapText = true;
-            worksheet.Columns.ColumnWidth = 15;
+            worksheet.Columns.ColumnWidth = 20;
+            worksheet.Name = sheetName;
             workbook.Sheets.Add(worksheet);
 
             List<string> header = await DataBaseControl.StatsBuilderCommand.GetColumnsName(tableName);
+            int lineNumber = 1;
             for (int i = 1; i <= header.Count; i++)
             {
-                worksheet.Cells[1, i] = header[i];
+                worksheet.Cells[lineNumber, i] = header[i-1];
             }
+            lineNumber++;
 
             List<List<object>> statsData = await DataBaseControl.StatsBuilderCommand.GetAllTable(tableName);
             Dictionary<long, string> usersData = await DataBaseControl.StatsBuilderCommand.GetUsers();
 
-            int lineNumber = 1;
             int columnNumber;
 
             foreach(var userLine in statsData)
             {
                 columnNumber = 1;
                 // Заменяем userID на его имя и фамилию
-                userLine[0] = usersData[(long)userLine[0]];
+                userLine[0] = usersData[(int)userLine[0]];
                 foreach(var userProperty in userLine)
                 {
-                    worksheet.Cells[lineNumber, columnNumber] = (string)userProperty;
+                    worksheet.Cells[lineNumber, columnNumber] = userProperty.ToString();
                     columnNumber++;
                 }
                 lineNumber++;

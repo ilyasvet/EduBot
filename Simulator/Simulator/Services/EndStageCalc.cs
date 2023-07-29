@@ -38,8 +38,20 @@ namespace Simulator.Services
                     {
                         --attemptsRemain;
                     }
+
+                    if (descriptor.IsEndOfCase)
+                    {
+                        await DataBaseControl.StatsBaseTableCommand.SetAttemptsUsed(courseName, userId);
+                    }
+                    else
+                    {
+                        if (attemptsRemain != 0)
+                        {
+                            await DataBaseControl.StatsBaseTableCommand.SetAttemptsUsed(courseName, userId);
+                        }
+                    }
+
                     await DataBaseControl.StatsStateTableCommand.SetAttempts(courseName, userId, attemptsRemain);
-                    await DataBaseControl.StatsBaseTableCommand.SetAttemptsUsed(courseName, userId);
                 }
 
                 if (descriptor.IsEndOfCase)
@@ -57,6 +69,7 @@ namespace Simulator.Services
                 }
                 else if(currentRate < descriptor.Rates[0])
                 {
+                    
                     result = GetResult(attemptsRemain, descriptor, ratePlace, false);
                 }    
             }

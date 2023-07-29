@@ -29,7 +29,7 @@ namespace Simulator.TelegramBotLibrary.StatsTableCommand
                 string formatAnswers = string.Join(";", stageResults.OptionsIds);
                 commandText = $"UPDATE Stats{courseName}{TABLE_NAME_ANSWERS} SET " +
                     $"P{stageResults.StageNumber}M{stageResults.ModuleNumber}A{stageResults.AttemptNumber} = " +
-                    $"{formatAnswers} " +
+                    $"'{formatAnswers}' " +
                     $"WHERE UserID = {userId}";
                 await ExecuteNonQueryCommand(commandText);
             }

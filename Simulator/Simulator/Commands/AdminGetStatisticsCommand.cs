@@ -1,6 +1,5 @@
 ﻿using Simulator.BotControl;
 using Simulator.Services;
-using System;
 using System.IO;
 using System.Threading.Tasks;
 using Telegram.Bot;
@@ -27,7 +26,10 @@ namespace Simulator.Commands
             }
             finally
             {
-                File.Delete(statsFilePath);
+                if (File.Exists(statsFilePath))
+                {
+                    File.Delete(statsFilePath);
+                }
             }
         }
     }

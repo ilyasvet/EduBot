@@ -1,5 +1,7 @@
 {
-  "AttemptCount": 3,
+  "CourseName": "Product",
+  "ReCreateStats": true,
+  "AttemptCount": 2,
   "ExtraAttempt": true,
   "DeletePollAfterAnswer": true,
   "StagesPoll": [

@@ -44,15 +44,16 @@ namespace Simulator.TelegramBotLibrary
             List<string> tableNames = FillTableNames(stages.CourseName);
             for (int i = 0; i < COUNT_TABLES_WITH_ALL_STAGES; i++)
             {
-                await MakeStatsAllStages(stages, tableNames[i]);
+                string dataType = i != 1 ? "FLOAT" : "NVARCHAR(20)";
+                await MakeStatsAllStages(stages, tableNames[i], dataType);
             }
             await MakeBaseStatsTable(stages.AttemptCount, tableNames[3]);
             await MakeStateStatsTable(tableNames[4]);
             await FillTablesDefaultInformation(tableNames);
-            await FillBaseStatsTable(stages.AttemptCount, stages.ExtraAttempt, tableNames[3]);
+            await FillStateStatsTable(stages.AttemptCount, stages.ExtraAttempt, tableNames[4]);
         }
 
-        private async Task FillBaseStatsTable(int attemptCount, bool extraAttempt, string tableName)
+        private async Task FillStateStatsTable(int attemptCount, bool extraAttempt, string tableName)
         {
             string commandText = $"UPDATE {tableName} SET ExtraAttempt = '{extraAttempt}', Attempts = {attemptCount}";
             await ExecuteNonQueryCommand(commandText);
@@ -105,7 +106,7 @@ namespace Simulator.TelegramBotLibrary
 
         // Создаёт таблицу, столбцы которой - сначала все вопросы первой попытки,
         // Потом второй, и так далее, в зависимости от попыток
-        private async Task MakeStatsAllStages(StageList stages, string tableName)
+        private async Task MakeStatsAllStages(StageList stages, string tableName, string DataType)
         {
             StringBuilder commandText = new StringBuilder($"CREATE TABLE {tableName} (\n");
 
@@ -114,16 +115,19 @@ namespace Simulator.TelegramBotLibrary
             List<StringBuilder> commandTextAnyAttempt = new();
             for (int i = 0; i < stages.AttemptCount; i++)
             {
-                commandTextAnyAttempt[i] = new StringBuilder();
+                commandTextAnyAttempt.Add(new StringBuilder());
             }
 
             for (int j = 0; j < stages.GetLastStageIndex(); j++)
             {
                 CaseStage currentStage = stages[j];
-                for (int i = 0; i < stages.AttemptCount; i++)
+                if (currentStage is CaseStagePoll || currentStage is CaseStageMessage)
                 {
-                    commandTextAnyAttempt[i].AppendLine($"P{currentStage.Number}M{currentStage.ModuleNumber}A{i+1}" +
-                        $" FLOAT NOT NULL DEFAULT 0,");
+                    for (int i = 0; i < stages.AttemptCount; i++)
+                    {
+                        commandTextAnyAttempt[i].AppendLine($"P{currentStage.Number}M{currentStage.ModuleNumber}A{i + 1}" +
+                            $" {DataType} NOT NULL DEFAULT 0,");
+                    }
                 }
             }
 
