@@ -16,46 +16,56 @@ namespace Simulator.BotControl
     {
         public static async Task Execute(long userId, ITelegramBotClient botClient, string path, int messageId)
         {
-            await Task.Run(async () =>
+            try
             {
-                DialogState state = await DataBaseControl.UserTableCommand.GetDialogState(userId);
-                bool resultOperation = false;
-                switch (state)
+                await Task.Run(async () =>
                 {
-                    case DialogState.None:
-                        await botClient.DeleteMessageAsync(userId, messageId);
-                        break;
-                    case DialogState.AddingUsersToGroup:
-                        resultOperation = await AddNewUsersTable(userId, botClient, path);
-                        break;
-                    case DialogState.AddingCase:
-                        resultOperation = await AddCase(userId, botClient, path);
-                        break;
-                    case DialogState.CreatingCase:
-                        resultOperation = await CreateCase(userId, botClient, path);
-                        break;
-                    default:
-                        await BotCallBack(userId, botClient, Resources.WrongArgumentMessage);
-                        break;
-                }
-                if (resultOperation)
+                    DialogState state = await DataBaseControl.UserTableCommand.GetDialogState(userId);
+                    bool resultOperation = false;
+                    switch (state)
+                    {
+                        case DialogState.None:
+                            await botClient.DeleteMessageAsync(userId, messageId);
+                            break;
+                        case DialogState.AddingUsersToGroup:
+                            resultOperation = await AddNewUsersTable(userId, botClient, path);
+                            break;
+                        case DialogState.AddingCase:
+                            resultOperation = await AddCase(userId, botClient, path);
+                            break;
+                        case DialogState.CreatingCase:
+                            resultOperation = await CreateCase(userId, botClient, path);
+                            break;
+                        default:
+                            await BotCallBack(userId, botClient, Resources.WrongArgumentMessage);
+                            break;
+                    }
+                    if (resultOperation)
+                    {
+                        await DataBaseControl.UserTableCommand.SetDialogState(userId, DialogState.None);
+                    }
+                });
+            }
+            finally
+            {
+                if (File.Exists(path))
                 {
-                    await DataBaseControl.UserTableCommand.SetDialogState(userId, DialogState.None);
+                    File.Delete(path);
                 }
-            });
+            }
         }
 
         private async static Task<bool> CreateCase(long userId, ITelegramBotClient botClient, string path)
         {
-            string fileCasePath = string.Empty;
+            if (!Checker.IsCorrectFileExtension(path, FileType.ExcelTable))
+            {
+                await BotCallBack(userId, botClient, "File must be excel");
+                return false;
+            }
+
             try
             {
-                if (!Checker.IsCorrectFileExtension(path, FileType.ExcelTable))
-                {
-                    await BotCallBack(userId, botClient, "File must be excel");
-                    return false;
-                }
-                fileCasePath = await ExcelHandler.CreateCaseAsync(path);
+                string fileCasePath = await ExcelHandler.CreateCaseAsync(path);
                 await BotCallBackWithFile(userId, botClient, fileCasePath);
                 return true;
             }
@@ -64,65 +74,51 @@ namespace Simulator.BotControl
                 await BotCallBack(userId, botClient, ex.Message);
                 return false;
             }
-            finally
-            {
-                File.Delete(path);
-            }
         }
 
         private async static Task<bool> AddCase(long userId, ITelegramBotClient botClient, string path)
         {
-            try
+            if (!Checker.IsCorrectFileExtension(path, FileType.Case))
             {
-                if (!Checker.IsCorrectFileExtension(path, FileType.Case))
-                {
-                    await BotCallBack(userId, botClient, "Файл должен быть .zip");
-                    return false;
-                }
-
-                StagesControl.DeleteCaseFiles(); // Удаляем старые файлы перед добавлением новых
-                ZipFile.ExtractToDirectory(path, ControlSystem.caseDirectory);
-
-                if (StagesControl.Make())
-                {
-                    // Сообщение об успехе операции
-                    await BotCallBack(userId, botClient, Resources.AddCaseSuccess);
-
-                    bool isNew = await DataBaseControl.CourseTableCommand.AddCourse(StagesControl.Stages.CourseName);
-                    if (isNew || StagesControl.Stages.ReCreateStats)
-                    {
-                        if (!isNew)
-                        {
-                            await DataBaseControl.UserStatsControl.DeleteStatsTables(StagesControl.Stages.CourseName);
-                        }
-                        await DataBaseControl.UserStatsControl.MakeStatsTables(StagesControl.Stages);
-                    }
-                }
-                else
-                {
-                    await BotCallBack(userId, botClient, Resources.FileCaseNotFound);
-                }
-                return true;
+                await BotCallBack(userId, botClient, "Файл должен быть .zip");
+                return false;
             }
-            finally
+
+            StagesControl.DeleteCaseFiles(); // Удаляем старые файлы перед добавлением новых
+            ZipFile.ExtractToDirectory(path, ControlSystem.caseDirectory);
+
+            StagesControl.Make();
+
+            // Сообщение об успехе операции
+
+            bool isNew = await DataBaseControl.CourseTableCommand.AddCourse(StagesControl.Stages.CourseName);
+            if (isNew || StagesControl.Stages.ReCreateStats)
             {
-                File.Delete(path);
+                if (!isNew)
+                {
+                    await DataBaseControl.UserStatsControl.DeleteStatsTables(StagesControl.Stages.CourseName);
+                }
+                await DataBaseControl.UserStatsControl.MakeStatsTables(StagesControl.Stages);
             }
+            await BotCallBack(userId, botClient, Resources.AddCaseSuccess);
+
+            return true;
         }
 
         private async static Task<bool> AddNewUsersTable(long userId, ITelegramBotClient botClient, string path)
         {
             string callBackMessage = "";
             string groupNumber = null;
+
+            if (!Checker.IsCorrectFileExtension(path, FileType.ExcelTable))
+            {
+                await BotCallBack(userId, botClient, "Файл должен быть exel");
+                return false;
+            }
+
+            UserType senderType = await DataBaseControl.UserTableCommand.GetUserType(userId);
             try
             {
-                if (!Checker.IsCorrectFileExtension(path, FileType.ExcelTable))
-                {
-                    await BotCallBack(userId, botClient, "Файл должен быть exel");
-                    return false;
-                }
-
-                UserType senderType = await DataBaseControl.UserTableCommand.GetUserType(userId);
                 if (senderType == UserType.ClassLeader)
                 {
                     groupNumber = await DataBaseControl.UserTableCommand.GetGroupNumber(userId);
@@ -148,7 +144,7 @@ namespace Simulator.BotControl
 
                 int count = await ExcelHandler.AddUsersFromExcel(path, groupNumber);
                 // Добавляем пользователей из файла в группу
-               
+
                 callBackMessage += $"\nДобавлено пользователей в группу \"{groupNumber}\": {count}\n";
                 await BotCallBack(userId, botClient, callBackMessage.Insert(0, Resources.SuccessAddGroup));
                 return true;
@@ -161,10 +157,6 @@ namespace Simulator.BotControl
             catch (Exception ex)
             {
                 throw new Exception(ex.Message + callBackMessage);
-            }
-            finally
-            {
-                File.Delete(path);
             }
         }
         private async static Task BotCallBack(long userId, ITelegramBotClient botClient, string message)

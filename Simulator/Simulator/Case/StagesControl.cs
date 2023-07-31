@@ -16,7 +16,7 @@ namespace Simulator.Case
     internal static class StagesControl
     {
         public static StageList Stages { get; set; } = new StageList();
-        public static bool Make()
+        public static void Make()
         {    
             string path = ControlSystem.caseDirectory +
                 "\\" + ControlSystem.caseInfoFileName;
@@ -27,14 +27,13 @@ namespace Simulator.Case
                 {
                     CaseConverter.FromFile(path);
                 }
-                catch // TODO сделать обработку
+                catch
                 {
                     DeleteCaseFiles();
-                    return false;
+                    throw;
                 }
-                return true;
             }
-            return false;
+            throw new FileNotFoundException();
         }
 
         public static void DeleteCaseFiles()
@@ -69,6 +68,7 @@ namespace Simulator.Case
             }
             return rate;
         }
+        
         public static void SetStageForMove(CaseStagePoll stage, int[] answers)
         {
             if(stage.ConditionalMove)
@@ -78,6 +78,7 @@ namespace Simulator.Case
             //Если переход безусловный, то NextStage уже установлено
             //Если нет, то на основе свойств и ответа выбираем NextStage
         }
+        
         public static async Task Move(long userId, CaseStage nextStage, ITelegramBotClient botClient)
         {
             switch (nextStage)

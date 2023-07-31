@@ -106,7 +106,8 @@ namespace Simulator.Case
                     try
                     {
                         await botClient.DownloadFileAsync(file.FilePath, stream);
-                    } catch (Exception ex)
+                    }
+                    catch (Exception ex)
                     {
                         await botClient.SendTextMessageAsync(userId, Resources.WrongFormatFile);
                         return;

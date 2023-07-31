@@ -1,4 +1,5 @@
-﻿using Simulator.Services;
+﻿using Simulator.Properties;
+using Simulator.Services;
 using System;
 
 namespace Simulator.Models
@@ -12,7 +13,7 @@ namespace Simulator.Models
             private set
             {
                 if(value < 0)
-                    throw new ArgumentException("TelegramID должен быть положительным числом.");
+                    throw new ArgumentException(Resources.WrongFormatID);
                 _userID = value;
             }
         }
@@ -23,7 +24,7 @@ namespace Simulator.Models
             private set
             {
                 if (!UserHandler.IsCorrectName(value))
-                    throw new ArgumentException("Неверный формат имени.");
+                    throw new ArgumentException(Resources.WrongFormatName);
                 _name = value;
             }
         }
@@ -34,11 +35,21 @@ namespace Simulator.Models
             private set
             {
                 if (!UserHandler.IsCorrectName(value))
-                    throw new ArgumentException("Неверный формат фамилии.");
+                    throw new ArgumentException(Resources.WrongFormatSurname);
                 _surname = value;
             }
         }
-        public string GroupNumber { get; set; }
+        private string _groupNumber;
+        public string GroupNumber
+        {
+            get => _groupNumber;
+            set
+            {
+                if (!GroupHandler.IsCorrectGroupNumber(value))
+                    throw new ArgumentException(Resources.WrongFormatGroup);
+                _groupNumber = value;
+            }
+        }
         public UserType UserType { get; set; }
 
         public User(long userId, string name, string surname)

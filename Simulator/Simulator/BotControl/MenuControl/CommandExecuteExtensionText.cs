@@ -2,6 +2,7 @@
 using Simulator.Models;
 using Simulator.Properties;
 using Simulator.Services;
+using System;
 using System.Threading.Tasks;
 using Telegram.Bot;
 using Telegram.Bot.Types;
@@ -76,47 +77,41 @@ namespace Simulator.BotControl
             string[] userProperties = message.Text.Split(' ');
             string callBackMessage = string.Empty;
             bool result = false;
+            try
+            {
 
-            if (!long.TryParse(userProperties[0], out long longId) || longId < 0)
-            {
-                callBackMessage = Resources.WrongFormatID;
-            }
-            else if(await DataBaseControl.UserTableCommand.HasUser(longId))
-            {
-                await DataBaseControl.UserTableCommand.SetType(longId, UserType.ClassLeader);
-                callBackMessage = Resources.MadeGroupLeader;
-                result = true;
-            }
-            else if (userProperties.Length != 4)
-            {
-                callBackMessage = Resources.WrongFormat;  
-            }
-            else if (!UserHandler.IsCorrectName(userProperties[1]))
-            {
-                callBackMessage = Resources.WrongFormatName;
-            }
-            else if (!UserHandler.IsCorrectName(userProperties[2]))
-            {
-                callBackMessage = Resources.WrongFormatSurname;
-            }
-            else if (!GroupHandler.IsCorrectGroupNumber(userProperties[3]))
-            {
-                callBackMessage = Resources.WrongFormatGroup;
-            }
-            else
-            {
-                string name = userProperties[1];
-                string surname = userProperties[2];
-                string group = userProperties[3];
+                if (!long.TryParse(userProperties[0], out long longId) || longId < 0)
+                {
+                    throw new ArgumentException(Resources.WrongFormatID);
+                }
+                else if (await DataBaseControl.UserTableCommand.HasUser(longId) && userProperties.Length == 1)
+                {
+                    await DataBaseControl.UserTableCommand.SetType(longId, UserType.ClassLeader);
+                    callBackMessage = Resources.MadeGroupLeader;
+                    result = true;
+                }
+                else if (userProperties.Length == 4)
+                {
+                    string name = userProperties[1];
+                    string surname = userProperties[2];
+                    string group = userProperties[3];
 
-                Models.User groupLeader = new(longId, name, surname);
-                await DataBaseControl.UserTableCommand.AddUser(groupLeader, UserType.ClassLeader);
-                callBackMessage = Resources.MadeNewGroupLeader;
+                    Models.User groupLeader = new(longId, name, surname);
+                    groupLeader.GroupNumber = group;
 
-                await GroupHandler.AddGroup(group);
-                await DataBaseControl.UserTableCommand.SetGroup(longId, group);
-                result = true;
+                    await DataBaseControl.UserTableCommand.AddUser(groupLeader, UserType.ClassLeader);
+                    callBackMessage = Resources.MadeNewGroupLeader;
+
+                    await GroupHandler.AddGroup(group);
+                    await DataBaseControl.UserTableCommand.SetGroup(longId, group);
+                    result = true;
+                }
             }
+            catch(ArgumentException ex)
+            {
+                callBackMessage = ex.Message;
+            }
+
             await BotCallBack(userId, botClient, callBackMessage);
             return result;
         }

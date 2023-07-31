@@ -68,11 +68,7 @@ namespace Simulator.BotControl
         private static async Task ErrorHandling(long userId, ITelegramBotClient botClient, Exception inerException)
         {
             SkipCommand skip = new();
-            //inerException is not ArgumentException
-            if (true)
-            {
-                ControlSystem.ShowExceptionConsole(inerException);
-            }
+            ControlSystem.ShowExceptionConsole(inerException);
             try
             {
                 await skip.Execute(
