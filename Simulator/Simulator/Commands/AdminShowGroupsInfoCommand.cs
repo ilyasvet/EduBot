@@ -9,7 +9,19 @@ namespace Simulator.Commands
     {
         public async override Task Execute(long userId, ITelegramBotClient botClient, string param = "")
         {
-            await CommandKeyboard.MakeGroupList("ShowUsersInfo");
+            bool all = false;
+            switch (param)
+            {
+                case "ShowUsersInfo":
+                    all = false;
+                    break;
+                case "GetListCourses":
+                    all = true;
+                    break;
+                default:
+                    break;
+            }
+            await CommandKeyboard.MakeGroupList(param, all);
             await botClient.SendTextMessageAsync(
                         chatId: userId,
                         text: Resources.ShowGroups,

@@ -9,7 +9,8 @@ namespace Simulator.Commands
     {
         public async override Task Execute(long userId, ITelegramBotClient botClient, string param = "")
         {
-            await CommandKeyboard.MakeCourses("GetStatistics");
+            //param - номер группы
+            await CommandKeyboard.MakeCourses("GetStatistics", param);
             await botClient.SendTextMessageAsync(
                 chatId: userId,
                 text: Resources.ChoosingCourse,

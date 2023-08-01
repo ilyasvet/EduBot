@@ -12,14 +12,19 @@ namespace Simulator.Commands
         public async override Task Execute(long userId, ITelegramBotClient botClient, string param = "")
         {
             string statsFilePath = string.Empty;
+
+            string[] properties = param.Split('-');
+            string courseName = properties[0];
+            string groupNumber = properties[1];
+            
             try
             {
-                statsFilePath = await ExcelHandler.MakeStatistics(param);
+                statsFilePath = await ExcelHandler.MakeStatistics(courseName, groupNumber);
                 using (Stream fs = new FileStream(statsFilePath, FileMode.Open))
                 {
                     await botClient.SendDocumentAsync(
                         chatId: userId,
-                        document: new InputOnlineFile(fs, $"Statistics-{param}.xlsx"),
+                        document: new InputOnlineFile(fs, $"Statistics-{courseName}-{groupNumber}.xlsx"),
                         replyMarkup: CommandKeyboard.ToMainMenu
                         );
                 }

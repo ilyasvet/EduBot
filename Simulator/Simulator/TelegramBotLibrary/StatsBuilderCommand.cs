@@ -1,4 +1,5 @@
 ﻿using DbBotLibrary;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -24,9 +25,17 @@ namespace Simulator.TelegramBotLibrary
             return result;
         }
 
-        public async Task<List<List<object>>> GetAllTable(string TableName)
+        public async Task<List<List<object>>> GetAllTable(string TableName, string groupNumber = "")
         {
-            string commandText = $"SELECT * FROM {TableName}";
+            string commandText;
+            if (groupNumber == "all")
+            {
+                commandText = $"SELECT * FROM {TableName}";
+            }
+            else
+            {
+                commandText = $"SELECT * FROM {TableName} s INNER JOIN Users u ON s.UserID = u.UserID WHERE u.GroupNumber = '{groupNumber}'";
+            }
 
             List<List<object>> result = (await ExecuteReaderCommand(commandText, (reader) =>
             {
@@ -49,9 +58,17 @@ namespace Simulator.TelegramBotLibrary
             return result;
         }
 
-        public async Task<Dictionary<long, string>> GetUsers()
+        public async Task<Dictionary<long, string>> GetUsers(string groupNumber = "")
         {
-            string commandText = $"SELECT UserID, Name, Surname FROM Users";
+            string commandText;
+            if (groupNumber == "all")
+            {
+                commandText = $"SELECT UserID, Name, Surname FROM Users";
+            }
+            else
+            {
+                commandText = $"SELECT UserID, Name, Surname FROM Users WHERE GroupNumber = '{groupNumber}'";
+            }
 
             Dictionary<long, string> result = (await ExecuteReaderCommand(commandText, (reader) =>
             {

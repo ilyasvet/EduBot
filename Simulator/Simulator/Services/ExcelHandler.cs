@@ -13,7 +13,7 @@ namespace Simulator.Services
 {
     internal static class ExcelHandler
     {
-        public static async Task<string> MakeStatistics(string courseName)
+        public static async Task<string> MakeStatistics(string courseName, string groupNumber)
         {
             string path = AppDomain.CurrentDomain.BaseDirectory + 
                 ControlSystem.caseDirectory + $"Statistics-{courseName}.xlsx";
@@ -26,10 +26,10 @@ namespace Simulator.Services
                 workbooks = excelApp.Workbooks;
                 workbook = workbooks.Add();
 
-                await AddSheet(workbook, "BaseStats", $"Stats{courseName}Base");
-                await AddSheet(workbook, "RateStats", $"Stats{courseName}Rate");
-                await AddSheet(workbook, "TimeStats", $"Stats{courseName}Time");
-                await AddSheet(workbook, "AnswersStats", $"Stats{courseName}Answers");
+                await AddSheet(workbook, "BaseStats", $"Stats{courseName}Base", groupNumber);
+                await AddSheet(workbook, "RateStats", $"Stats{courseName}Rate", groupNumber);
+                await AddSheet(workbook, "TimeStats", $"Stats{courseName}Time", groupNumber);
+                await AddSheet(workbook, "AnswersStats", $"Stats{courseName}Answers", groupNumber);
 
                 Worksheet first = workbook.ActiveSheet;
                 first.Delete();
@@ -47,7 +47,7 @@ namespace Simulator.Services
         }
 
         private static async Task AddSheet(
-            Workbook workbook, string sheetName, string tableName)
+            Workbook workbook, string sheetName, string tableName, string groupNumber)
         {
             Worksheet worksheet = workbook.ActiveSheet;
             worksheet.Cells.WrapText = true;
@@ -63,8 +63,8 @@ namespace Simulator.Services
             }
             lineNumber++;
 
-            List<List<object>> statsData = await DataBaseControl.StatsBuilderCommand.GetAllTable(tableName);
-            Dictionary<long, string> usersData = await DataBaseControl.StatsBuilderCommand.GetUsers();
+            List<List<object>> statsData = await DataBaseControl.StatsBuilderCommand.GetAllTable(tableName, groupNumber);
+            Dictionary<long, string> usersData = await DataBaseControl.StatsBuilderCommand.GetUsers(groupNumber);
 
             int columnNumber;
 

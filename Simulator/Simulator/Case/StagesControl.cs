@@ -33,7 +33,10 @@ namespace Simulator.Case
                     throw;
                 }
             }
-            throw new FileNotFoundException();
+            else
+            {
+                throw new FileNotFoundException();
+            }
         }
 
         public static void DeleteCaseFiles()
