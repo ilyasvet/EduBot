@@ -61,6 +61,10 @@ namespace Simulator.Services
             {
                 worksheet.Cells[lineNumber, i] = header[i-1];
             }
+            worksheet.Range[
+                worksheet.Cells[1, 1],
+                worksheet.Cells[1, header.Count]
+                ].Interior.Color = System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.LightGreen);
             lineNumber++;
 
             List<List<object>> statsData = await DataBaseControl.StatsBuilderCommand.GetAllTable(tableName, groupNumber);
@@ -80,6 +84,10 @@ namespace Simulator.Services
                 }
                 lineNumber++;
             }
+            worksheet.Range[
+                worksheet.Cells[2, 1],
+                worksheet.Cells[statsData.Count + 1, 1]
+                ].Interior.Color = System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.LightYellow);
         }
 
         public static async Task<string> CreateCaseAsync(string path)

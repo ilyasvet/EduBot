@@ -34,7 +34,8 @@ namespace Simulator.TelegramBotLibrary
             }
             else
             {
-                commandText = $"SELECT * FROM {TableName} s INNER JOIN Users u ON s.UserID = u.UserID WHERE u.GroupNumber = '{groupNumber}'";
+                commandText = $"SELECT * FROM {TableName} s WHERE s.UserID IN " +
+                    $"(SELECT UserID FROM Users u WHERE u.GroupNumber = '{groupNumber}')";
             }
 
             List<List<object>> result = (await ExecuteReaderCommand(commandText, (reader) =>
