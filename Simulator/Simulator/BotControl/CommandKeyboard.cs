@@ -22,6 +22,7 @@ namespace Simulator.BotControl
         private static InlineKeyboardButton AnswersButton = InlineKeyboardButton.WithCallbackData("Ответы пользователей", "AnswersFirst");
         private static InlineKeyboardButton MyGroup = InlineKeyboardButton.WithCallbackData("Группа", "ShowUsersInfo");
         private static InlineKeyboardButton Edit = InlineKeyboardButton.WithCallbackData("Изменить данные", "EditUserInfo");
+        private static InlineKeyboardButton CheckCoursesEnrolled = InlineKeyboardButton.WithCallbackData("Узнать, на какие курсы я записан", "CheckCoursesEnrolled");
 
         public static InlineKeyboardButton ToFinishButton = InlineKeyboardButton.WithCallbackData("Выйти", "ToOut");
         public static InlineKeyboardButton NextButton = InlineKeyboardButton.WithCallbackData("Далее", "MoveNext");
@@ -32,6 +33,11 @@ namespace Simulator.BotControl
             new[] { NextButton },
         });
 
+        public static InlineKeyboardMarkup NewUserMenu = new(new[]
+        {
+            new[] { CheckCoursesEnrolled },
+            new[] { CheckTelegramId },
+        });
         public static InlineKeyboardMarkup LogIn = new(new[]
         {
             new[] { LogInButton },

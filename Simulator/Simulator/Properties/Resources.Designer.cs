@@ -143,6 +143,15 @@ namespace Simulator.Properties {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на Список курсов в которые записана Ваша группа и Вы:.
+        /// </summary>
+        internal static string CoursesEnrolled {
+            get {
+                return ResourceManager.GetString("CoursesEnrolled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на Добавьте файл формата электроной таблицы, которая содержит материалы курса по заданному шаблону.
         /// </summary>
         internal static string CreateCase {
@@ -369,7 +378,7 @@ namespace Simulator.Properties {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Приветствуем! К сожалению, вам недоступен этот курс.
+        ///   Ищет локализованную строку, похожую на Приветствуем! К сожалению, в базе не нашлось ваших данных. Вы можете узнать свой телеграмм-айди, отправить его вместе со своими ФИО администраторам сервиса и они Вас добавят..
         /// </summary>
         internal static string WelcomeUnknown {
             get {

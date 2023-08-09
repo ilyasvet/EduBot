@@ -142,7 +142,7 @@
     <value>Приветствуем, вы администратор, как неожиданно и приятно!)</value>
   </data>
   <data name="WelcomeUnknown" xml:space="preserve">
-    <value>Приветствуем! К сожалению, вам недоступен этот курс</value>
+    <value>Приветствуем! К сожалению, в базе не нашлось ваших данных. Вы можете узнать свой телеграмм-айди, отправить его вместе со своими ФИО администраторам сервиса и они Вас добавят.</value>
   </data>
   <data name="WrongPassword" xml:space="preserve">
     <value>Пароль неверный, попробуйте ещё раз</value>
@@ -247,5 +247,8 @@
   </data>
   <data name="ChoosingCourse" xml:space="preserve">
     <value>Выберите курс из списка</value>
+  </data>
+  <data name="CoursesEnrolled" xml:space="preserve">
+    <value>Список курсов в которые записана Ваша группа и Вы:</value>
   </data>
 </root>

@@ -91,7 +91,7 @@ namespace Simulator.TelegramBotLibrary
 
             return result;
         }
-       
+
         public async Task<UserType> GetUserType(long userId)
         {
             string commandText = $"SELECT UserType FROM UsersState WHERE UserID = {userId}";
@@ -167,6 +167,27 @@ namespace Simulator.TelegramBotLibrary
 
             return result;
         }
+
+        public async Task<List<string>> GetGroupCourses(string groupNumber)
+        {
+            string commandText = $"SELECT c.CourseName" +
+                $" FROM GroupsCourses c" +
+                $" WHERE c.GroupNumber = '{groupNumber}'";
+
+            List<string> result = (List<string>)await ExecuteReaderCommand(commandText, (reader) =>
+            {
+                List<string> groupCourses = new List<string>();
+                while (reader.Read())
+                {
+                    string courseName = reader.GetString(reader.GetOrdinal("CourseName"));
+                    groupCourses.Add(courseName);
+                }
+                return groupCourses;
+            });
+
+            return result;
+        }
+
 
         public async Task<string> GetGroupNumber(long userId)
         {
