@@ -14,9 +14,7 @@ namespace Simulator.Services
         public static readonly string caseInfoFileName = ConfigurationManager.AppSettings["CaseInfoFileName"];
         public static readonly string botToken = ConfigurationManager.AppSettings["BotToken"];
         public static readonly string statsFileName = ConfigurationManager.AppSettings["StatsFileName"];
-        public static readonly string serverName = ConfigurationManager.AppSettings["ServerName"];
-        public static readonly string dataBaseName = ConfigurationManager.AppSettings["DataBaseName"];
-
+       
         public static void CreateDirectories()
         {
             CreateDirectory(tempDirectory);

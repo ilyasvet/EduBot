@@ -105,6 +105,21 @@
     <Compile Include="Case\CaseConverter.cs" />
     <Compile Include="Case\StatsSetter.cs" />
     <Compile Include="Commands\AdminShowListCoursesForStatistics.cs" />
+    <Compile Include="DbLibrary\CommandHandlers\CommandHandlerBase.cs" />
+    <Compile Include="DbLibrary\CommandHandlers\DeleteCommandHandler.cs" />
+    <Compile Include="DbLibrary\CommandHandlers\InsertCommandHandler.cs" />
+    <Compile Include="DbLibrary\CommandHandlers\SelectCommandHandler.cs" />
+    <Compile Include="DbLibrary\CommandHandlers\UpdateCommandHandler.cs" />
+    <Compile Include="DbLibrary\DbConfig.cs" />
+    <Compile Include="DbLibrary\DbConfigProperties.Designer.cs" />
+    <Compile Include="DbLibrary\DbInterfaces\Command.cs" />
+    <Compile Include="DbLibrary\DbInterfaces\CommandConnection.cs" />
+    <Compile Include="DbLibrary\DbInterfaces\DbModel.cs" />
+    <Compile Include="DbLibrary\obj\Debug\net6.0\.NETCoreApp,Version=v6.0.AssemblyAttributes.cs" />
+    <Compile Include="DbLibrary\obj\Debug\net6.0\GoodsDbLibrary.AssemblyInfo.cs" />
+    <Compile Include="DbLibrary\obj\Debug\net6.0\GoodsDbLibrary.GlobalUsings.g.cs" />
+    <Compile Include="DbLibrary\Reflection\DbEntityFactory.cs" />
+    <Compile Include="DbLibrary\Reflection\Properties.cs" />
     <Compile Include="TelegramBotLibrary\StatsBuilderCommand.cs" />
     <Compile Include="TelegramBotLibrary\StatsTableCommand\StageResults.cs" />
     <Compile Include="Case\StagesControl.cs" />
@@ -166,11 +181,26 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="DbLibrary\bin\Debug\net6.0\GoodsDbLibrary.deps.json" />
+    <None Include="DbLibrary\GoodsDbLibrary.csproj" />
+    <None Include="DbLibrary\obj\Debug\net6.0\GoodsDbLibrary.AssemblyInfoInputs.cache" />
+    <None Include="DbLibrary\obj\Debug\net6.0\GoodsDbLibrary.assets.cache" />
+    <None Include="DbLibrary\obj\Debug\net6.0\GoodsDbLibrary.csproj.AssemblyReference.cache" />
+    <None Include="DbLibrary\obj\Debug\net6.0\GoodsDbLibrary.csproj.CoreCompileInputs.cache" />
+    <None Include="DbLibrary\obj\Debug\net6.0\GoodsDbLibrary.csproj.GenerateResource.cache" />
+    <None Include="DbLibrary\obj\Debug\net6.0\GoodsDbLibrary.GeneratedMSBuildEditorConfig.editorconfig" />
+    <None Include="DbLibrary\obj\GoodsDbLibrary.csproj.nuget.dgspec.json" />
+    <None Include="DbLibrary\obj\GoodsDbLibrary.csproj.nuget.g.props" />
+    <None Include="DbLibrary\obj\GoodsDbLibrary.csproj.nuget.g.targets" />
+    <None Include="DbLibrary\obj\project.assets.json" />
+    <None Include="DbLibrary\obj\project.nuget.cache" />
     <None Include="packages.config" />
     <None Include="Simulator_TemporaryKey.pfx" />
     <None Include="TelegramBotLibrary\TelegramBotLibrary.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="DbLibrary\DbConfigProperties.resx" />
+    <EmbeddedResource Include="DbLibrary\obj\Debug\net6.0\GoodsDbLibrary.DbConfigProperties.resources" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -215,6 +245,13 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="DbLibrary\bin\Debug\net6.0\GoodsDbLibrary.dll" />
+    <Content Include="DbLibrary\bin\Debug\net6.0\GoodsDbLibrary.pdb" />
+    <Content Include="DbLibrary\obj\Debug\net6.0\GoodsDbLibrary.csproj.FileListAbsolute.txt" />
+    <Content Include="DbLibrary\obj\Debug\net6.0\GoodsDbLibrary.dll" />
+    <Content Include="DbLibrary\obj\Debug\net6.0\GoodsDbLibrary.pdb" />
+    <Content Include="DbLibrary\obj\Debug\net6.0\refint\GoodsDbLibrary.dll" />
+    <Content Include="DbLibrary\obj\Debug\net6.0\ref\GoodsDbLibrary.dll" />
     <Content Include="Properties\AccordanceTextCommands.txt" />
     <Content Include="Properties\AccordanceButtonCommands.txt" />
   </ItemGroup>

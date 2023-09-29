@@ -72,3 +72,4 @@ D:\Repos\TestSimulator1\Simulator\Simulator\obj\Debug\Simulator.application
 D:\Repos\TestSimulator1\Simulator\Simulator\obj\Debug\Simulator.csproj.CopyComplete
 D:\Repos\TestSimulator1\Simulator\Simulator\obj\Debug\Simulator.exe
 D:\Repos\TestSimulator1\Simulator\Simulator\obj\Debug\Simulator.pdb
+D:\Repos\TestSimulator\Simulator\Simulator\obj\Debug\Simulator.DbLibrary.DbConfigProperties.resources
