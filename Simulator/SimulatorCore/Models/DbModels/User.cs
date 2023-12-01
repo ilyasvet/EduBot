@@ -13,7 +13,7 @@ namespace SimulatorCore.Models.DbModels
         public long UserID
         {
             get => _userID;
-            private set
+            set
             {
                 if (value < 0)
                     throw new ArgumentException(Resources.WrongFormatID);
@@ -24,7 +24,7 @@ namespace SimulatorCore.Models.DbModels
         public string? Name
         {
             get => _name;
-            private set
+            set
             {
                 if (!UserHandler.IsCorrectName(value))
                     throw new ArgumentException(Resources.WrongFormatName);
@@ -35,7 +35,7 @@ namespace SimulatorCore.Models.DbModels
         public string? Surname
         {
             get => _surname;
-            private set
+            set
             {
                 if (!UserHandler.IsCorrectName(value))
                     throw new ArgumentException(Resources.WrongFormatSurname);

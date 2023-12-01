@@ -13,21 +13,26 @@ namespace SimulatorCore.Models.DbModels
         public long UserID
         {
             get => _userID;
-            private set
+            set
             {
                 if (value < 0)
                     throw new ArgumentException(Resources.WrongFormatID);
                 _userID = value;
             }
         }
-        public int DialogState { get; private set; }
-        public int UserType { get; private set; }
-        public bool LogedIn { get; private set; }
+        public int DialogState { get; set; }
+        public int UserType { get; set; }
+        public bool LogedIn { get; set; }
 
         public UserType GetUserType()
         {
             return (UserType)UserType;
         }
+        public void SetUserType(UserType userType)
+        {
+            UserType = (int)userType;
+        }
+
         public DialogState GetDialogState()
         {
             return (DialogState)DialogState;

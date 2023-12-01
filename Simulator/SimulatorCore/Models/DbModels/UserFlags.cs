@@ -12,17 +12,17 @@ namespace SimulatorCore.Models.DbModels
         public long UserID
         {
             get => _userID;
-            private set
+            set
             {
                 if (value < 0)
                     throw new ArgumentException(Resources.WrongFormatID);
                 _userID = value;
             }
         }
-        public int StartDialogId { get; private set; }
+        public int StartDialogId { get; set; }
 
-        public bool OnCourse { get; private set; }
+        public bool OnCourse { get; set; }
 
-        public int ActivePollMessageId { get; private set; }
+        public int ActivePollMessageId { get; set; }
     }
 }

@@ -1,9 +1,11 @@
 ﻿using Simulator.BotControl.State;
-using Simulator.Models;
 using Simulator.Properties;
 using Simulator.Services;
+using SimulatorCore.Models.DbModels;
 using Telegram.Bot;
 using Telegram.Bot.Types;
+
+using DbUser = SimulatorCore.Models.DbModels.User;
 
 namespace Simulator.BotControl
 {
@@ -13,8 +15,10 @@ namespace Simulator.BotControl
         {
             await Task.Run(async () =>
             {
-                DialogState state = await DataBaseControl.UserTableCommand.GetDialogState(userId);
-                bool resultOperation = false;
+				UserState userState = await DataBaseControl.GetEntity<UserState>(userId);
+
+				DialogState state = userState.GetDialogState();
+				bool resultOperation = false;
                 switch (state)
                 {
                     case DialogState.None:
@@ -35,8 +39,9 @@ namespace Simulator.BotControl
                 }
                 if (resultOperation)
                 {
-                    await DataBaseControl.UserTableCommand.SetDialogState(userId, DialogState.None);
-                }
+					userState.SetDialogState(DialogState.None);
+					await DataBaseControl.UpdateEntity(userId, userState);
+				}
             });
         }
 
@@ -61,8 +66,10 @@ namespace Simulator.BotControl
             else
             {
                 callBackMessage += Resources.SuccessEditing;
-                await DataBaseControl.UserTableCommand.SetName(userId, userProperties[0]);
-                await DataBaseControl.UserTableCommand.SetSurname(userId, userProperties[1]);
+                DbUser user = await DataBaseControl.GetEntity<DbUser>(userId);
+                user.Name = userProperties[0];
+                user.Surname = userProperties[1];
+                await DataBaseControl.UpdateEntity(userId, user);
                 result = true;
 
             }
@@ -77,14 +84,24 @@ namespace Simulator.BotControl
             bool result = false;
             try
             {
-
                 if (!long.TryParse(userProperties[0], out long longId) || longId < 0)
                 {
                     throw new ArgumentException(Resources.WrongFormatID);
                 }
-                else if (await DataBaseControl.UserTableCommand.HasUser(longId) && userProperties.Length == 1)
+                bool hasUser = true;
+                UserState classLeader = null;
+                try
                 {
-                    await DataBaseControl.UserTableCommand.SetType(longId, UserType.ClassLeader);
+                    classLeader = await DataBaseControl.GetEntity<UserState>(longId);
+                }
+                catch (KeyNotFoundException)
+                {
+                    hasUser = false;
+                }
+                if (hasUser && userProperties.Length == 1)
+                {
+                    classLeader.SetUserType(UserType.ClassLeader);
+                    await DataBaseControl.UpdateEntity(longId, classLeader);
                     callBackMessage = Resources.MadeGroupLeader;
                     result = true;
                 }
@@ -94,14 +111,33 @@ namespace Simulator.BotControl
                     string surname = userProperties[2];
                     string group = userProperties[3];
 
-                    Models.User groupLeader = new(longId, name, surname);
-                    groupLeader.GroupNumber = group;
+                    DbUser groupLeader = new()
+                    {
+                        UserID = longId,
+                        Name = name,
+                        Surname = surname,
+                        GroupNumber = group
+                    };
+                    UserState groupLeaderState = new()
+                    {
+                        UserID = longId,
 
-                    await DataBaseControl.UserTableCommand.AddUser(groupLeader, UserType.ClassLeader);
+                    };
+                    UserFlags groupLeaderFlags = new()
+                    {
+                        UserID = longId,
+                    };
+
+                    groupLeaderState.SetUserType(UserType.ClassLeader);
+
+                    await DataBaseControl.AddEntity(groupLeader);
+					await DataBaseControl.AddEntity(groupLeaderState);
+					await DataBaseControl.AddEntity(groupLeaderFlags);
+
                     callBackMessage = Resources.MadeNewGroupLeader;
 
+
                     await GroupHandler.AddGroup(group);
-                    await DataBaseControl.UserTableCommand.SetGroup(longId, group);
                     result = true;
                 }
             }
@@ -116,12 +152,15 @@ namespace Simulator.BotControl
 
         private static async Task<bool> CheckPassword(long userId, ITelegramBotClient botClient, Message message)
         {
-            Models.User user = await DataBaseControl.UserTableCommand.GetUserById(userId);
-            string groupPassword = await DataBaseControl.GroupTableCommand.GetPassword(user.GroupNumber);
+            DbUser user = await DataBaseControl.GetEntity<DbUser>(userId);
+            string groupPassword = (await DataBaseControl.GetEntity<Group>(user.GroupNumber)).GroupNumber;
             if(message.Text == groupPassword)
             {
-                await DataBaseControl.UserTableCommand.SetLogedIn(userId, true);
-                await DataBaseControl.UserTableCommand.SetDialogState(userId, DialogState.None);
+                UserState currentState = await DataBaseControl.GetEntity<UserState>(userId);
+                currentState.SetDialogState(DialogState.None);
+                currentState.LogedIn = true;
+                await DataBaseControl.UpdateEntity(userId, currentState);
+
                 await BotCallBack(userId, botClient, Resources.RightPassword);
                 return true;
             }

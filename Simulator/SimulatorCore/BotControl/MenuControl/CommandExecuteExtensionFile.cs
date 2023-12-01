@@ -5,8 +5,9 @@ using Simulator.Properties;
 using Simulator.Services;
 using Simulator.Case;
 using System.IO.Compression;
-using DbUser = SimulatorCore.Models.DbModels.User;
 using SimulatorCore.Models.DbModels;
+
+using DbUser = SimulatorCore.Models.DbModels.User;
 
 namespace Simulator.BotControl
 {
