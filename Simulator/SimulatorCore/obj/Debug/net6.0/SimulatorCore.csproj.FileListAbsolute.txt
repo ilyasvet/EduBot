@@ -1,0 +1,11 @@
+E:\Repos\TestSimulator\Simulator\SimulatorCore\obj\Debug\net6.0\SimulatorCore.csproj.AssemblyReference.cache
+E:\Repos\TestSimulator\Simulator\SimulatorCore\obj\Debug\net6.0\SimulatorCore.DbLibrary.DbConfigProperties.resources
+E:\Repos\TestSimulator\Simulator\SimulatorCore\obj\Debug\net6.0\SimulatorCore.Properties.Resources.resources
+E:\Repos\TestSimulator\Simulator\SimulatorCore\obj\Debug\net6.0\SimulatorCore.csproj.GenerateResource.cache
+E:\Repos\TestSimulator\Simulator\SimulatorCore\obj\Debug\net6.0\SimulatorCore.GeneratedMSBuildEditorConfig.editorconfig
+E:\Repos\TestSimulator\Simulator\SimulatorCore\obj\Debug\net6.0\SimulatorCore.AssemblyInfoInputs.cache
+E:\Repos\TestSimulator\Simulator\SimulatorCore\obj\Debug\net6.0\SimulatorCore.AssemblyInfo.cs
+E:\Repos\TestSimulator\Simulator\SimulatorCore\obj\Debug\net6.0\SimulatorCore.csproj.CoreCompileInputs.cache
+E:\Repos\TestSimulator\Simulator\SimulatorCore\obj\Debug\net6.0\Interop.Microsoft.Office.Interop.Excel.dll
+E:\Repos\TestSimulator\Simulator\SimulatorCore\obj\Debug\net6.0\Interop.Microsoft.Office.Core.dll
+E:\Repos\TestSimulator\Simulator\SimulatorCore\obj\Debug\net6.0\SimulatorCore.csproj.ResolveComReference.cache
