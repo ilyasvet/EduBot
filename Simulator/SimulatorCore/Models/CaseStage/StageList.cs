@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-
-namespace Simulator.Models
+﻿namespace Simulator.Models
 {
     internal class StageList
     {
