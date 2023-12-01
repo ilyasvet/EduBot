@@ -545,19 +545,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Куляй\\.nuget\\packages\\": {}
+    "C:\\Users\\Илья\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "E:\\Repos\\TestSimulator\\Simulator\\SimulatorCore\\SimulatorCore.csproj",
+      "projectUniqueName": "D:\\Repos\\TestSimulator\\Simulator\\SimulatorCore\\SimulatorCore.csproj",
       "projectName": "SimulatorCore",
-      "projectPath": "E:\\Repos\\TestSimulator\\Simulator\\SimulatorCore\\SimulatorCore.csproj",
-      "packagesPath": "C:\\Users\\Куляй\\.nuget\\packages\\",
-      "outputPath": "E:\\Repos\\TestSimulator\\Simulator\\SimulatorCore\\obj\\",
+      "projectPath": "D:\\Repos\\TestSimulator\\Simulator\\SimulatorCore\\SimulatorCore.csproj",
+      "packagesPath": "C:\\Users\\Илья\\.nuget\\packages\\",
+      "outputPath": "D:\\Repos\\TestSimulator\\Simulator\\SimulatorCore\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\Куляй\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\Илья\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -628,7 +628,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.202\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.100\\RuntimeIdentifierGraph.json"
       }
     }
   }

@@ -1,4 +1,5 @@
 ﻿using DbLibrary.Attributes;
+using Simulator.BotControl.State;
 using Simulator.Properties;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -26,7 +27,15 @@ namespace SimulatorCore.Models.DbModels
         public UserType GetUserType()
         {
             return (UserType)UserType;
-
         }
+        public DialogState GetDialogState()
+        {
+            return (DialogState)DialogState;
+        }
+        public void SetDialogState(DialogState newState)
+        {
+            DialogState = (int)newState;
+        }
+
     }
 }

@@ -18,7 +18,9 @@ namespace Simulator.BotControl
             {
                 await Task.Run(async () =>
                 {
-                    DialogState state = await DataBaseControl.UserTableCommand.GetDialogState(userId);
+                    UserState userState = await DataBaseControl.GetEntity<UserState>(userId);
+
+					DialogState state = userState.GetDialogState();
                     bool resultOperation = false;
                     switch (state)
                     {
@@ -40,7 +42,8 @@ namespace Simulator.BotControl
                     }
                     if (resultOperation)
                     {
-                        await DataBaseControl.UserTableCommand.SetDialogState(userId, DialogState.None);
+                        userState.SetDialogState(DialogState.None);
+                        await DataBaseControl.UpdateEntity(userId, userState);
                     }
                 });
             }
@@ -89,7 +92,7 @@ namespace Simulator.BotControl
 
             // Сообщение об успехе операции
 
-            bool isNew = await DataBaseControl.AddEntity<Course>(new Course() { StagesControl.Stages.CourseName });
+            bool isNew = await DataBaseControl.AddEntity(new Course(StagesControl.Stages.CourseName)) == 1;
             if (isNew || StagesControl.Stages.ReCreateStats)
             {
                 if (!isNew)

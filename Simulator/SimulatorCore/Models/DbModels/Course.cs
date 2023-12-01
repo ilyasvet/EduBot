@@ -8,5 +8,12 @@ namespace SimulatorCore.Models.DbModels
     internal class Course
     {
         public string? CourseName { get; private set; }
+
+        public Course() { }
+
+        public Course(string? courseName)
+        {
+            CourseName = courseName;
+        }
     }
 }
