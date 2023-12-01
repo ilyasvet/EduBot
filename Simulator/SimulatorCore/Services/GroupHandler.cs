@@ -1,6 +1,7 @@
 ﻿using Simulator.BotControl;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+
+using DbGroup = SimulatorCore.Models.DbModels.Group;
 
 namespace Simulator.Services
 {
@@ -8,11 +9,20 @@ namespace Simulator.Services
     {
         public static async Task<bool> AddGroup(string groupNumber)
         {
-            if (!await DataBaseControl.GroupTableCommand.HasGroup(groupNumber))
+            bool hasGroup = true;
+            try
             {
-                Models.Group group = new Models.Group(groupNumber);
+                await DataBaseControl.GetEntity<DbGroup>(groupNumber);
+            }
+            catch (KeyNotFoundException)
+            {
+                hasGroup = false;
+            }
+            if (!hasGroup)
+            {
+                DbGroup group = new DbGroup() { GroupNumber = groupNumber };
                 group.SetPassword();
-                await DataBaseControl.GroupTableCommand.AddGroup(group);
+                await DataBaseControl.AddEntity<DbGroup>(group);
                 return true;
             }
             return false;

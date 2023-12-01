@@ -93,7 +93,9 @@ namespace Simulator.BotControl
 
             // Сообщение об успехе операции
 
-            bool isNew = await DataBaseControl.AddEntity(new Course(StagesControl.Stages.CourseName)) == 1;
+            bool isNew = await DataBaseControl.AddEntity(
+                new Course() { CourseName = StagesControl.Stages.CourseName }) == 1;
+
             if (isNew || StagesControl.Stages.ReCreateStats)
             {
                 if (!isNew)

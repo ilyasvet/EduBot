@@ -7,13 +7,6 @@ namespace SimulatorCore.Models.DbModels
     [PrimaryKey("CourseName", typeof(string))]
     internal class Course
     {
-        public string? CourseName { get; private set; }
-
-        public Course() { }
-
-        public Course(string? courseName)
-        {
-            CourseName = courseName;
-        }
+        public string? CourseName { get; set; }
     }
 }

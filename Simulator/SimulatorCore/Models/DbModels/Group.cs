@@ -7,7 +7,7 @@ namespace SimulatorCore.Models.DbModels
     [PrimaryKey("GroupNumber", typeof(string))]
     public class Group
     {
-        public string? GroupNumber { get; private set; }
+        public string? GroupNumber { get; set; }
         public string? Password { get; private set; }
         public override string ToString()
         {
