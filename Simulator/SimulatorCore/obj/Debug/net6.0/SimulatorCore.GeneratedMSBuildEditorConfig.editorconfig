@@ -8,6 +8,6 @@ build_property.PlatformNeutralAssembly =
 build_property.EnforceExtendedAnalyzerRules = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = SimulatorCore
-build_property.ProjectDir = D:\Repos\TestSimulator\Simulator\SimulatorCore\
+build_property.ProjectDir = G:\Work\Repos\TestSimulator\Simulator\SimulatorCore\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 

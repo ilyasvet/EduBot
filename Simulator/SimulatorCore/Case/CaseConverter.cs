@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json.Linq;
 using Simulator.Models;
 using Simulator.TelegramBotLibrary;
+using SimulatorCore.Case;
 
 namespace Simulator.Case
 {
@@ -9,7 +10,7 @@ namespace Simulator.Case
         public static async void FromFile(string path)
         {
             JObject jsonOnject = await JsonHandler.ReadJsonFile(path);
-            StagesControl.Stages = jsonOnject.ToObject<StageList>();
+            CoursesControl.Courses.AddCourse(jsonOnject.ToObject<StageList>());
         }
     }
 }

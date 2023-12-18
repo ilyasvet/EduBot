@@ -1,20 +1,24 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Repos\\TestSimulator\\Simulator\\SimulatorCore\\SimulatorCore.csproj": {}
+    "G:\\Work\\Repos\\TestSimulator\\Simulator\\SimulatorCore\\SimulatorCore.csproj": {}
   },
   "projects": {
-    "D:\\Repos\\TestSimulator\\Simulator\\SimulatorCore\\SimulatorCore.csproj": {
+    "G:\\Work\\Repos\\TestSimulator\\Simulator\\SimulatorCore\\SimulatorCore.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Repos\\TestSimulator\\Simulator\\SimulatorCore\\SimulatorCore.csproj",
+        "projectUniqueName": "G:\\Work\\Repos\\TestSimulator\\Simulator\\SimulatorCore\\SimulatorCore.csproj",
         "projectName": "SimulatorCore",
-        "projectPath": "D:\\Repos\\TestSimulator\\Simulator\\SimulatorCore\\SimulatorCore.csproj",
-        "packagesPath": "C:\\Users\\Илья\\.nuget\\packages\\",
-        "outputPath": "D:\\Repos\\TestSimulator\\Simulator\\SimulatorCore\\obj\\",
+        "projectPath": "G:\\Work\\Repos\\TestSimulator\\Simulator\\SimulatorCore\\SimulatorCore.csproj",
+        "packagesPath": "C:\\Users\\User\\.nuget\\packages\\",
+        "outputPath": "G:\\Work\\Repos\\TestSimulator\\Simulator\\SimulatorCore\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "E:\\VS\\Packages\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "C:\\Users\\Илья\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\User\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [

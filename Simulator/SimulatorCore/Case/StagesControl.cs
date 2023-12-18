@@ -11,35 +11,6 @@ namespace Simulator.Case
 {
     internal static class StagesControl
     {
-        public static StageList Stages { get; set; } = new StageList();
-        public static void Make()
-        {    
-            string path = ControlSystem.caseDirectory +
-                "\\" + ControlSystem.caseInfoFileName;
-
-            if (System.IO.File.Exists(path))
-            {
-                try
-                {
-                    CaseConverter.FromFile(path);
-                }
-                catch
-                {
-                    DeleteCaseFiles();
-                    throw;
-                }
-            }
-            else
-            {
-                throw new FileNotFoundException();
-            }
-        }
-
-        public static void DeleteCaseFiles()
-        {
-            ControlSystem.DeleteFilesFromDirectory(ControlSystem.caseDirectory);
-        }
-
         public static double CalculateRatePoll(CaseStagePoll stage, int[] answers)
         {
             double rate = 0;
