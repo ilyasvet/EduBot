@@ -3,6 +3,8 @@ using Simulator.Models;
 using Telegram.Bot;
 using Simulator.Properties;
 using Simulator.BotControl;
+using SimulatorCore.Case;
+using SimulatorCore.Models.DbModels;
 
 namespace Simulator.Commands
 {
@@ -10,14 +12,15 @@ namespace Simulator.Commands
     {
         public override async Task Execute(long userId, ITelegramBotClient botClient, string param = "")
         {
-            string courseName = StagesControl.Stages.CourseName;
-            if (StagesControl.Stages == null)
+            //param - courseName-groupNumber
+            var parameters = param.Split('-');
+            string courseName = parameters[0];
+            if (!CoursesControl.Courses.Contains(courseName))
             {
                 await botClient.SendTextMessageAsync(
                 userId,
                 Resources.ThereIsNotCase,
                 replyMarkup: CommandKeyboard.UserMenu);
-
             }
             else if (await DataBaseControl.StatsStateTableCommand.GetPoint(courseName ,userId) == -1)
             {
@@ -28,8 +31,10 @@ namespace Simulator.Commands
             }
             else
             {
-                await DataBaseControl.UserFlagsTableCommand.SetOnCourse(userId, true);
-                CaseStage currentStage = StagesControl.Stages[
+                UserFlags currentUserFlags = await DataBaseControl.GetEntity<UserFlags>(userId);
+                currentUserFlags.CurrentCourse = courseName;
+                await DataBaseControl.UpdateEntity(userId, currentUserFlags);
+                CaseStage currentStage = CoursesControl.Courses[courseName][
                     await DataBaseControl.StatsStateTableCommand.GetPoint(courseName, userId)
                     ];
                 await StagesControl.Move(userId, currentStage, botClient);

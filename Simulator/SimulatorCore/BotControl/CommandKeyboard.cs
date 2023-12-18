@@ -1,4 +1,5 @@
 ﻿using Simulator.Models;
+using SimulatorCore.Models.DbModels;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -11,7 +12,7 @@ namespace Simulator.BotControl
         private static InlineKeyboardButton ListGroups = InlineKeyboardButton.WithCallbackData("Списки", "ListGroups|ShowUsersInfo");
         private static InlineKeyboardButton ToMenu = InlineKeyboardButton.WithCallbackData("Главное меню", "MainMenu");
         private static InlineKeyboardButton AddUsers = InlineKeyboardButton.WithCallbackData("Добавить пользователей", "AddUsersAdmin");
-        private static InlineKeyboardButton GoToCase = InlineKeyboardButton.WithCallbackData("Перейти к курсам", "ToCase");
+        private static InlineKeyboardButton GoToCase = InlineKeyboardButton.WithCallbackData("Перейти к курсам", "ToListCourses");
         private static InlineKeyboardButton UserCard = InlineKeyboardButton.WithCallbackData("Карточка пользователя", "UserCard");
         private static InlineKeyboardButton AddCase = InlineKeyboardButton.WithCallbackData("Добавить кейс", "AddCase");
         private static InlineKeyboardButton GetStatistics = InlineKeyboardButton.WithCallbackData("Сатистика", "ListGroups|GetListCourses");
@@ -88,9 +89,10 @@ namespace Simulator.BotControl
         public static InlineKeyboardMarkup GroupsList;
         public static InlineKeyboardMarkup AnswersTypesList;
         public static InlineKeyboardMarkup Courses;
+
         public async static Task MakeGroupList(string command, bool all)
         {
-            List<Group> groups = await DataBaseControl.GroupTableCommand.GetAllGroups();
+            IEnumerable<Group> groups = await DataBaseControl.GetCollection<Group>();
             List<InlineKeyboardButton[]> inlineKeyboardButtons = groups.Select(g => new[]
             {
                 InlineKeyboardButton.WithCallbackData(g.GroupNumber, $"{command}|{g.GroupNumber}")
@@ -119,10 +121,13 @@ namespace Simulator.BotControl
 
         public static async Task MakeCourses(string command, string groupNumber = "")
         {
-            List<string> courses = await DataBaseControl.CourseTableCommand.GetListCourses();
-            List<InlineKeyboardButton[]> inlineKeyboardButtons = courses.Select(courseName => new[]
+            IEnumerable<GroupCourse> groupsCourses = await DataBaseControl.GetCollection<GroupCourse>();
+            groupsCourses = groupsCourses.Where(gc => gc.GroupNumber == groupNumber).ToList();
+
+
+            List<InlineKeyboardButton[]> inlineKeyboardButtons = groupsCourses.Select(course => new[]
             {
-                InlineKeyboardButton.WithCallbackData(courseName, $"{command}|{courseName}-{groupNumber}")
+                InlineKeyboardButton.WithCallbackData(course.CourseName, $"{command}|{course.CourseName}-{groupNumber}")
             }).ToList();
 
             inlineKeyboardButtons.Add(new[] { ToMenu });

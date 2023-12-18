@@ -21,7 +21,7 @@ namespace SimulatorCore.Models.DbModels
         }
         public int StartDialogId { get; set; }
 
-        public bool OnCourse { get; set; }
+        public string? CurrentCourse { get; set; }
 
         public int ActivePollMessageId { get; set; }
     }

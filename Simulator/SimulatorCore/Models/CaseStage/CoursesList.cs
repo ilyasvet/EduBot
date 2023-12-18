@@ -20,6 +20,11 @@ namespace SimulatorCore.Models.CaseStage
 			return false;
 		}
 
+		public bool Contains(string courseName)
+		{
+			return listCourses.FirstOrDefault(c => c.CourseName == courseName) != null;
+		}
+
 		public IEnumerator<StageList> GetEnumerator()
 		{
 			return listCourses.GetEnumerator();
