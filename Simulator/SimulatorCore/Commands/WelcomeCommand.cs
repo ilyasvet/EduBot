@@ -1,8 +1,7 @@
 using Simulator.BotControl;
 using Simulator.Properties;
-using System.Threading.Tasks;
+using SimulatorCore.Models.DbModels;
 using Telegram.Bot;
-using Simulator.Models;
 
 namespace Simulator.Commands
 {
@@ -10,9 +9,10 @@ namespace Simulator.Commands
     {
         public override async Task Execute(long userId, ITelegramBotClient botClient, string param = "")
         {
-            if (await DataBaseControl.UserTableCommand.HasUser(userId))
-            {
-                if (await DataBaseControl.UserTableCommand.GetUserType(userId) != UserType.Admin)
+			UserState userState = await DataBaseControl.GetEntity<UserState>(userId);
+			if (userState != null)
+			{
+                if (userState.GetUserType() != UserType.Admin)
                 {
                     await botClient.SendTextMessageAsync(
                        chatId: userId,

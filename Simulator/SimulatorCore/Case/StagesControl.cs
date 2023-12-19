@@ -61,7 +61,7 @@ namespace Simulator.Case
                     await DataBaseControl.StatsStateTableCommand.
                         SetStartTime(currentUserFlags.CurrentCourse, userId, DateTime.Now);
 
-                    await ShowAdditionalInfo(botClient, poll, userId);
+                    await ShowAdditionalInfo(botClient, poll, userId, currentUserFlags.CurrentCourse);
                     int activePollMessageId = (await botClient.SendPollAsync(
                         chatId: userId,
                         question: poll.TextBefore,
@@ -81,7 +81,7 @@ namespace Simulator.Case
                     await DataBaseControl.StatsStateTableCommand.
                         SetStartTime(currentUserFlags.CurrentCourse, userId, DateTime.Now);
 
-                    await ShowAdditionalInfo(botClient, message, userId);
+                    await ShowAdditionalInfo(botClient, message, userId, currentUserFlags.CurrentCourse);
                     await botClient.SendTextMessageAsync(
                         chatId: userId,
                         text: message.TextBefore + answerGuide,
@@ -159,15 +159,15 @@ namespace Simulator.Case
             return answerGuide;
         }
 
-        private async static Task ShowAdditionalInfo(ITelegramBotClient botClient, CaseStage nextStage, long userId)
+        private async static Task ShowAdditionalInfo(ITelegramBotClient botClient, CaseStage nextStage, long userId, string courseName)
         {
             if (nextStage.AdditionalInfoFiles == null) return;
             foreach (string infoType in nextStage.AdditionalInfoFiles.Keys)
             {
                 foreach (string fileName in nextStage.AdditionalInfoFiles[infoType])
                 {
-                    using (Stream fs = new FileStream(ControlSystem.caseDirectory +
-                        "\\" + fileName.Trim(), FileMode.Open))
+                    using (Stream fs = new FileStream(ControlSystem.caseDirectory + "\\" + courseName
+                        + "\\" + fileName.Trim(), FileMode.Open))
                     {
                         switch (infoType)
                         {

@@ -1,9 +1,7 @@
 ﻿using Simulator.BotControl;
-using Simulator.Models;
 using Simulator.Properties;
-using System.Threading.Tasks;
+using SimulatorCore.Models.DbModels;
 using Telegram.Bot;
-using Telegram.Bot.Exceptions;
 
 namespace Simulator.Commands
 {
@@ -11,10 +9,10 @@ namespace Simulator.Commands
     {
         public override async Task Execute(long userId, ITelegramBotClient botClient, string param = "")
         {
-            UserType userType = await DataBaseControl.UserTableCommand.GetUserType(userId);
-            int startDialogMessageId = await DataBaseControl.UserFlagsTableCommand.GetMessageStartDialogId(userId);
-            int endDialogMessageId = 0;
-            switch (userType)
+			UserState userState = await DataBaseControl.GetEntity<UserState>(userId);
+			int startDialogMessageId = (await DataBaseControl.GetEntity<UserFlags>(userId)).StartDialogId;
+			int endDialogMessageId = 0;
+            switch (userState.GetUserType())
             {
                 case UserType.Admin:
                     endDialogMessageId = (await botClient.SendTextMessageAsync(
@@ -51,7 +49,9 @@ namespace Simulator.Commands
                     startDialogMessageId++;
                 }
             }
-            await DataBaseControl.UserFlagsTableCommand.SetMessageStartDialogId(userId, 0);
-        }
+			UserFlags userFlags = await DataBaseControl.GetEntity<UserFlags>(userId);
+			userFlags.StartDialogId = 0;
+			await DataBaseControl.UpdateEntity(userId, userFlags);
+		}
     }
 }

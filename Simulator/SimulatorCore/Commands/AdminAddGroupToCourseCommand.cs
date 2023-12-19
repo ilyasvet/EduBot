@@ -1,6 +1,6 @@
 ﻿using Simulator.BotControl;
 using Simulator.Commands;
-using Simulator.Services;
+using Simulator.Properties;
 using SimulatorCore.Models.DbModels;
 using Telegram.Bot;
 
@@ -20,6 +20,15 @@ namespace SimulatorCore.Commands
 				GroupNumber = groupNumber
 			};
 			await DataBaseControl.AddEntity(groupCourse);
+
+			int messageId = (await botClient.SendTextMessageAsync(
+				 chatId: userId,
+				 text: $"Группа {groupNumber} добавлена на курс {courseName}",
+				 replyMarkup: CommandKeyboard.ToMainMenu)).MessageId;
+
+			UserFlags userFlags = await DataBaseControl.GetEntity<UserFlags>(userId);
+			userFlags.StartDialogId = messageId;
+			await DataBaseControl.UpdateEntity(userId, userFlags);
 		}
 	}
 }

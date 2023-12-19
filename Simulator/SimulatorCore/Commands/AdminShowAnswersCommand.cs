@@ -4,6 +4,8 @@ using Simulator.Services;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 
+using DbUser = SimulatorCore.Models.DbModels.User;
+
 namespace Simulator.Commands
 {
     internal class AdminShowAnswersCommand : Command
@@ -14,7 +16,7 @@ namespace Simulator.Commands
             string groupNumber = paramsArray[0];
             string typeAnswer = paramsArray[1];
 
-            List<Models.User> users = await DataBaseControl.UserTableCommand.GetGroupUsers(groupNumber);
+            var users = (await DataBaseControl.GetCollection<DbUser>()).Where(u => u.GroupNumber == groupNumber);
 
             string[] files = Directory.GetFiles(ControlSystem.messageAnswersDirectory + typeAnswer);
 
@@ -22,7 +24,7 @@ namespace Simulator.Commands
             {
                 string fileName = Path.GetFileName(file);
                 string[] fileProperties = fileName.Split('.')[0].Split('-');
-                Models.User user = users.Find(u => u.UserID.ToString() == fileProperties[0]);
+                DbUser? user = users.FirstOrDefault(u => u.UserID.ToString() == fileProperties[0]);
                 if (user != null)
                 {
                     using (Stream fs = new FileStream(file, FileMode.Open))

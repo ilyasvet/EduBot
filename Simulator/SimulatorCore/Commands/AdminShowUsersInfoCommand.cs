@@ -1,10 +1,10 @@
 using Simulator.BotControl;
-using Simulator.Models;
 using Simulator.Properties;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using SimulatorCore.Models.DbModels;
 using Telegram.Bot;
 using Telegram.Bot.Types.ReplyMarkups;
+
+using DbUser = SimulatorCore.Models.DbModels.User;
 
 namespace Simulator.Commands
 {
@@ -13,20 +13,25 @@ namespace Simulator.Commands
         public override async Task Execute(long userId, ITelegramBotClient botClient, string param = "")
         {
             IReplyMarkup markup = null;
-            if(await DataBaseControl.UserTableCommand.GetUserType(userId) == UserType.ClassLeader)
+            UserState userState = await DataBaseControl.GetEntity<UserState>(userId);
+            Group? group = null;
+            if(userState.GetUserType() == UserType.ClassLeader)
             {
-                param = await DataBaseControl.UserTableCommand.GetGroupNumber(userId);
+                DbUser user = await DataBaseControl.GetEntity<DbUser>(userId);
+                group = await DataBaseControl.GetEntity<Group>(user.GroupNumber);
                 markup = CommandKeyboard.ToMainMenu;
             }
             else
             {
                 markup = CommandKeyboard.ToGroups;
-            }
+			}
 
-            List<User> users = await DataBaseControl.UserTableCommand.GetGroupUsers(param);
-            string messageWithList = $"{Resources.ShowUsers} {param}\n" +
-            $"{Resources.GroupPassword} {await DataBaseControl.GroupTableCommand.GetPassword(param)}\n";
-            foreach (User user in users)
+            var users = (await DataBaseControl.GetCollection<DbUser>()).Where(u => u.GroupNumber == group.GroupNumber);
+
+
+			string messageWithList = $"{Resources.ShowUsers} {group.GroupNumber}\n" +
+            $"{Resources.GroupPassword} {group.Password}\n";
+            foreach (DbUser user in users)
             {
                 messageWithList += $"{user}\n";
             }

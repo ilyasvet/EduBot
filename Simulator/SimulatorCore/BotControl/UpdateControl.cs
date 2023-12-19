@@ -3,6 +3,7 @@ using Simulator.Commands;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Simulator.Services;
+using SimulatorCore.Models.DbModels;
 
 namespace Simulator.BotControl
 {
@@ -13,8 +14,8 @@ namespace Simulator.BotControl
             long userId = message.Chat.Id;
             try
             {
-                if (await DataBaseControl.UserTableCommand.HasUser(userId)
-                    && await DataBaseControl.UserFlagsTableCommand.IsOnCourse(userId))
+                UserFlags userFlags = await DataBaseControl.GetEntity<UserFlags>(userId);
+                if (userFlags != null && userFlags.CurrentCourse != null)
                 {
                     await UpdateControlCase.MessageHandlingCase(message, botClient);
                 }
@@ -32,10 +33,10 @@ namespace Simulator.BotControl
         {
             long userId = query.Message.Chat.Id;
             try
-            {
-                if (await DataBaseControl.UserTableCommand.HasUser(userId)
-                    && await DataBaseControl.UserFlagsTableCommand.IsOnCourse(userId))
-                {
+			{
+				UserFlags userFlags = await DataBaseControl.GetEntity<UserFlags>(userId);
+				if (userFlags != null && userFlags.CurrentCourse != null)
+				{
                     await UpdateControlCase.CallbackQueryHandlingCase(query, botClient);
                 }
                 else
@@ -52,9 +53,10 @@ namespace Simulator.BotControl
         {
             long userId = answer.User.Id;
             try
-            {
-                if(await DataBaseControl.UserFlagsTableCommand.IsOnCourse(userId))
-                {
+			{
+				UserFlags userFlags = await DataBaseControl.GetEntity<UserFlags>(userId);
+				if (userFlags.CurrentCourse != null)
+				{
                     await UpdateControlCase.PollAnswerHandlingCase(answer, botClient);
                 }
             }

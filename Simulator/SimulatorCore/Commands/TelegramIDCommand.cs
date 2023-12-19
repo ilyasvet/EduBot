@@ -1,6 +1,7 @@
 ﻿using Simulator.BotControl;
+using Simulator.BotControl.State;
 using Simulator.Properties;
-using System.Threading.Tasks;
+using SimulatorCore.Models.DbModels;
 using Telegram.Bot;
 
 namespace Simulator.Commands
@@ -12,10 +13,12 @@ namespace Simulator.Commands
             string userTelegramIdString = Resources.TelegramId;
             userTelegramIdString += $"\n{userId}";
 
-            await DataBaseControl.UserTableCommand.SetDialogState(userId, BotControl.State.DialogState.None);
-            if (await DataBaseControl.UserTableCommand.HasUser(userId))
-            {
-                await botClient.SendTextMessageAsync(chatId: userId,
+			UserState userState = await DataBaseControl.GetEntity<UserState>(userId);
+			if (userState != null)
+			{
+				userState.SetDialogState(DialogState.None);
+				await DataBaseControl.UpdateEntity(userId, userState);
+				await botClient.SendTextMessageAsync(chatId: userId,
                     text: userTelegramIdString,
                     replyMarkup: CommandKeyboard.ToMainMenu);
             }

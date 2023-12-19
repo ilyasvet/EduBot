@@ -1,6 +1,7 @@
 ﻿using Simulator.BotControl;
+using Simulator.BotControl.State;
 using Simulator.Properties;
-using System.Threading.Tasks;
+using SimulatorCore.Models.DbModels;
 using Telegram.Bot;
 using Telegram.Bot.Types.ReplyMarkups;
 
@@ -10,10 +11,12 @@ namespace Simulator.Commands
     {
         public override async Task Execute(long userId, ITelegramBotClient botClient, string param = "")
         {
-            if (await DataBaseControl.UserTableCommand.HasUser(userId))
+            UserState userState = await DataBaseControl.GetEntity<UserState>(userId);
+            if (userState != null)
             {
-                await DataBaseControl.UserTableCommand.SetDialogState(userId, BotControl.State.DialogState.None);
-                if (await DataBaseControl.UserTableCommand.GetUserType(userId) == Models.UserType.Admin)
+                userState.SetDialogState(DialogState.None);
+                await DataBaseControl.UpdateEntity(userId, userState);
+                if (userState.GetUserType() == UserType.Admin)
                 {
                     await botClient.SendTextMessageAsync(
                                 chatId: userId,
@@ -23,9 +26,11 @@ namespace Simulator.Commands
                 else
                 {
                     IReplyMarkup markup;
-                    await DataBaseControl.UserFlagsTableCommand.SetOnCourse(userId, false);
+                    UserFlags userFlags = await DataBaseControl.GetEntity<UserFlags>(userId);
+                    userFlags.CurrentCourse = null;
+                    await DataBaseControl.UpdateEntity(userId, userFlags);
 
-                    if (await DataBaseControl.UserTableCommand.IsLogedIn(userId))
+                    if (userState.LogedIn)
                     {
                         markup = CommandKeyboard.ToMainMenu;
                     }

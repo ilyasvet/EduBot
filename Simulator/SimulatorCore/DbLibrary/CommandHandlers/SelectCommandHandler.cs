@@ -4,7 +4,7 @@ using System.Text;
 
 namespace DbLibrary.CommandHandlers
 {
-    public class SelectCommandHandler<T> : CommandHandlerBase<T> where T : new()
+    public class SelectCommandHandler<T> : CommandHandlerBase<T> where T : class, new()
     {
         public SelectCommandHandler() : base() {}
 
@@ -18,7 +18,7 @@ namespace DbLibrary.CommandHandlers
                 var entities = await ExecuteReader(commandText.ToString());
                 if (entities.Count == 0)
                 {
-                    throw new KeyNotFoundException("There is no such entity");
+                    return null;
                 }
 
                 return entities[0];

@@ -1,8 +1,8 @@
 using Simulator.BotControl.State;
 using Simulator.Properties;
-using System.Threading.Tasks;
 using Telegram.Bot;
 using Simulator.BotControl;
+using SimulatorCore.Models.DbModels;
 
 namespace Simulator.Commands
 {
@@ -10,12 +10,18 @@ namespace Simulator.Commands
     {
         public async override Task Execute(long userId, ITelegramBotClient botClient, string param = "")
         {
-            await DataBaseControl.UserTableCommand.SetDialogState(userId, DialogState.AddingUsersToGroup);
-            int messageId = (await botClient.SendTextMessageAsync(
+			UserState userState = await DataBaseControl.GetEntity<UserState>(userId);
+			userState.SetDialogState(DialogState.AddingUsersToGroup);
+			await DataBaseControl.UpdateEntity(userId, userState);
+
+			int messageId = (await botClient.SendTextMessageAsync(
                  chatId: userId,
                  text: Resources.AddNewGroupOfUsers,
                  replyMarkup: CommandKeyboard.ToMainMenu)).MessageId;
-            await DataBaseControl.UserFlagsTableCommand.SetMessageStartDialogId(userId, messageId);
-        }
+
+			UserFlags userFlags = await DataBaseControl.GetEntity<UserFlags>(userId);
+			userFlags.StartDialogId = messageId;
+			await DataBaseControl.UpdateEntity(userId, userFlags);
+		}
     }
 }
