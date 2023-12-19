@@ -1,4 +1,5 @@
 ﻿using Simulator.BotControl;
+using SimulatorCore.DbLibrary.StatsTableCommand;
 
 namespace Simulator.Case
 {

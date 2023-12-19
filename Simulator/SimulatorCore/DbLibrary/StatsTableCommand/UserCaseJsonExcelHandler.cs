@@ -1,17 +1,10 @@
-﻿using Microsoft.Office.Interop.Excel;
-using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using Simulator.Services;
-using System.IO;
-using Excel = Microsoft.Office.Interop.Excel;
-using System.Collections.Generic;
 using Simulator.Case;
-using Simulator.Models;
-using System;
-using System.Threading.Tasks;
 using Simulator.BotControl;
 
-namespace Simulator.TelegramBotLibrary.JsonUserStats
+namespace SimulatorCore.DbLibrary.StatsTableCommand
 {
     public static class UserCaseJsonExcelHandler
     {
@@ -22,7 +15,7 @@ namespace Simulator.TelegramBotLibrary.JsonUserStats
         {
             // Номер этапа - количество заданий
             CountTasks = StagesControl.GetTaskCountDictionary();
-            
+
             // Номер этапа - номера заданий
             StageNumbersModule = new Dictionary<int, List<int>>();
             foreach (var module in CountTasks)
@@ -82,7 +75,8 @@ namespace Simulator.TelegramBotLibrary.JsonUserStats
                 worksheet.Cells[line, 4] = startCaseTime.ToString();
                 DateTime endCaseTime = await DataBaseControl.UserCaseTableCommand.GetEndCaseTime(userId);
                 worksheet.Cells[line, 5] = endCaseTime.ToString();
-            } catch { }
+            }
+            catch { }
 
             int hp = await DataBaseControl.UserCaseTableCommand.GetAttempts(userId);
             int attemptsUsed = StagesControl.Stages.AttemptCount - hp;
@@ -91,7 +85,7 @@ namespace Simulator.TelegramBotLibrary.JsonUserStats
             worksheet.Cells[line, 2] = userId.ToString();
             worksheet.Cells[line, 3] = group;
             worksheet.Cells[line, 6] = attemptsUsed.ToString();
-            
+
 
             double sumRateAllFirst = 0;
             double sumRateAllSecond = 0;
@@ -146,18 +140,19 @@ namespace Simulator.TelegramBotLibrary.JsonUserStats
                     {
                         timeSecond = (TimeSpan)jsonObject[$"time-{module.Key}-{stage}-2"];
                         sumTimeSecond += timeSecond;
-                    } catch { }
+                    }
+                    catch { }
 
                     if (timeFirst != default && timeSecond != default)
                     {
                         double averageTime = (timeFirst.TotalMinutes + timeSecond.TotalMinutes) / 2;
                         worksheet.Cells[line, startColumn + 2 + curCount] = averageTime.ToString();
                     }
-                    else if(timeSecond != default)
+                    else if (timeSecond != default)
                     {
                         worksheet.Cells[line, startColumn + 2 + curCount] = timeSecond.TotalMinutes.ToString();
                     }
-                    else if(timeFirst != default)
+                    else if (timeFirst != default)
                     {
                         worksheet.Cells[line, startColumn + 2 + curCount] = timeFirst.TotalMinutes.ToString();
                     }
@@ -174,7 +169,8 @@ namespace Simulator.TelegramBotLibrary.JsonUserStats
                         double rateSecond = (double)jsonObject[$"rate-{module.Key}-{stage}-2"];
                         worksheet.Cells[line, startColumn + 3 + countStages * 2 + curCount] = rateSecond;
                         sumRateSecond += rateSecond;
-                    } catch { }
+                    }
+                    catch { }
 
                     // countStages * n, n - номер секции
                     // startColumn + m, m - количество колонок с суммами до текущей
@@ -183,12 +179,14 @@ namespace Simulator.TelegramBotLibrary.JsonUserStats
                     {
                         var answersFirst = jsonObject[$"answers-{module.Key}-{stage}-1"];
                         worksheet.Cells[line, startColumn + 4 + countStages * 3 + curCount] = answersFirst.ToString();
-                    } catch { }
+                    }
+                    catch { }
                     try
                     {
                         var answersSecond = jsonObject[$"answers-{module.Key}-{stage}-2"];
                         worksheet.Cells[line, startColumn + 4 + countStages * 4 + curCount] = answersSecond.ToString();
-                    } catch { }
+                    }
+                    catch { }
 
 
                     curCount++;
@@ -255,7 +253,7 @@ namespace Simulator.TelegramBotLibrary.JsonUserStats
             foreach (var stagesCount in CountTasks)
             {
                 // высчитываем ширину текущего этапа по клеточкам
-                int rangeToMergeCells = cellsTimeStages + cellsSummPtsStages + (stagesCount.Value * 5);
+                int rangeToMergeCells = cellsTimeStages + cellsSummPtsStages + stagesCount.Value * 5;
 
                 // смотрим конец объединенной ячейки
                 int endToMerge = startFromToMerge + rangeToMergeCells - 1;
@@ -305,7 +303,7 @@ namespace Simulator.TelegramBotLibrary.JsonUserStats
                 ];
                     range.Merge();
                     worksheet.Cells[2, startFromToMerge] = dictStatisticsStruct[i].Item1;
-                    
+
                     for (int j = 0; j < stagesCount.Value; j++)
                     {
                         worksheet.Cells[3, startFromToMerge] = $"П{StageNumbersModule[stagesCount.Key][j]}";
@@ -319,5 +317,5 @@ namespace Simulator.TelegramBotLibrary.JsonUserStats
                 }
             }
         }
-    }  
+    }
 }

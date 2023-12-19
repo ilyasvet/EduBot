@@ -1,8 +1,4 @@
-﻿using DbBotLibrary;
-using Simulator.Case;
-using System.Threading.Tasks;
-
-namespace Simulator.TelegramBotLibrary.StatsTableCommand
+﻿namespace SimulatorCore.DbLibrary.StatsTableCommand
 {
     public class StatsAnswersTableCommand : CommandTable
     {

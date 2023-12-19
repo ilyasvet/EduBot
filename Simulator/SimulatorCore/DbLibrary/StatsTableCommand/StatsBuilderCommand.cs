@@ -1,9 +1,4 @@
-﻿using DbBotLibrary;
-using Newtonsoft.Json;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-
-namespace Simulator.TelegramBotLibrary
+﻿namespace SimulatorCore.DbLibrary.StatsTableCommand
 {
     internal class StatsBuilderCommand : CommandTable
     {
@@ -11,7 +6,7 @@ namespace Simulator.TelegramBotLibrary
         {
             string commandText = $"SELECT * FROM {TableName}";
 
-            List<string> result = (await ExecuteReaderCommand(commandText, (reader) =>
+            List<string> result = await ExecuteReaderCommand(commandText, (reader) =>
             {
                 var result = new List<string>();
                 for (int i = 0; i < reader.FieldCount; i++)
@@ -20,7 +15,7 @@ namespace Simulator.TelegramBotLibrary
                 }
 
                 return result;
-            })) as List<string>;
+            }) as List<string>;
 
             return result;
         }
@@ -38,12 +33,12 @@ namespace Simulator.TelegramBotLibrary
                     $"(SELECT UserID FROM Users u WHERE u.GroupNumber = '{groupNumber}')";
             }
 
-            List<List<object>> result = (await ExecuteReaderCommand(commandText, (reader) =>
+            List<List<object>> result = await ExecuteReaderCommand(commandText, (reader) =>
             {
                 var result = new List<List<object>>();
 
                 int i = 0;
-                while(reader.Read())
+                while (reader.Read())
                 {
                     result.Add(new List<object>());
                     for (int j = 0; j < reader.FieldCount; j++)
@@ -54,7 +49,7 @@ namespace Simulator.TelegramBotLibrary
                 }
 
                 return result;
-            })) as List<List<object>>;
+            }) as List<List<object>>;
 
             return result;
         }
@@ -71,7 +66,7 @@ namespace Simulator.TelegramBotLibrary
                 commandText = $"SELECT UserID, Name, Surname FROM Users WHERE GroupNumber = '{groupNumber}'";
             }
 
-            Dictionary<long, string> result = (await ExecuteReaderCommand(commandText, (reader) =>
+            Dictionary<long, string> result = await ExecuteReaderCommand(commandText, (reader) =>
             {
                 var result = new Dictionary<long, string>();
                 while (reader.Read())
@@ -81,7 +76,7 @@ namespace Simulator.TelegramBotLibrary
                 }
 
                 return result;
-            })) as Dictionary<long, string>;
+            }) as Dictionary<long, string>;
 
             return result;
         }

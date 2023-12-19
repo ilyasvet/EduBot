@@ -1,4 +1,4 @@
-﻿namespace Simulator.Case
+﻿namespace SimulatorCore.DbLibrary.StatsTableCommand
 {
     public struct StageResults
     {

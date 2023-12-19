@@ -1,11 +1,7 @@
-﻿using DbBotLibrary;
-using Simulator.Models;
-using System;
-using System.Collections.Generic;
+﻿using Simulator.Models;
 using System.Text;
-using System.Threading.Tasks;
 
-namespace Simulator.TelegramBotLibrary
+namespace SimulatorCore.DbLibrary.StatsTableCommand
 {
     public enum StatsTableType
     {
@@ -32,7 +28,7 @@ namespace Simulator.TelegramBotLibrary
         {
             List<string> tableNames = FillTableNames(courseName);
             string commandText = string.Empty;
-            foreach(string tableName in tableNames)
+            foreach (string tableName in tableNames)
             {
                 commandText += $"DROP TABLE {tableName}\n";
             }
@@ -62,7 +58,7 @@ namespace Simulator.TelegramBotLibrary
         private async Task FillTablesDefaultInformation(List<string> tableNames)
         {
             string commandText;
-            foreach(string tableName in tableNames)
+            foreach (string tableName in tableNames)
             {
                 commandText = $"INSERT INTO {tableName} (UserID) SELECT UserID from Users";
                 await ExecuteNonQueryCommand(commandText);
@@ -111,7 +107,7 @@ namespace Simulator.TelegramBotLibrary
             StringBuilder commandText = new StringBuilder($"CREATE TABLE {tableName} (\n");
 
             commandText.AppendLine("UserID INT NOT NULL PRIMARY KEY REFERENCES Users(UserID),");
-            
+
             List<StringBuilder> commandTextAnyAttempt = new();
             for (int i = 0; i < stages.AttemptCount; i++)
             {

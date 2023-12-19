@@ -1,8 +1,4 @@
-﻿using DbBotLibrary;
-using System;
-using System.Threading.Tasks;
-
-namespace Simulator.TelegramBotLibrary
+﻿namespace SimulatorCore.DbLibrary.StatsTableCommand
 {
     public class StatsStateTableCommand : CommandTable
     {
@@ -16,7 +12,7 @@ namespace Simulator.TelegramBotLibrary
         public async Task<int> GetPoint(string courseName, long userId)
         {
             string commandText = $"SELECT Point FROM Stats{courseName}{TABLE_TYPE} WHERE UserID = {userId}";
-            
+
             int result = (int)await ExecuteReaderCommand(commandText, (reader) =>
             {
                 if (reader.Read())

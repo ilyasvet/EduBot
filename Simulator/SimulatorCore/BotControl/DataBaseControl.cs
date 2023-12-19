@@ -1,6 +1,5 @@
-﻿using Simulator.TelegramBotLibrary;
-using Simulator.TelegramBotLibrary.StatsTableCommand;
-using DbLibrary.CommandHandlers;
+﻿using DbLibrary.CommandHandlers;
+using SimulatorCore.DbLibrary.StatsTableCommand;
 
 namespace Simulator.BotControl
 {
