@@ -1,4 +1,4 @@
-﻿using Simulator.Case;
+﻿using SimulatorCore.Case;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
@@ -16,7 +16,7 @@ namespace Simulator.BotControl
         {
             try
             {
-                StagesControl.Make();
+                CoursesControl.Make();
             }
             catch (Exception ex)
             {

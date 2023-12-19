@@ -10,14 +10,14 @@ namespace SimulatorCore.Models.CaseStage
 		{
 			get => listCourses.First(c => c.CourseName == courseName);
 		}
-		public bool AddCourse(StageList course)
+		public void AddCourse(StageList course)
 		{
-			if (listCourses.FirstOrDefault(c => c.CourseName == course.CourseName) == null)
+			var same = listCourses.FirstOrDefault(c => c.CourseName == course.CourseName);
+			if (same != null)
 			{
-				listCourses.Add(course);
-				return true;
+				listCourses.Remove(same);
 			}
-			return false;
+			listCourses.Add(course);
 		}
 
 		public bool Contains(string courseName)

@@ -3,11 +3,11 @@ using Telegram.Bot.Types;
 using Simulator.BotControl.State;
 using Simulator.Properties;
 using Simulator.Services;
-using Simulator.Case;
 using System.IO.Compression;
 using SimulatorCore.Models.DbModels;
 
 using DbUser = SimulatorCore.Models.DbModels.User;
+using SimulatorCore.Case;
 
 namespace Simulator.BotControl
 {
@@ -86,23 +86,27 @@ namespace Simulator.BotControl
                 return false;
             }
 
-            StagesControl.DeleteCaseFiles(); // Удаляем старые файлы перед добавлением новых
-            ZipFile.ExtractToDirectory(path, ControlSystem.caseDirectory);
+            string courseName = Path.GetFileNameWithoutExtension(path);
+            string coursePath = ControlSystem.caseDirectory + "\\" + courseName;
+            bool isNew = CoursesControl.Courses.Contains(courseName);
 
-            StagesControl.Make();
+			// Удаляем старые файлы перед добавлением новых
+			ControlSystem.DeleteFilesFromDirectory(coursePath);
+            
+            ZipFile.ExtractToDirectory(path, coursePath);
+
+            CoursesControl.Make();
+
+
 
             // Сообщение об успехе операции
-
-            bool isNew = await DataBaseControl.AddEntity(
-                new Course() { CourseName = StagesControl.Stages.CourseName }) == 1;
-
-            if (isNew || StagesControl.Stages.ReCreateStats)
+            if (isNew || CoursesControl.Courses[courseName].ReCreateStats)
             {
                 if (!isNew)
                 {
-                    await DataBaseControl.UserStatsControl.DeleteStatsTables(StagesControl.Stages.CourseName);
+                    await DataBaseControl.UserStatsControl.DeleteStatsTables(courseName);
                 }
-                await DataBaseControl.UserStatsControl.MakeStatsTables(StagesControl.Stages);
+                await DataBaseControl.UserStatsControl.MakeStatsTables(CoursesControl.Courses[courseName]);
             }
             await BotCallBack(userId, botClient, Resources.AddCaseSuccess);
 

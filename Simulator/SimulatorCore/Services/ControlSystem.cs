@@ -1,19 +1,17 @@
-﻿using System;
-using System.Configuration;
+﻿using SimulatorCore.Properties;
 using System.Diagnostics;
-using System.IO;
 
 namespace Simulator.Services
 {
     public static class ControlSystem
     {
-        public static readonly string tempDirectory = ConfigurationManager.AppSettings["DocumentsDir"];
-        public static readonly string caseDirectory = ConfigurationManager.AppSettings["PathCase"];
-        public static readonly string statsDirectory = ConfigurationManager.AppSettings["PathStats"];
-        public static readonly string messageAnswersDirectory = ConfigurationManager.AppSettings["PathAnswers"];
-        public static readonly string caseInfoFileName = ConfigurationManager.AppSettings["CaseInfoFileName"];
-        public static readonly string botToken = ConfigurationManager.AppSettings["BotToken"];
-        public static readonly string statsFileName = ConfigurationManager.AppSettings["StatsFileName"];
+        public static readonly string tempDirectory = SystemProperties.DocumentsDir;
+        public static readonly string caseDirectory = SystemProperties.PathCase;
+        public static readonly string statsDirectory = SystemProperties.PathStats;
+        public static readonly string messageAnswersDirectory = SystemProperties.PathAnswers;
+        public static readonly string caseInfoFileName = SystemProperties.CaseInfoFileName;
+        public static readonly string botToken = SystemProperties.BotToken;
+        public static readonly string statsFileName = SystemProperties.StatsFileName;
        
         public static void CreateDirectories()
         {

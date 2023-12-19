@@ -11,6 +11,8 @@ namespace SimulatorCore.DbLibrary.StatsTableCommand
         Base,
         State,
     }
+
+    //Тут создаются таблицы со статистикой и заполняются поумолчанию
     public class UserStatsControl : CommandTable
     {
         private const int COUNT_TABLES_WITH_ALL_STAGES = 3;

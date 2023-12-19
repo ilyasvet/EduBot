@@ -9,3 +9,13 @@ E:\Repos\TestSimulator\Simulator\SimulatorCore\obj\Debug\net6.0\SimulatorCore.cs
 E:\Repos\TestSimulator\Simulator\SimulatorCore\obj\Debug\net6.0\Interop.Microsoft.Office.Interop.Excel.dll
 E:\Repos\TestSimulator\Simulator\SimulatorCore\obj\Debug\net6.0\Interop.Microsoft.Office.Core.dll
 E:\Repos\TestSimulator\Simulator\SimulatorCore\obj\Debug\net6.0\SimulatorCore.csproj.ResolveComReference.cache
+G:\Work\Repos\TestSimulator\Simulator\SimulatorCore\obj\Debug\net6.0\SimulatorCore.csproj.AssemblyReference.cache
+G:\Work\Repos\TestSimulator\Simulator\SimulatorCore\obj\Debug\net6.0\SimulatorCore.DbLibrary.DbConfigProperties.resources
+G:\Work\Repos\TestSimulator\Simulator\SimulatorCore\obj\Debug\net6.0\SimulatorCore.Properties.Resources.resources
+G:\Work\Repos\TestSimulator\Simulator\SimulatorCore\obj\Debug\net6.0\SimulatorCore.Properties.SystemProperties.resources
+G:\Work\Repos\TestSimulator\Simulator\SimulatorCore\obj\Debug\net6.0\SimulatorCore.csproj.GenerateResource.cache
+G:\Work\Repos\TestSimulator\Simulator\SimulatorCore\obj\Debug\net6.0\SimulatorCore.GeneratedMSBuildEditorConfig.editorconfig
+G:\Work\Repos\TestSimulator\Simulator\SimulatorCore\obj\Debug\net6.0\SimulatorCore.AssemblyInfoInputs.cache
+G:\Work\Repos\TestSimulator\Simulator\SimulatorCore\obj\Debug\net6.0\SimulatorCore.AssemblyInfo.cs
+G:\Work\Repos\TestSimulator\Simulator\SimulatorCore\obj\Debug\net6.0\SimulatorCore.csproj.CoreCompileInputs.cache
+G:\Work\Repos\TestSimulator\Simulator\SimulatorCore\obj\Debug\net6.0\SimulatorCore.sourcelink.json

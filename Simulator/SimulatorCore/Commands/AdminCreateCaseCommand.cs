@@ -1,7 +1,6 @@
 ﻿using Simulator.BotControl;
 using Simulator.BotControl.State;
 using Simulator.Properties;
-using System.Threading.Tasks;
 using Telegram.Bot;
 
 namespace Simulator.Commands

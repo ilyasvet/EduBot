@@ -10,11 +10,9 @@ namespace SimulatorCore.Case
 
 		public static void Make()
 		{
-			foreach (var course in Courses)
+			foreach (var courseDir in Directory.GetDirectories(ControlSystem.caseDirectory))
 			{
-				string directory = ControlSystem.caseDirectory +
-				"\\" + course.CourseName;
-				string path = directory + "\\" + ControlSystem.caseInfoFileName;
+				string path = courseDir + "\\" + ControlSystem.caseInfoFileName;
 
 				if (File.Exists(path))
 				{
@@ -24,7 +22,7 @@ namespace SimulatorCore.Case
 					}
 					catch
 					{
-						DeleteCaseFiles(directory);
+						ControlSystem.DeleteFilesFromDirectory(courseDir);
 						throw;
 					}
 				}
@@ -33,11 +31,6 @@ namespace SimulatorCore.Case
 					throw new FileNotFoundException();
 				}
 			}
-		}
-
-		public static void DeleteCaseFiles(string directory)
-		{
-			ControlSystem.DeleteFilesFromDirectory(directory);
 		}
 	}
 }

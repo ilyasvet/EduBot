@@ -1,5 +1,6 @@
 ﻿namespace SimulatorCore.DbLibrary.StatsTableCommand
 {
+    // Тут получаем информацию с таблиц со статистикой для передачи в excel
     internal class StatsBuilderCommand : CommandTable
     {
         public async Task<List<string>> GetColumnsName(string TableName)
