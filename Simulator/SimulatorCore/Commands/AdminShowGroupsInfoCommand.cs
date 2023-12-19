@@ -1,6 +1,5 @@
 ﻿using Simulator.BotControl;
 using Simulator.Properties;
-using System.Threading.Tasks;
 using Telegram.Bot;
 
 namespace Simulator.Commands
@@ -18,7 +17,10 @@ namespace Simulator.Commands
                 case "GetListCourses":
                     all = true;
                     break;
-                default:
+				case "AddToCourse":
+					all = false;
+					break;
+				default:
                     break;
             }
             await CommandKeyboard.MakeGroupList(param, all);

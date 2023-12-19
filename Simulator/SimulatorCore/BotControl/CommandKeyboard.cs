@@ -1,8 +1,4 @@
-﻿using Simulator.Models;
-using SimulatorCore.Models.DbModels;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using SimulatorCore.Models.DbModels;
 using Telegram.Bot.Types.ReplyMarkups;
 
 namespace Simulator.BotControl
@@ -10,7 +6,8 @@ namespace Simulator.BotControl
     public static class CommandKeyboard
     {
         private static InlineKeyboardButton ListGroups = InlineKeyboardButton.WithCallbackData("Списки", "ListGroups|ShowUsersInfo");
-        private static InlineKeyboardButton ToMenu = InlineKeyboardButton.WithCallbackData("Главное меню", "MainMenu");
+		private static InlineKeyboardButton AddToCourse = InlineKeyboardButton.WithCallbackData("Добавить на курс", "ListGroups|AddToCourse");
+		private static InlineKeyboardButton ToMenu = InlineKeyboardButton.WithCallbackData("Главное меню", "MainMenu");
         private static InlineKeyboardButton AddUsers = InlineKeyboardButton.WithCallbackData("Добавить пользователей", "AddUsersAdmin");
         private static InlineKeyboardButton GoToCase = InlineKeyboardButton.WithCallbackData("Перейти к курсам", "ToListCourses");
         private static InlineKeyboardButton UserCard = InlineKeyboardButton.WithCallbackData("Карточка пользователя", "UserCard");
@@ -60,6 +57,7 @@ namespace Simulator.BotControl
             new[] { CheckTelegramId },
             new[] { AddGroupLider },
             new[] { AnswersButton },
+            new[] { AddToCourse },
         });
         public static InlineKeyboardMarkup UserMenu = new(new[]
         {
@@ -119,10 +117,10 @@ namespace Simulator.BotControl
             AnswersTypesList = new InlineKeyboardMarkup(inlineKeyboardButtons);
         }
 
-        public static async Task MakeCourses(string command, string groupNumber = "")
+        public static async Task MakeCourses(string command, bool present, string groupNumber = "")
         {
             IEnumerable<GroupCourse> groupsCourses = await DataBaseControl.GetCollection<GroupCourse>();
-            groupsCourses = groupsCourses.Where(gc => gc.GroupNumber == groupNumber).ToList();
+            groupsCourses = groupsCourses.Where(gc => (gc.GroupNumber == groupNumber) == present).ToList();
 
 
             List<InlineKeyboardButton[]> inlineKeyboardButtons = groupsCourses.Select(course => new[]

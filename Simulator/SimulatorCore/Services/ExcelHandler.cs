@@ -1,12 +1,6 @@
-﻿using Microsoft.Office.Interop.Excel;
-using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json.Linq;
 using Simulator.Models;
-using System;
-using System.IO;
 using Telegram.Bot.Types.Enums;
-using Excel = Microsoft.Office.Interop.Excel;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using Simulator.BotControl;
 
 namespace Simulator.Services

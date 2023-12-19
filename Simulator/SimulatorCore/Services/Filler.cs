@@ -47,6 +47,8 @@ namespace Simulator.Services
                 { "AnswersTypes", "AdminAnswersTypesCommand" },
                 { "ShowAnswers", "AdminShowAnswersCommand" },
                 { "EditUserInfo", "EditUserInfoCommand" },
+                { "AddToCourse", "AdminShowCoursesToAdd" },
+                { "AddGroupToCourse", "AdminAddGroupToCourseCommand" }
             };
             return result;
         }

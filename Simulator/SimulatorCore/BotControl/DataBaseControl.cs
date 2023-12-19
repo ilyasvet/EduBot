@@ -8,7 +8,6 @@ namespace Simulator.BotControl
     {
         static DataBaseControl()
         {
-
             UserStatsControl = new();
             StatsStateTableCommand = new();
             StatsBaseTableCommand = new();

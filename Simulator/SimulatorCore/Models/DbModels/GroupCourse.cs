@@ -5,8 +5,8 @@ namespace SimulatorCore.Models.DbModels
     [Table("GroupsCourses")]
     internal class GroupCourse
     {
-        public string? GroupNumber { get; private set; }
-        public string? CourseName { get; private set; }
+        public string? GroupNumber { get; set; }
+        public string? CourseName { get; set; }
 
     }
 }
