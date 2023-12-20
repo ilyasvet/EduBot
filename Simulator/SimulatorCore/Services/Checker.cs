@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.IO;
-
-namespace Simulator.Services
+﻿namespace Simulator.Services
 {
     public static class Checker
     {

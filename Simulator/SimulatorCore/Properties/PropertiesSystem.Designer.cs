@@ -22,14 +22,14 @@ namespace SimulatorCore.Properties {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class SystemProperties {
+    internal class PropertiesSystem {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal SystemProperties() {
+        internal PropertiesSystem() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace SimulatorCore.Properties {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("SimulatorCore.Properties.SystemProperties", typeof(SystemProperties).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("SimulatorCore.Properties.PropertiesSystem", typeof(PropertiesSystem).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -57,6 +57,69 @@ namespace SimulatorCore.Properties {
             }
             set {
                 resourceCulture = value;
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to aaa.
+        /// </summary>
+        internal static string BotToken {
+            get {
+                return ResourceManager.GetString("BotToken", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to caseinfo.json.
+        /// </summary>
+        internal static string CaseInfoFileName {
+            get {
+                return ResourceManager.GetString("CaseInfoFileName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to temp.
+        /// </summary>
+        internal static string DocumentsDir {
+            get {
+                return ResourceManager.GetString("DocumentsDir", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to temp/answers.
+        /// </summary>
+        internal static string PathAnswers {
+            get {
+                return ResourceManager.GetString("PathAnswers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to temp/case.
+        /// </summary>
+        internal static string PathCase {
+            get {
+                return ResourceManager.GetString("PathCase", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to temp/stats.
+        /// </summary>
+        internal static string PathStats {
+            get {
+                return ResourceManager.GetString("PathStats", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to statistics.
+        /// </summary>
+        internal static string StatsFileName {
+            get {
+                return ResourceManager.GetString("StatsFileName", resourceCulture);
             }
         }
     }

@@ -5,13 +5,13 @@ namespace Simulator.Services
 {
     public static class ControlSystem
     {
-        public static readonly string tempDirectory = SystemProperties.DocumentsDir;
-        public static readonly string caseDirectory = SystemProperties.PathCase;
-        public static readonly string statsDirectory = SystemProperties.PathStats;
-        public static readonly string messageAnswersDirectory = SystemProperties.PathAnswers;
-        public static readonly string caseInfoFileName = SystemProperties.CaseInfoFileName;
-        public static readonly string botToken = SystemProperties.BotToken;
-        public static readonly string statsFileName = SystemProperties.StatsFileName;
+        public static readonly string tempDirectory = PropertiesSystem.DocumentsDir;
+        public static readonly string caseDirectory = PropertiesSystem.PathCase;
+        public static readonly string statsDirectory = PropertiesSystem.PathStats;
+        public static readonly string messageAnswersDirectory = PropertiesSystem.PathAnswers;
+        public static readonly string caseInfoFileName = PropertiesSystem.CaseInfoFileName;
+        public static readonly string botToken = PropertiesSystem.BotToken;
+        public static readonly string statsFileName = PropertiesSystem.StatsFileName;
        
         public static void CreateDirectories()
         {

@@ -117,17 +117,97 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AddCase" xml:space="preserve">
+    <value>Отправьте файл .zip</value>
+  </data>
+  <data name="AddCaseFail" xml:space="preserve">
+    <value>Ошибка при загрузке кейса</value>
+  </data>
+  <data name="AddCaseSuccess" xml:space="preserve">
+    <value>Кейс успешно загружен</value>
+  </data>
+  <data name="AddGroupLeader" xml:space="preserve">
+    <value>Отправьте строку в формате: *ID* *Имя* *Фамилия* *Группа*
+Например: 3256357 Василий Пупкин 5565834-10002</value>
+  </data>
+  <data name="AddNewGroupOfUsers" xml:space="preserve">
+    <value>Отправтье файл excel. Формат названия &lt;1ч.группы&gt;-&lt;2ч.группы&gt;. Таблица имеет 3 столбца (Имя, фамилия, telegramID)</value>
+  </data>
   <data name="AdminMenu" xml:space="preserve">
     <value>Это меню администратора</value>
+  </data>
+  <data name="AnswerGuidePt1" xml:space="preserve">
+    <value>Для ответа на этот вопрос отправьте </value>
+  </data>
+  <data name="AnswerGuidePt2" xml:space="preserve">
+    <value>Максимальный размер файла - 20Мб</value>
+  </data>
+  <data name="ChoosingCourse" xml:space="preserve">
+    <value>Выберите курс из списка</value>
+  </data>
+  <data name="CreateCase" xml:space="preserve">
+    <value>Добавьте файл формата электроной таблицы, которая содержит материалы курса по заданному шаблону</value>
   </data>
   <data name="EnterPassword" xml:space="preserve">
     <value>Введите пароль</value>
   </data>
+  <data name="EnterStart" xml:space="preserve">
+    <value>Введите /start для продолжения</value>
+  </data>
+  <data name="EnterUserInfo" xml:space="preserve">
+    <value>Введите новые имя и фамилию через пробел
+Привет: Василий Пупкин</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>Возникла неизвестная ошибка. Наберите /start</value>
+  </data>
+  <data name="FileCaseNotFound" xml:space="preserve">
+    <value>Файл caseinfo.case не найден</value>
+  </data>
+  <data name="GroupPassword" xml:space="preserve">
+    <value>Пароль для группы:</value>
+  </data>
+  <data name="MadeGroupLeader" xml:space="preserve">
+    <value>Пользователь был сделан старостой</value>
+  </data>
+  <data name="MadeNewGroupLeader" xml:space="preserve">
+    <value>Пользователь добавлен и сделан старостой</value>
+  </data>
   <data name="RightPassword" xml:space="preserve">
     <value>Вход совершён успешно, переходим в главное меню</value>
   </data>
+  <data name="SendVideo" xml:space="preserve">
+    <value>Именно видео</value>
+  </data>
+  <data name="ShowAnswersTypes" xml:space="preserve">
+    <value>Группа выбрана. Теперь выберите тип ответа</value>
+  </data>
+  <data name="ShowGroups" xml:space="preserve">
+    <value>Список групп, добавленных на курс</value>
+  </data>
   <data name="ShowUsers" xml:space="preserve">
     <value>Список пользователей группы</value>
+  </data>
+  <data name="SuccessAddGroup" xml:space="preserve">
+    <value>Операция добавления прошла успешно</value>
+  </data>
+  <data name="SuccessEditing" xml:space="preserve">
+    <value>Данные успешно изменены</value>
+  </data>
+  <data name="TelegramId" xml:space="preserve">
+    <value>Это ваш ваш персональный телеграм айди</value>
+  </data>
+  <data name="ThereIsNotAttempts" xml:space="preserve">
+    <value>У вас больше нет попыток</value>
+  </data>
+  <data name="ThereIsNotCase" xml:space="preserve">
+    <value>Кейс ещё не был загружен</value>
+  </data>
+  <data name="ToMenu" xml:space="preserve">
+    <value>Можно вернуться в меню</value>
+  </data>
+  <data name="TooBigFile" xml:space="preserve">
+    <value>Файл должен быть меньше 20МБ</value>
   </data>
   <data name="UserCard" xml:space="preserve">
     <value>Это ваша персональная карточка</value>
@@ -144,71 +224,14 @@
   <data name="WelcomeUnknown" xml:space="preserve">
     <value>Приветствуем! К сожалению, вам недоступен этот курс</value>
   </data>
-  <data name="WrongPassword" xml:space="preserve">
-    <value>Пароль неверный, попробуйте ещё раз</value>
-  </data>
-  <data name="AddNewGroupOfUsers" xml:space="preserve">
-    <value>Отправтье файл excel. Формат названия &lt;1ч.группы&gt;-&lt;2ч.группы&gt;. Таблица имеет 3 столбца (Имя, фамилия, telegramID)</value>
-  </data>
-  <data name="SuccessAddGroup" xml:space="preserve">
-    <value>Операция добавления прошла успешно</value>
-  </data>
-  <data name="ShowGroups" xml:space="preserve">
-    <value>Список групп, добавленных на курс</value>
-  </data>
-  <data name="GroupPassword" xml:space="preserve">
-    <value>Пароль для группы:</value>
-  </data>
-  <data name="AddCase" xml:space="preserve">
-    <value>Отправьте файл .zip</value>
-  </data>
-  <data name="AddCaseFail" xml:space="preserve">
-    <value>Ошибка при загрузке кейса</value>
-  </data>
-  <data name="AddCaseSuccess" xml:space="preserve">
-    <value>Кейс успешно загружен</value>
-  </data>
-  <data name="ThereIsNotCase" xml:space="preserve">
-    <value>Кейс ещё не был загружен</value>
-  </data>
-  <data name="ThereIsNotAttempts" xml:space="preserve">
-    <value>У вас больше нет попыток</value>
-  </data>
-  <data name="FileCaseNotFound" xml:space="preserve">
-    <value>Файл caseinfo.case не найден</value>
-  </data>
-  <data name="SendVideo" xml:space="preserve">
-    <value>Именно видео</value>
-  </data>
-  <data name="CreateCase" xml:space="preserve">
-    <value>Добавьте файл формата электроной таблицы, которая содержит материалы курса по заданному шаблону</value>
-  </data>
-  <data name="TelegramId" xml:space="preserve">
-    <value>Это ваш ваш персональный телеграм айди</value>
-  </data>
-  <data name="Error" xml:space="preserve">
-    <value>Возникла неизвестная ошибка. Наберите /start</value>
-  </data>
-  <data name="EnterStart" xml:space="preserve">
-    <value>Введите /start для продолжения</value>
-  </data>
-  <data name="ShowAnswersTypes" xml:space="preserve">
-    <value>Группа выбрана. Теперь выберите тип ответа</value>
-  </data>
-  <data name="TooBigFile" xml:space="preserve">
-    <value>Файл должен быть меньше 20МБ</value>
-  </data>
-  <data name="AnswerGuidePt1" xml:space="preserve">
-    <value>Для ответа на этот вопрос отправьте </value>
-  </data>
-  <data name="AnswerGuidePt2" xml:space="preserve">
-    <value>Максимальный размер файла - 20Мб</value>
-  </data>
-  <data name="ToMenu" xml:space="preserve">
-    <value>Можно вернуться в меню</value>
+  <data name="WrongArgumentMessage" xml:space="preserve">
+    <value>Ты чё скинул...</value>
   </data>
   <data name="WrongFormat" xml:space="preserve">
     <value>Неправильный формат, посмотрите ещё раз на образец</value>
+  </data>
+  <data name="WrongFormatFile" xml:space="preserve">
+    <value>Ошибка при сохранении файла. Возможно, не тот формат</value>
   </data>
   <data name="WrongFormatGroup" xml:space="preserve">
     <value>Неверный формат группы</value>
@@ -222,30 +245,7 @@
   <data name="WrongFormatSurname" xml:space="preserve">
     <value>Неверный формат фамилии</value>
   </data>
-  <data name="AddGroupLeader" xml:space="preserve">
-    <value>Отправьте строку в формате: *ID* *Имя* *Фамилия* *Группа*
-Например: 3256357 Василий Пупкин 5565834-10002</value>
-  </data>
-  <data name="MadeGroupLeader" xml:space="preserve">
-    <value>Пользователь был сделан старостой</value>
-  </data>
-  <data name="MadeNewGroupLeader" xml:space="preserve">
-    <value>Пользователь добавлен и сделан старостой</value>
-  </data>
-  <data name="WrongArgumentMessage" xml:space="preserve">
-    <value>Ты чё скинул...</value>
-  </data>
-  <data name="EnterUserInfo" xml:space="preserve">
-    <value>Введите новые имя и фамилию через пробел
-Привет: Василий Пупкин</value>
-  </data>
-  <data name="SuccessEditing" xml:space="preserve">
-    <value>Данные успешно изменены</value>
-  </data>
-  <data name="WrongFormatFile" xml:space="preserve">
-    <value>Ошибка при сохранении файла. Возможно, не тот формат</value>
-  </data>
-  <data name="ChoosingCourse" xml:space="preserve">
-    <value>Выберите курс из списка</value>
+  <data name="WrongPassword" xml:space="preserve">
+    <value>Пароль неверный, попробуйте ещё раз</value>
   </data>
 </root>

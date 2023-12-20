@@ -19,3 +19,4 @@ G:\Work\Repos\TestSimulator\Simulator\SimulatorCore\obj\Debug\net6.0\SimulatorCo
 G:\Work\Repos\TestSimulator\Simulator\SimulatorCore\obj\Debug\net6.0\SimulatorCore.AssemblyInfo.cs
 G:\Work\Repos\TestSimulator\Simulator\SimulatorCore\obj\Debug\net6.0\SimulatorCore.csproj.CoreCompileInputs.cache
 G:\Work\Repos\TestSimulator\Simulator\SimulatorCore\obj\Debug\net6.0\SimulatorCore.sourcelink.json
+G:\Work\Repos\TestSimulator\Simulator\SimulatorCore\obj\Debug\net6.0\SimulatorCore.Properties.PropertiesSystem.resources

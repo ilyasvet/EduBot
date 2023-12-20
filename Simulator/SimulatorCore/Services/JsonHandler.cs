@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-using Newtonsoft.Json;
-using System.IO;
+﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace Simulator.TelegramBotLibrary

@@ -6,6 +6,8 @@ using Simulator.Properties;
 using Simulator.Services;
 using Simulator.BotControl;
 using SimulatorCore.DbLibrary.StatsTableCommand;
+using SimulatorCore.Models.DbModels;
+using SimulatorCore.Case;
 
 namespace Simulator.Case
 {
@@ -14,8 +16,9 @@ namespace Simulator.Case
         public static async Task CallbackQueryHandlingCase(CallbackQuery query, ITelegramBotClient botClient)
         {
             long userId = query.Message.Chat.Id;
-            int currentPoint = await DataBaseControl.StatsStateTableCommand.
-                GetPoint(StagesControl.Stages.CourseName, userId);
+			UserFlags userFlags = await DataBaseControl.GetEntity<UserFlags>(userId);
+			int currentPoint = await DataBaseControl.StatsStateTableCommand.
+                GetPoint(userFlags.CurrentCourse, userId);
             
             if(currentPoint == -1 || query.Data == "ToOut")
             {
@@ -24,21 +27,22 @@ namespace Simulator.Case
             }
             else if( query.Data == "MoveNext")
             {
-                CaseStage currentStage = StagesControl.Stages[currentPoint];
+                CaseStage currentStage = CoursesControl.Courses[userFlags.CurrentCourse][currentPoint];
                 if (currentStage is CaseStageNone)
                 {
-                    CaseStage nextStage = StagesControl.Stages[currentStage.NextStage];
-                    await SetAndMovePoint(userId, nextStage, botClient);
+                    CaseStage nextStage = CoursesControl.Courses[userFlags.CurrentCourse][currentStage.NextStage];
+                    await SetAndMovePoint(userFlags, nextStage, botClient);
                 }
             }
         }
         public static async Task PollAnswerHandlingCase(PollAnswer answer, ITelegramBotClient botClient)
         {
             long userId = answer.User.Id;
+			UserFlags userFlags = await DataBaseControl.GetEntity<UserFlags>(userId);
 
-            CaseStagePoll currentStage = (CaseStagePoll)StagesControl.
-                Stages[await DataBaseControl.StatsStateTableCommand.
-                GetPoint(StagesControl.Stages.CourseName, userId)];
+			CaseStagePoll currentStage = (CaseStagePoll)CoursesControl.Courses[userFlags.CurrentCourse]
+                [await DataBaseControl.StatsStateTableCommand.
+                GetPoint(userFlags.CurrentCourse, userId)];
             //Так как мы получаем PollAnswer, то очевидно, что текущий этап - опросник
 
             StagesControl.SetStageForMove(currentStage, answer.OptionIds);
@@ -46,26 +50,26 @@ namespace Simulator.Case
 
             double rate = StagesControl.CalculateRatePoll(currentStage, answer.OptionIds);
 
-            if (StagesControl.Stages.DeletePollAfterAnswer)
+            if (CoursesControl.Courses[userFlags.CurrentCourse].DeletePollAfterAnswer)
             {
-                int messageId = await DataBaseControl.UserFlagsTableCommand.GetActivePollMessageId(userId);
-                await botClient.DeleteMessageAsync(userId, messageId);
+                await botClient.DeleteMessageAsync(userId, userFlags.ActivePollMessageId);
             }
 
-            await SaveResultsToStats(userId, currentStage, rate, answer.OptionIds);
+            await SaveResultsToStats(userFlags, currentStage, rate, answer.OptionIds);
 
-            var nextStage = StagesControl.Stages[currentStage.NextStage]; //next уже установлено
+            var nextStage = CoursesControl.Courses[userFlags.CurrentCourse][currentStage.NextStage]; //next уже установлено
             //await botClient.message
-            await SetAndMovePoint(userId, nextStage, botClient);
+            await SetAndMovePoint(userFlags, nextStage, botClient);
         }
 
         public static async Task MessageHandlingCase(Message message, ITelegramBotClient botClient)
         {
             long userId = message.Chat.Id;
+			UserFlags userFlags = await DataBaseControl.GetEntity<UserFlags>(userId);
 
-            if (StagesControl.Stages[
+			if (CoursesControl.Courses[userFlags.CurrentCourse][
                 await DataBaseControl.StatsStateTableCommand.
-                GetPoint(StagesControl.Stages.CourseName, userId)
+                GetPoint(userFlags.CurrentCourse, userId)
                 ]
                 is CaseStageMessage currentStage)
             {
@@ -114,10 +118,10 @@ namespace Simulator.Case
 
                 // добавляем птс
 
-                await SaveResultsToStats(userId, currentStage, currentStage.Rate, null);
+                await SaveResultsToStats(userFlags, currentStage, currentStage.Rate, null);
 
-                var nextStage = StagesControl.Stages[currentStage.NextStage]; //next уже установлено
-                await SetAndMovePoint(userId, nextStage, botClient);
+                var nextStage = CoursesControl.Courses[userFlags.CurrentCourse][currentStage.NextStage]; //next уже установлено
+                await SetAndMovePoint(userFlags, nextStage, botClient);
             }
             else
             {
@@ -126,10 +130,10 @@ namespace Simulator.Case
         }
 
         private static async Task SaveResultsToStats(
-            long userId, CaseStage currentStage, double rate, int[] optionsIds
+            UserFlags userFlags, CaseStage currentStage, double rate, int[] optionsIds
             )
         {
-            string courseName = StagesControl.Stages.CourseName;
+            string courseName = userFlags.CurrentCourse;
 
             // Мы должны сохранить (должны знать номер попытки, модуля и вопроса)
             // Ответы
@@ -146,30 +150,33 @@ namespace Simulator.Case
             stats.OptionsIds = optionsIds;
 
             double time = (DateTime.Now - 
-                await DataBaseControl.StatsStateTableCommand.GetStartTime(courseName, userId)).TotalMinutes;
+                await DataBaseControl.StatsStateTableCommand.GetStartTime(courseName, userFlags.UserID)).TotalMinutes;
 
             stats.Time = time;
             
-            int attempt = await DataBaseControl.StatsBaseTableCommand.GetAttemptsUsed(courseName, userId) + 1;
+            int attempt = await DataBaseControl.StatsBaseTableCommand.GetAttemptsUsed(courseName, userFlags.UserID) + 1;
 
             stats.AttemptNumber = attempt;
 
-            await StatsSetter.SetResults(courseName, userId, stats);
+            await StatsSetter.SetResults(courseName, userFlags.UserID, stats);
         }
 
         private static async Task GoOut(long userId, ITelegramBotClient botClient)
         {
-            await DataBaseControl.UserFlagsTableCommand.SetOnCourse(userId, false);
+            UserFlags userFlags = await DataBaseControl.GetEntity<UserFlags>(userId);
+            userFlags.CurrentCourse = null;
+            await DataBaseControl.UpdateEntity(userId, userFlags);
+
             var outCommand = new GoToMainMenuCommand();
             await outCommand.Execute(userId, botClient);
         }
-        private async static Task SetAndMovePoint(long userId, CaseStage nextStage, ITelegramBotClient botClient)
+        private async static Task SetAndMovePoint(UserFlags userFlags, CaseStage nextStage, ITelegramBotClient botClient)
         {
             await DataBaseControl.StatsStateTableCommand.
-                SetPoint(StagesControl.Stages.CourseName, userId, nextStage.Number);
+                SetPoint(userFlags.CurrentCourse, userFlags.UserID, nextStage.Number);
             //Ставим в базе для пользователя следующий его этап
 
-            await StagesControl.Move(userId, nextStage, botClient);
+            await StagesControl.Move(userFlags.UserID, nextStage, botClient);
             //Выдаём пользователю следующий этап
         }
     }

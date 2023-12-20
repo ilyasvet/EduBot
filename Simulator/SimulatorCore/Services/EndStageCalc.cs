@@ -1,7 +1,5 @@
 ﻿using Simulator.BotControl;
 using Simulator.Models;
-using System;
-using System.Threading.Tasks;
 
 namespace Simulator.Services
 {
