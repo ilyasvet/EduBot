@@ -6,6 +6,7 @@ using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Spreadsheet;
 using DocumentFormat.OpenXml.Packaging;
 using SimulatorCore.Models.DbModels;
+using DocumentFormat.OpenXml.Office2016.Excel;
 
 namespace Simulator.Services
 {
@@ -16,77 +17,103 @@ namespace Simulator.Services
             string path = AppDomain.CurrentDomain.BaseDirectory + 
                 ControlSystem.caseDirectory + $"Statistics-{courseName}.xlsx";
 
-            Excel.Application excelApp = new();
-            Excel.Workbooks workbooks = null;
-            Excel.Workbook workbook = null;
-            try
+            using (SpreadsheetDocument document = SpreadsheetDocument.Create(path, SpreadsheetDocumentType.Workbook))
             {
-                workbooks = excelApp.Workbooks;
-                workbook = workbooks.Add();
+                WorkbookPart wp = document.AddWorkbookPart();
+                wp.Workbook = new Workbook();
 
-                await AddSheet(workbook, "BaseStats", $"Stats{courseName}Base", groupNumber);
-                await AddSheet(workbook, "RateStats", $"Stats{courseName}Rate", groupNumber);
-                await AddSheet(workbook, "TimeStats", $"Stats{courseName}Time", groupNumber);
-                await AddSheet(workbook, "AnswersStats", $"Stats{courseName}Answers", groupNumber);
+                WorksheetPart ws = wp.AddNewPart<WorksheetPart>();
+				Sheets sheets = wp.Workbook.AppendChild(new Sheets());
+				
 
-                Worksheet first = workbook.ActiveSheet;
-                first.Delete();
+				await AddSheet(wp, sheets, "BaseStats", $"Stats{courseName}Base", groupNumber, 1);
+                await AddSheet(wp, sheets, "RateStats", $"Stats{courseName}Rate", groupNumber, 2);
+                await AddSheet(wp, sheets, "TimeStats", $"Stats{courseName}Time", groupNumber, 3);
+                await AddSheet(wp, sheets, "AnswersStats", $"Stats{courseName}Answers", groupNumber, 4);
 
-                workbook.SaveAs(path);
+                wp.Workbook.Save();
                 return path;
-            }
-            finally
-            {
-                //освобождаем неуправляемые ресурсы
-                workbooks.Close();
-                excelApp.Quit();
-                ControlSystem.KillProcess("EXCEL"); //и завершаем процесс, чтобы он не висел
             }
         }
 
         private static async Task AddSheet(
-            Workbook workbook, string sheetName, string tableName, string groupNumber)
+            WorkbookPart wp, Sheets sheets, string sheetName, string tableName, string groupNumber, uint sheetId)
         {
-            Worksheet worksheet = workbook.ActiveSheet;
-            worksheet.Cells.WrapText = true;
-            worksheet.Columns.ColumnWidth = 20;
-            worksheet.Name = sheetName;
-            workbook.Sheets.Add(worksheet);
+			WorksheetPart ws = wp.AddNewPart<WorksheetPart>();
+			Worksheet workSheet = new Worksheet();
+			SheetData sheetData = new SheetData();
+			
+            
+			//worksheet.Cells.WrapText = true;
+   //         worksheet.Columns.ColumnWidth = 20;
 
             List<string> header = await DataBaseControl.StatsBuilderCommand.GetColumnsName(tableName);
-            int lineNumber = 1;
-            for (int i = 1; i <= header.Count; i++)
+            Row headerRow = new Row();
+            for (int i = 0; i < header.Count; i++)
             {
-                worksheet.Cells[lineNumber, i] = header[i-1];
+                headerRow.AppendChild(CreateCell(header[i]));
             }
-            worksheet.Range[
-                worksheet.Cells[1, 1],
-                worksheet.Cells[1, header.Count]
-                ].Interior.Color = System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.LightGreen);
-            lineNumber++;
+            sheetData.AppendChild(headerRow);
+
+            //worksheet.Range[
+            //    worksheet.Cells[1, 1],
+            //    worksheet.Cells[1, header.Count]
+            //    ].Interior.Color = System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.LightGreen);
 
             List<List<object>> statsData = await DataBaseControl.StatsBuilderCommand.GetAllTable(tableName, groupNumber);
             Dictionary<long, string> usersData = await DataBaseControl.StatsBuilderCommand.GetUsers(groupNumber);
 
-            int columnNumber;
-
             foreach(var userLine in statsData)
             {
-                columnNumber = 1;
-                // Заменяем userID на его имя и фамилию
-                userLine[0] = usersData[(int)userLine[0]];
+				Row row = new Row();
+				// Заменяем userID на его имя и фамилию
+				userLine[0] = usersData[(int)userLine[0]];
                 foreach(var userProperty in userLine)
                 {
-                    worksheet.Cells[lineNumber, columnNumber] = userProperty.ToString();
-                    columnNumber++;
+					row.AppendChild(CreateCell(userProperty));
                 }
-                lineNumber++;
             }
-            worksheet.Range[
-                worksheet.Cells[2, 1],
-                worksheet.Cells[statsData.Count + 1, 1]
-                ].Interior.Color = System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.LightYellow);
-        }
+            //worksheet.Range[
+            //    worksheet.Cells[2, 1],
+            //    worksheet.Cells[statsData.Count + 1, 1]
+            //    ].Interior.Color = System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.LightYellow);
+
+			Sheet sheet = new Sheet() { Id = wp.GetIdOfPart(ws), SheetId = sheetId, Name = sheetName };
+			workSheet.AppendChild(sheetData);
+			ws.Worksheet = workSheet;
+			sheets.Append(sheet);
+		}
+
+        private static Cell CreateCell(object data)
+        {
+            Cell cell = new Cell();
+            if(data is int ivalue)
+            {
+                cell.DataType = CellValues.Number;
+                cell.CellValue = new CellValue(ivalue);
+            }
+            else if (data is double dvalue)
+			{
+				cell.DataType = CellValues.Number;
+				cell.CellValue = new CellValue(dvalue);
+			}
+			else if (data is long lvalue)
+			{
+				cell.DataType = CellValues.Number;
+				cell.CellValue = new CellValue((int)lvalue);
+			}
+			else if (data is string svalue)
+			{
+				cell.DataType = CellValues.String;
+				cell.CellValue = new CellValue(svalue);
+			}
+			else if (data is DateTime dtvalue)
+			{
+				cell.DataType = CellValues.Date;
+				cell.CellValue = new CellValue(dtvalue);
+			}
+            return cell;
+		}
 
         public static async Task<string> CreateCaseAsync(string path)
 		{

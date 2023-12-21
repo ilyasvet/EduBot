@@ -15,12 +15,12 @@ namespace Simulator.BotControl
         }
 
 
-        public static async Task<T> GetEntity<T>(object primaryKey) where T : new()
+        public static async Task<T> GetEntity<T>(object primaryKey) where T : class, new()
         {
             SelectCommandHandler<T> selectCommand = new();
             return await selectCommand.GetEntity(primaryKey);
         }
-        public static async Task<IEnumerable<T>> GetCollection<T>() where T : new()
+        public static async Task<IEnumerable<T>> GetCollection<T>() where T : class, new()
         {
             SelectCommandHandler<T> selectCommand = new();
             return await selectCommand.GetAllEntitiesFromTable();
