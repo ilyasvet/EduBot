@@ -6,7 +6,6 @@ using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Spreadsheet;
 using DocumentFormat.OpenXml.Packaging;
 using SimulatorCore.Models.DbModels;
-using DocumentFormat.OpenXml.Office2016.Excel;
 
 namespace Simulator.Services
 {
@@ -24,7 +23,19 @@ namespace Simulator.Services
 
                 WorksheetPart ws = wp.AddNewPart<WorksheetPart>();
 				Sheets sheets = wp.Workbook.AppendChild(new Sheets());
-				
+                
+				WorkbookStylesPart stylesheet = document.WorkbookPart.AddNewPart<WorkbookStylesPart>();
+				Stylesheet workbookstylesheet = new Stylesheet();
+
+                CellFormat cellformat = new CellFormat()
+                {
+                    Alignment = new Alignment() { WrapText = true},
+                    
+                };
+                workbookstylesheet.Append(cellformat);
+
+				stylesheet.Stylesheet = workbookstylesheet;
+				stylesheet.Stylesheet.Save();
 
 				await AddSheet(wp, sheets, "BaseStats", $"Stats{courseName}Base", groupNumber, 1);
                 await AddSheet(wp, sheets, "RateStats", $"Stats{courseName}Rate", groupNumber, 2);
@@ -55,11 +66,6 @@ namespace Simulator.Services
             }
             sheetData.AppendChild(headerRow);
 
-            //worksheet.Range[
-            //    worksheet.Cells[1, 1],
-            //    worksheet.Cells[1, header.Count]
-            //    ].Interior.Color = System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.LightGreen);
-
             List<List<object>> statsData = await DataBaseControl.StatsBuilderCommand.GetAllTable(tableName, groupNumber);
             Dictionary<long, string> usersData = await DataBaseControl.StatsBuilderCommand.GetUsers(groupNumber);
 
@@ -72,16 +78,19 @@ namespace Simulator.Services
                 {
 					row.AppendChild(CreateCell(userProperty));
                 }
+                sheetData.AppendChild(row);
             }
-            //worksheet.Range[
-            //    worksheet.Cells[2, 1],
-            //    worksheet.Cells[statsData.Count + 1, 1]
-            //    ].Interior.Color = System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.LightYellow);
 
 			Sheet sheet = new Sheet() { Id = wp.GetIdOfPart(ws), SheetId = sheetId, Name = sheetName };
 			workSheet.AppendChild(sheetData);
 			ws.Worksheet = workSheet;
 			sheets.Append(sheet);
+
+            foreach (Column column in sheetData.GetFirstChild<Columns>())
+            {
+                column.CustomWidth = true;
+                column.Width = 20;
+            }
 		}
 
         private static Cell CreateCell(object data)
@@ -112,6 +121,7 @@ namespace Simulator.Services
 				cell.DataType = CellValues.Date;
 				cell.CellValue = new CellValue(dtvalue);
 			}
+            cell.StyleIndex = 0;
             return cell;
 		}
 
