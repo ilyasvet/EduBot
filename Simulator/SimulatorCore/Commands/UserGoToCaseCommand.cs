@@ -1,7 +1,7 @@
 ﻿using Simulator.Case;
 using Simulator.Models;
 using Telegram.Bot;
-using Simulator.Properties;
+using SimulatorCore.Properties;
 using Simulator.BotControl;
 using SimulatorCore.Case;
 using SimulatorCore.Models.DbModels;

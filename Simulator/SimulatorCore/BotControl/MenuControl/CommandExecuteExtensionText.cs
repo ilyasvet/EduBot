@@ -1,5 +1,5 @@
 ﻿using Simulator.BotControl.State;
-using Simulator.Properties;
+using SimulatorCore.Properties;
 using Simulator.Services;
 using SimulatorCore.Models.DbModels;
 using Telegram.Bot;

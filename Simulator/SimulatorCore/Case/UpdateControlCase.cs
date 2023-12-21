@@ -2,7 +2,7 @@
 using Simulator.Models;
 using Telegram.Bot;
 using Telegram.Bot.Types;
-using Simulator.Properties;
+using SimulatorCore.Properties;
 using Simulator.Services;
 using Simulator.BotControl;
 using SimulatorCore.DbLibrary.StatsTableCommand;

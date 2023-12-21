@@ -1,6 +1,6 @@
 ﻿using Simulator.BotControl;
 using Simulator.Models;
-using Simulator.Properties;
+using SimulatorCore.Properties;
 using Simulator.Services;
 using SimulatorCore.Case;
 using SimulatorCore.Models.DbModels;

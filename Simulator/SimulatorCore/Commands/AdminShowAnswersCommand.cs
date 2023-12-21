@@ -1,5 +1,5 @@
 ﻿using Simulator.BotControl;
-using Simulator.Properties;
+using SimulatorCore.Properties;
 using Simulator.Services;
 using Telegram.Bot;
 using Telegram.Bot.Types;

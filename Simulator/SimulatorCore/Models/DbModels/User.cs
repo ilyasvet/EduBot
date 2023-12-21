@@ -1,5 +1,5 @@
 ﻿using DbLibrary.Attributes;
-using Simulator.Properties;
+using SimulatorCore.Properties;
 using Simulator.Services;
 using System.ComponentModel.DataAnnotations.Schema;
 

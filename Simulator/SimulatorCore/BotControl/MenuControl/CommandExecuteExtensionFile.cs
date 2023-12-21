@@ -1,7 +1,7 @@
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Simulator.BotControl.State;
-using Simulator.Properties;
+using SimulatorCore.Properties;
 using Simulator.Services;
 using System.IO.Compression;
 using SimulatorCore.Models.DbModels;
