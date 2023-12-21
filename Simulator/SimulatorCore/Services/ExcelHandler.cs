@@ -2,6 +2,9 @@
 using Simulator.Models;
 using Telegram.Bot.Types.Enums;
 using Simulator.BotControl;
+using DocumentFormat.OpenXml;
+using DocumentFormat.OpenXml.Spreadsheet;
+using DocumentFormat.OpenXml.Packaging;
 
 namespace Simulator.Services
 {
@@ -85,91 +88,81 @@ namespace Simulator.Services
         }
 
         public static async Task<string> CreateCaseAsync(string path)
-        {
-            Excel.Application excelApp = new();
-            Excel.Workbooks workbooks = null;
-            Excel.Workbook workbook = null;
-            try
-            {
-                workbooks = excelApp.Workbooks; //это хранилище наших файлов, с которыми мы работаем
-                workbook = workbooks.Open(AppDomain.CurrentDomain.BaseDirectory + "\\" + path); //открываем файл excel
-                Excel.Worksheet worksheet = workbook.Worksheets[1]; //берём 1 страницу (счёт с 1)
+		{
+            path = AppDomain.CurrentDomain.BaseDirectory + "\\" + path;
+			using (SpreadsheetDocument document = SpreadsheetDocument.Open(path, false))
+			{
+                WorkbookPart? workbookPart = document.WorkbookPart;
+                Sheets? sheets = workbookPart?.Workbook.GetFirstChild<Sheets>();
+                Sheet? mainSheet = sheets?.GetFirstChild<Sheet>();
+                SheetData? sheetData = mainSheet?.GetFirstChild<SheetData>();
 
-                // Получаем диапазон используемых на странице ячеек
-                Excel.Range usedRange = worksheet.UsedRange;
-                // Получаем строки в используемом диапазоне
-                Excel.Range urRows = usedRange.Rows;
-                // Получаем столбцы в используемом диапазоне
-                Excel.Range urColums = usedRange.Columns;
+				string caseFileName = ControlSystem.caseInfoFileName;
 
-                string caseFileName = ControlSystem.caseInfoFileName;
+				using (Stream fs = new FileStream(caseFileName, FileMode.Create))
+				{
+					using (StreamWriter sw = new(fs))
+					{
+						var stageList = new StageList();
+						await MakeCaseHeader(sheetData, stageList);
+						await AddCaseStageIterative(sheetData, stageList);
+						await sw.WriteAsync(JObject.FromObject(stageList).ToString());
+					}
+				}
+				return caseFileName;
+			}
+		}
 
-                using (Stream fs = new FileStream(caseFileName, FileMode.Create))
-                {
-                    using (StreamWriter sw = new(fs))
-                    {
-                        var stageList = new StageList();
-                        await MakeCaseHeader(worksheet, stageList);
-                        await AddCaseStageIterative(worksheet, urRows.Count, stageList);
-                        await sw.WriteAsync(JObject.FromObject(stageList).ToString());
-                    }
-                }
-                return caseFileName;
-
-            }
-            finally
-            {
-                //освобождаем неуправляемые ресурсы
-                workbooks.Close();
-                excelApp.Quit();
-                ControlSystem.KillProcess("EXCEL"); //и завершаем процесс, чтобы он не висел
-            }
-        }
-
-        private static async Task MakeCaseHeader(Worksheet worksheet, StageList stageList)
+        private static async Task MakeCaseHeader(SheetData? sheetData, StageList stageList)
         {
             await Task.Run(() =>
             {
                 int lineNumber = 1;
                 int columnNumber = 2;
 
-                stageList.CourseName = worksheet.Cells[lineNumber, columnNumber].Value.ToString();
+                var sheetDataTable = sheetData?.ToList();
+
+                stageList.CourseName = sheetDataTable[lineNumber].ToList()[columnNumber].InnerText;
                 lineNumber++;
 
-                string reCreateStats = worksheet.Cells[lineNumber, columnNumber].Value?.ToString() ?? string.Empty;
+                string reCreateStats = sheetDataTable[lineNumber].ToList()[columnNumber].InnerText ?? string.Empty;
                 stageList.ReCreateStats = reCreateStats.ToLower() == "true";
                 lineNumber++;
 
-                stageList.AttemptCount = int.Parse(worksheet.Cells[lineNumber, columnNumber].Value?.ToString());
+                stageList.AttemptCount = int.Parse(sheetDataTable[lineNumber].ToList()[columnNumber].InnerText);
                 lineNumber++;
 
-                string extraAttempt = worksheet.Cells[lineNumber, columnNumber].Value?.ToString() ?? string.Empty;
+                string extraAttempt = sheetDataTable[lineNumber].ToList()[columnNumber].InnerText ?? string.Empty;
                 stageList.ExtraAttempt = extraAttempt.ToLower() == "true";
                 lineNumber++;
 
-                string deletePollAfterAnswer = worksheet.Cells[lineNumber, columnNumber].Value?.ToString() ?? string.Empty;
+                string deletePollAfterAnswer = sheetDataTable[lineNumber].ToList()[columnNumber].InnerText ?? string.Empty;
                 stageList.DeletePollAfterAnswer = deletePollAfterAnswer.ToLower() == "true";
                 lineNumber++;
             });
         }
 
-        private static async Task AddCaseStageIterative(Worksheet worksheet, int count, StageList stageList)
+        private static async Task AddCaseStageIterative(SheetData? sheetData, StageList stageList)
         {
             await Task.Run(() =>
             {
-                int skipLinesCount = StageList.HEADER_PROPERTIES_COUNT + 1;
                 // Общие свойства - свойства, которые есть у всех вопросов
                 // Специализированные свойства - свойства, пренадлежащие к отдельному типу вопроса
-                for (int lineNumber = skipLinesCount + 1; lineNumber <= count; lineNumber++)
+                var sheetDataCaseOnly = sheetData.ToList().Skip(StageList.HEADER_PROPERTIES_COUNT+1);
+
+				foreach (Row row in sheetDataCaseOnly)
                 {
-                    int columnNumber = 1; // Номер столбца
+                    var rowValues = row.ToList();
+                    int columnNumber = 0; // Номер столбца
                     try
                     {   
                         string stageType; // Тип вопроса
 
                         // Находится в 1 столбце
-                        stageType = worksheet.Cells[lineNumber, columnNumber].Value.ToLower();
-                        columnNumber = 7; // Сначала заполняются специализированные свойства, они начинаются с 8 столбца
+                        stageType = row.ToList()[columnNumber].InnerText.ToLower();
+                        
+                        // Сначала заполняются специализированные свойства, они начинаются с 8 столбца (7 индекс)
+                        columnNumber = 7;
 
                         CaseStage newStage = null;
                         // Ссылка на новый объект вопроса
@@ -182,38 +175,38 @@ namespace Simulator.Services
                                 stageList.StagesNone.Add(newStage as CaseStageNone);
                                 break;
                             case "poll":
-                                newStage = CreatePollStage(worksheet, lineNumber, ref columnNumber);
+                                newStage = CreatePollStage(rowValues, ref columnNumber);
                                 stageList.StagesPoll.Add(newStage as CaseStagePoll);
                                 break;
                             case "end":
-                                newStage = CreateEndStage(worksheet, lineNumber, ref columnNumber);
+                                newStage = CreateEndStage(rowValues, ref columnNumber);
                                 stageList.StagesEnd.Add(newStage as CaseStageEndModule);
                                 break;
                             case "message":
-                                newStage = CreateMessageStage(worksheet, lineNumber, ref columnNumber);
+                                newStage = CreateMessageStage(rowValues, ref columnNumber);
                                 stageList.StagesMessage.Add(newStage as CaseStageMessage);
                                 break;
                             default:
-                                columnNumber = 1;
+                                columnNumber = 0;
                                 throw new ArgumentException($"No Such parameter");
                         }
 
-                        columnNumber = 2; // Теперь заполняем общие свойства
+                        columnNumber = 1; // Теперь заполняем общие свойства
 
                         // Номер вопроса
-                        newStage.Number = int.Parse(worksheet.Cells[lineNumber, columnNumber].Value?.ToString());
+                        newStage.Number = int.Parse(rowValues[columnNumber].InnerText);
                         columnNumber++;
 
                         // Номер модуля
-                        newStage.ModuleNumber = int.Parse(worksheet.Cells[lineNumber, columnNumber].Value?.ToString());
+                        newStage.ModuleNumber = int.Parse(rowValues[columnNumber].InnerText);
                         columnNumber++;
 
                         // Номер следующего вопроса
-                        newStage.NextStage = int.Parse(worksheet.Cells[lineNumber, columnNumber].Value?.ToString());
+                        newStage.NextStage = int.Parse(rowValues[columnNumber].InnerText);
                         columnNumber++;
 
                         // Основной тест вопроса
-                        newStage.TextBefore = worksheet.Cells[lineNumber, columnNumber].Value?.ToString();
+                        newStage.TextBefore = rowValues[columnNumber].InnerText;
                         columnNumber++;
                         if(stageType == "poll" && newStage.TextBefore.Length >= 300)
                         {
@@ -222,7 +215,13 @@ namespace Simulator.Services
 
 
                         // Если дополнительная информация имеется, то последовательность имён файлов
-                        List<string> additionalFiles = new List<string>(worksheet.Cells[lineNumber, columnNumber].Value?.ToString().Split(';') ?? 0);
+                        List<string> additionalFiles = new List<string>();
+                        string additionalFilesString = rowValues[columnNumber].InnerText;
+
+						if (!string.IsNullOrEmpty(additionalFilesString))
+                        {
+                            additionalFiles = additionalFilesString.Split(';').ToList();
+						}
                         foreach (string fileName in additionalFiles)
                         {
                             newStage.AddAdditionalFile(fileName);
@@ -230,36 +229,36 @@ namespace Simulator.Services
                     }
                     catch (Exception ex)
                     {
-                        throw new Exception($"{ex.Message}\nLine {lineNumber} column {columnNumber}");
+                        throw new Exception($"{ex.Message}\nLine {row.RowIndex} column {columnNumber+1}");
                     }
                 }
             });
         }
 
-        private static CaseStageMessage CreateMessageStage(Worksheet worksheet, int lineNumber, ref int j)
+        private static CaseStageMessage CreateMessageStage(List<OpenXmlElement> rowValues, ref int j)
         {
             CaseStageMessage newStage = new();
 
             // Тип ответа (видео, аудио). Обязательное поле
-            newStage.MessageTypeAnswer = Enum.Parse(typeof(MessageType), worksheet.Cells[lineNumber, j].Value?.ToString());
+            newStage.MessageTypeAnswer = (MessageType)Enum.Parse(typeof(MessageType), rowValues[j].InnerText);
             j++;
             
             // Количество баллов за ответ. Обязательное поле
-            newStage.Rate = double.Parse(worksheet.Cells[lineNumber, j].Value?.ToString());
+            newStage.Rate = double.Parse(rowValues[j].InnerText);
             return newStage;
         }
 
-        private static CaseStageEndModule CreateEndStage(Worksheet worksheet, int i, ref int j)
+        private static CaseStageEndModule CreateEndStage(List<OpenXmlElement> rowValues, ref int j)
         {
             CaseStageEndModule newStage = new();
 
             // Является ли концом курса. Обязательное поле
-            string isEndOfCase = worksheet.Cells[i, j].Value?.ToString() ?? string.Empty;
+            string isEndOfCase = rowValues[j].InnerText ?? string.Empty;
             newStage.IsEndOfCase = isEndOfCase.ToLower() == "true";
             j++;
 
             // Градации по рейтингу. Обязательное поле
-            List<string> stringsRate = new List<string>(worksheet.Cells[i, j].Value.ToString().
+            List<string> stringsRate = new List<string>(rowValues[j].InnerText.
                 Split(';'));
 
             foreach (string s in stringsRate)
@@ -270,7 +269,7 @@ namespace Simulator.Services
             j++;
 
             // Количество текстов. Обязательное поле
-            int countTexts = int.Parse(worksheet.Cells[i, j].Value?.ToString());
+            int countTexts = int.Parse(rowValues[j].InnerText);
             j++;
 
             if (countTexts != stringsRate.Count + 3)
@@ -282,7 +281,7 @@ namespace Simulator.Services
             newStage.Texts = new List<string>();
             for (int k = 0; k < countTexts; k++)
             {
-                string text = worksheet.Cells[i, j].Value.ToString();
+                string text = rowValues[j].InnerText;
                 newStage.Texts.Add(text);
                 j++;
             } 
@@ -290,17 +289,17 @@ namespace Simulator.Services
             return newStage;
         }
 
-        private static CaseStagePoll CreatePollStage(Worksheet worksheet, int i, ref int j)
+        private static CaseStagePoll CreatePollStage(List<OpenXmlElement> rowValues, ref int j)
         {
             CaseStagePoll newStage = new();
             
             // Налицие условного перехода между вопросами - 8. По умолчанию false
-            string conditionalMove = worksheet.Cells[i, j].Value?.ToString() ?? string.Empty;
+            string conditionalMove = rowValues[j].InnerText ?? string.Empty;
             newStage.ConditionalMove = conditionalMove.ToLower() == "true";
             j++;
 
             // Множественный ответ или нет - 9. По умолчанию false
-            string manyAnswers = worksheet.Cells[i, j].Value?.ToString() ?? string.Empty;
+            string manyAnswers = rowValues[j].InnerText ?? string.Empty;
             newStage.ManyAnswers = manyAnswers.ToLower() == "true";
             j++;
 
@@ -308,7 +307,7 @@ namespace Simulator.Services
                 throw new ArgumentException("Many answers with conditional move cannot be together");
 
             // Смотрим неотмеченные ответы или нет - 10. По умолчанию false
-            string watchNonAnswers = worksheet.Cells[i, j].Value?.ToString() ?? string.Empty;
+            string watchNonAnswers = rowValues[j].InnerText ?? string.Empty;
             newStage.WatchNonAnswer = watchNonAnswers.ToLower() == "true";
             j++;
 
@@ -323,12 +322,12 @@ namespace Simulator.Services
             {
                 try
                 {
-                    newStage.Limit = int.Parse(worksheet.Cells[i, j].Value?.ToString());
+                    newStage.Limit = int.Parse(rowValues[j].InnerText);
                 } catch {}
                 j++;
                 try
                 {
-                    newStage.Fine = double.Parse(worksheet.Cells[i, j].Value?.ToString());
+                    newStage.Fine = double.Parse(rowValues[j].InnerText);
                 } catch {}
                 j++;
             }
@@ -338,14 +337,14 @@ namespace Simulator.Services
             }
 
             // Количество вариантов ответов - 13. Обязательное поле
-            int countOptions = int.Parse(worksheet.Cells[i, j].Value?.ToString());
+            int countOptions = int.Parse(rowValues[j].InnerText);
             j++;
 
             // Ячейки: вариант ответа;баллы;баллы при отсутствии|адрес перехода
             newStage.Options = new List<string>();
             for(int k = 0; k < countOptions; k++)
             {
-                string optionString = worksheet.Cells[i, j].Value.ToString();
+                string optionString = rowValues[j].InnerText;
                 string[] optionProperties = optionString.Split(';');
                 
                 if (optionProperties[0].Length > 100)
