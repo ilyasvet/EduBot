@@ -1,6 +1,6 @@
 ﻿using DbLibrary.Attributes;
 using Simulator.BotControl.State;
-using Simulator.Properties;
+using SimulatorCore.Properties;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SimulatorCore.Models.DbModels
@@ -20,9 +20,9 @@ namespace SimulatorCore.Models.DbModels
                 _userID = value;
             }
         }
-        public int DialogState { get; set; }
-        public int UserType { get; set; }
-        public bool LogedIn { get; set; }
+        public int DialogState { get; set; } = 0;
+        public int UserType { get; set; } = 2;
+        public bool LogedIn { get; set; } = false;
 
         public UserType GetUserType()
         {
@@ -41,6 +41,5 @@ namespace SimulatorCore.Models.DbModels
         {
             DialogState = (int)newState;
         }
-
     }
 }

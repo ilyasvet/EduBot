@@ -5,6 +5,7 @@ using Simulator.BotControl;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Spreadsheet;
 using DocumentFormat.OpenXml.Packaging;
+using SimulatorCore.Models.DbModels;
 
 namespace Simulator.Services
 {
@@ -375,80 +376,76 @@ namespace Simulator.Services
 
         public static async Task<int> AddUsersFromExcel(string path, string groupNumber)
         {
-            Excel.Application excelApp = new Excel.Application();
-            Excel.Workbooks workbooks = null;
-            Excel.Workbook workbook = null;
             int count = 0;
-            try
-            {
-                workbooks = excelApp.Workbooks; //это хранилище наших файлов, с которыми мы работаем
-                workbook = workbooks.Open(AppDomain.CurrentDomain.BaseDirectory + "\\" + path); //открываем файл excel
-                Excel.Worksheet worksheet = workbook.Worksheets[1]; //берём 1 страницу (счёт с 1)
+			path = AppDomain.CurrentDomain.BaseDirectory + "\\" + path;
+			using (SpreadsheetDocument document = SpreadsheetDocument.Open(path, false))
+			{
+				WorkbookPart? workbookPart = document.WorkbookPart;
+				Sheets? sheets = workbookPart?.Workbook.GetFirstChild<Sheets>();
+				Sheet? mainSheet = sheets?.GetFirstChild<Sheet>();
+				SheetData? sheetData = mainSheet?.GetFirstChild<SheetData>();
 
-                // Получаем диапазон используемых на странице ячеек
-                Excel.Range usedRange = worksheet.UsedRange;
-                // Получаем строки в используемом диапазоне
-                Excel.Range urRows = usedRange.Rows;
-                // Получаем столбцы в используемом диапазоне
-                Excel.Range urColums = usedRange.Columns;
-
-                if (urColums.Count != 3) throw new ArgumentException("В таблице должно быть только 3 столбца!");
-
-                count = await AddUsersIterative(worksheet, urRows.Count, groupNumber); //построчно добавляем пользователей
-            }
-            finally
-            {
-                workbook.Close(); //освобождаем неуправляемые ресурсы
-                workbooks.Close();
-                excelApp.Quit();
-                ControlSystem.KillProcess("EXCEL"); //и завершаем процесс, чтобы он не висел
+                count = await AddUsersIterative(sheetData, groupNumber); //построчно добавляем пользователей
             }
             return count;
         }
 
-        private static async Task<int> AddUsersIterative(Worksheet worksheet, int rowsCount, string groupNumber)
+        private static async Task<int> AddUsersIterative(SheetData? sheetData, string groupNumber)
         {
             return await Task.Run(async () =>
             {
                 int count = 0;
-                for (int i = 1; i <= rowsCount; i++)
+
+                foreach(Row row in sheetData)
                 {
+                    var rowValues = row.ToList();
                     long userTelegramId;
                     try
                     {
-                        userTelegramId = (long)worksheet.Cells[i, 3].Value; //берём из 3 столбца Id
-                    } // сеlls это матрица всех ячеек ячейки
+                        userTelegramId = long.Parse(rowValues[2].InnerText);
+                    }
                     catch
                     {
-                        throw new ArgumentException("TelegramId должен быть целым числом. Строка " + i);
+                        throw new ArgumentException("TelegramId должен быть целым числом. Строка " + row.RowIndex);
                     }
-                    if (await DataBaseControl.UserTableCommand.HasUser(userTelegramId))
+                    if (await DataBaseControl.GetEntity<User>(userTelegramId) != null)
                     {
                         continue; //Если пользователь уже есть, повторно не добавляем его
                     }
-                    string userName = worksheet.Cells[i, 1].Value; //Берём имя из 1 столбца
-                    string userSurname = worksheet.Cells[i, 2].Value; //Фамилию из 2 столбца
+                    string userName = rowValues[0].InnerText; //Берём имя из 1 столбца
+                    string userSurname = rowValues[1].InnerText; //Фамилию из 2 столбца
 
                     User user; //Создаём пользователя. И свойства проверяют входные данные
                     try
                     {
-                        user = new User(userTelegramId, userName, userSurname);
+                        user = new User()
+                        {
+                            UserID = userTelegramId,
+                            Name = userName,
+                            Surname = userSurname
+                        };
                     }
                     catch (Exception ex) //При неправильных данных выдаётся исключение с номером строки с ошибкой
                     {
-                        throw new ArgumentException(ex.Message + " Строка " + i);
+                        throw new ArgumentException(ex.Message + " Строка " + row.RowIndex);
                     }
                     user.GroupNumber = groupNumber; //Номер группы мы уже проверяли ранее
 
+                    UserFlags userFlags = new UserFlags() { UserID = userTelegramId };
+                    UserState userState = new UserState() { UserID = userTelegramId };
+
                     try
                     {
-                        await DataBaseControl.UserTableCommand.AddUser(user, UserType.User);
-                        await DataBaseControl.UserTableCommand.SetGroup(userTelegramId, user.GroupNumber);
-                    }
+                        await DataBaseControl.AddEntity(user);
+						await DataBaseControl.AddEntity(userFlags);
+						await DataBaseControl.AddEntity(userState);
+					}
                     catch
                     {
-                        await DataBaseControl.UserTableCommand.DeleteUser(userTelegramId);
-                        throw;
+						await DataBaseControl.DeleteEntity<User>(user.UserID);
+						await DataBaseControl.DeleteEntity<UserFlags>(userFlags.UserID);
+						await DataBaseControl.DeleteEntity<UserState>(userState.UserID);
+						throw;
                     }
 
                     count++; //Увеличили счётчик добавленных пользователей

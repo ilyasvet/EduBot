@@ -22,7 +22,7 @@ namespace Simulator.Services
             {
                 DbGroup group = new DbGroup() { GroupNumber = groupNumber };
                 group.SetPassword();
-                await DataBaseControl.AddEntity<DbGroup>(group);
+                await DataBaseControl.AddEntity(group);
                 return true;
             }
             return false;

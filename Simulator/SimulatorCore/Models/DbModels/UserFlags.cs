@@ -1,5 +1,5 @@
 ﻿using DbLibrary.Attributes;
-using Simulator.Properties;
+using SimulatorCore.Properties;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SimulatorCore.Models.DbModels
@@ -19,10 +19,10 @@ namespace SimulatorCore.Models.DbModels
                 _userID = value;
             }
         }
-        public int StartDialogId { get; set; }
+        public int StartDialogId { get; set; } = 0;
 
-        public string? CurrentCourse { get; set; }
+        public string? CurrentCourse { get; set; } = null;
 
-        public int ActivePollMessageId { get; set; }
+        public int ActivePollMessageId { get; set; } = 0;
     }
 }
