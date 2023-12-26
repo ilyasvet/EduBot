@@ -1,4 +1,5 @@
 ﻿using MySqlConnector;
+using SimulatorCore.Properties;
 
 namespace DbLibrary.DbInterfaces
 {
@@ -10,16 +11,14 @@ namespace DbLibrary.DbInterfaces
 
             static Connection()
             {
-                MySqlConnectionStringBuilder builder = new()
-                {
-                    UserID = DbConfigProperties.UserName,
-                    Password = DbConfigProperties.Password,
-                    Server = DbConfigProperties.ServerName,
-                    Port = uint.Parse(DbConfigProperties.Port),
-                    Database = DbConfigProperties.DatabaseName,
-                };
+                string Server = DbConfigProperties.Server;
+                string DatabaseName = DbConfigProperties.DatabaseName;
+				string UserName = DbConfigProperties.UserName;
+				string Password = DbConfigProperties.Password;
+                int Port = int.Parse(DbConfigProperties.Port);
 
-                _connectionString = builder.ToString();
+				_connectionString = 
+                    $"Server={Server}; database={DatabaseName}; UID={UserName}; password={Password}; port={Port}";
             }
 
             private readonly MySqlConnection _connection;

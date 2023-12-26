@@ -21,10 +21,10 @@ namespace Simulator.BotControl
             long userId = message.Chat.Id;
             if (message.Text != null) //Бот принимает сообщение от пользователя
             {
-                if (Checker.TextIsCommand(accordanceDictionaryTextCommand, message.Text))
+                if (Checker.TextIsCommand(accordanceDictionaryTextCommand, message.Text.ToLower()))
                 {
                     //Тут бот выполняет команду, введённую пользователем
-                    await commandsDictionary[accordanceDictionaryTextCommand[message.Text]].Execute(userId, botClient);
+                    await commandsDictionary[accordanceDictionaryTextCommand[message.Text.ToLower()]].Execute(userId, botClient);
                     await botClient.DeleteMessageAsync(userId, message.MessageId);
                 }
                 else

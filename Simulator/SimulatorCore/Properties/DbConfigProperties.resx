@@ -118,18 +118,18 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="DatabaseName" xml:space="preserve">
-    <value>KulyaiDB</value>
+    <value>edubot</value>
   </data>
   <data name="Password" xml:space="preserve">
-    <value>2807</value>
-  </data>
-  <data name="Port" xml:space="preserve">
     <value>1234</value>
   </data>
+  <data name="Port" xml:space="preserve">
+    <value>5432</value>
+  </data>
   <data name="Server" xml:space="preserve">
-    <value>PostgreSQL 15</value>
+    <value>localhost</value>
   </data>
   <data name="UserName" xml:space="preserve">
-    <value>postgres</value>
+    <value>root</value>
   </data>
 </root>

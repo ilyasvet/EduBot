@@ -25,6 +25,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Properties\DbConfigProperties.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>DbConfigProperties.resx</DependentUpon>
+    </Compile>
     <Compile Update="Properties\PropertiesSystem.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -38,6 +43,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Update="Properties\DbConfigProperties.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>DbConfigProperties.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Update="Properties\PropertiesSystem.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>PropertiesSystem.Designer.cs</LastGenOutput>

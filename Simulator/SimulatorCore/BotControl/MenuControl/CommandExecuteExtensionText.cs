@@ -15,9 +15,9 @@ namespace Simulator.BotControl
         {
             await Task.Run(async () =>
             {
-				UserState userState = await DataBaseControl.GetEntity<UserState>(userId);
+				UserState? userState = await DataBaseControl.GetEntity<UserState>(userId);
 
-				DialogState state = userState.GetDialogState();
+				DialogState state = userState?.GetDialogState() ?? DialogState.None;
 				bool resultOperation = false;
                 switch (state)
                 {

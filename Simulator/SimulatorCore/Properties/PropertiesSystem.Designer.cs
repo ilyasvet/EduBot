@@ -61,7 +61,7 @@ namespace SimulatorCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to aaa.
+        ///   Looks up a localized string similar to 6071291263:AAHDfQXU8LbyuUUc_p7Qx-qyObp25Q9ttxg.
         /// </summary>
         internal static string BotToken {
             get {
