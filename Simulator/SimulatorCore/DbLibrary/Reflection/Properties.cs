@@ -5,12 +5,35 @@ namespace DbLibrary.Reflection
 {
     internal static class Properties
     {
-        public static string GetPropertiesDataString<T>(T entity)
+		internal static object GetPropertiesDataStringUpdate<T>(T? newEntity) where T : new()
+		{
+			StringBuilder result = new StringBuilder();
+
+			var propertiesDatabase = typeof(T).GetProperties().ToList();
+
+			foreach (PropertyInfo property in propertiesDatabase)
+			{
+				PropertyToSQLStringUpdate(property, result);
+				PropertyToSQLString(property, property.GetValue(newEntity), result);
+
+				result.Append(",");
+			}
+
+			result.Remove(result.Length - 1, 1); //Удалить последнюю запятую
+
+			return result.ToString();
+		}
+
+		private static void PropertyToSQLStringUpdate(PropertyInfo property, StringBuilder result)
+		{
+            result.Append($"{property.Name} = ");
+		}
+
+		public static string GetPropertiesDataString<T>(T entity)
         {
             StringBuilder result = new StringBuilder();
 
             var propertiesDatabase = typeof(T).GetProperties().ToList();
-            propertiesDatabase.RemoveAt(propertiesDatabase.Count-1);
 
             foreach (PropertyInfo property in propertiesDatabase)
             {
@@ -66,5 +89,5 @@ namespace DbLibrary.Reflection
             result.Remove(result.Length - 1, 1); //Удалить последнюю запятую
             return result.ToString();
         }
-    }
+	}
 }

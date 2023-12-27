@@ -15,7 +15,7 @@ namespace Simulator.BotControl
             try
             {
                 UserFlags userFlags = await DataBaseControl.GetEntity<UserFlags>(userId);
-                if (userFlags != null && userFlags.CurrentCourse != null)
+                if (userFlags != null && !string.IsNullOrEmpty(userFlags.CurrentCourse))
                 {
                     await UpdateControlCase.MessageHandlingCase(message, botClient);
                 }
@@ -35,7 +35,7 @@ namespace Simulator.BotControl
             try
 			{
 				UserFlags userFlags = await DataBaseControl.GetEntity<UserFlags>(userId);
-				if (userFlags != null && userFlags.CurrentCourse != null)
+				if (userFlags != null && !string.IsNullOrEmpty(userFlags.CurrentCourse))
 				{
                     await UpdateControlCase.CallbackQueryHandlingCase(query, botClient);
                 }

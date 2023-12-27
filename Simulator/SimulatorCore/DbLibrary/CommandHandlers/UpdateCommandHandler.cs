@@ -12,7 +12,7 @@ namespace DbLibrary.CommandHandlers
             if (GetPrimaryKeyValue(primaryKey, out string value))
             {
                 var commandText = GetCommandTextBase();
-                commandText.Append($"{Properties.GetPropertiesDataString(newEntity)}) ");
+                commandText.Append($"{Properties.GetPropertiesDataStringUpdate(newEntity)} ");
                 commandText.Append($"WHERE {_primaryKeyName} = {value}");
 
                 return await ExecuteNonQuery(commandText.ToString());
@@ -23,11 +23,7 @@ namespace DbLibrary.CommandHandlers
         protected override StringBuilder GetCommandTextBase()
         {
             StringBuilder result = new StringBuilder();
-            result.Append($"UPDATE {_tableName} SET (");
-
-            var properties = Properties.GetPropertiesNames(typeof(T).GetProperties());
-            result.Append($"{Properties.GetPropertiesString(properties)}) = (");
-            
+            result.Append($"UPDATE {_tableName} SET ");    
 
             return result;
         }
