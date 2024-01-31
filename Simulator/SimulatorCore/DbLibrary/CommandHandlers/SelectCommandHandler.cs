@@ -1,5 +1,6 @@
 ﻿using DbLibrary.DbInterfaces;
 using DbLibrary.Reflection;
+using SimulatorCore.Properties;
 using System.Text;
 
 namespace DbLibrary.CommandHandlers
@@ -52,7 +53,7 @@ namespace DbLibrary.CommandHandlers
         protected override StringBuilder GetCommandTextBase()
         {
             StringBuilder result = new StringBuilder();
-            result.Append($"SELECT * FROM {_tableName}");
+            result.Append($"SELECT * FROM {DbConfigProperties.DatabaseName}.{_tableName}");
             return result;
         }
     }

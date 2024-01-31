@@ -48,8 +48,6 @@ namespace SimulatorCore.Models.DbModels
             get => _groupNumber;
             set
             {
-                if (!GroupHandler.IsCorrectGroupNumber(value))
-                    throw new ArgumentException(Resources.WrongFormatGroup);
                 _groupNumber = value;
             }
         }

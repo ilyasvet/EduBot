@@ -14,20 +14,22 @@ namespace Simulator.Commands
         {
             IReplyMarkup markup = null;
             UserState userState = await DataBaseControl.GetEntity<UserState>(userId);
-            Group? group = null;
+            string groupNumber = "";
             if(userState.GetUserType() == UserType.ClassLeader)
             {
                 DbUser user = await DataBaseControl.GetEntity<DbUser>(userId);
-                group = await DataBaseControl.GetEntity<Group>(user.GroupNumber);
+                groupNumber = user.GroupNumber;
                 markup = CommandKeyboard.ToMainMenu;
             }
             else
             {
+                groupNumber = param;
                 markup = CommandKeyboard.ToGroups;
 			}
 
-            var users = (await DataBaseControl.GetCollection<DbUser>()).Where(u => u.GroupNumber == group.GroupNumber);
+            Group group = await DataBaseControl.GetEntity<Group>(groupNumber);
 
+            var users = (await DataBaseControl.GetCollection<DbUser>()).Where(u => u.GroupNumber == group.GroupNumber);
 
 			string messageWithList = $"{Resources.ShowUsers} {group.GroupNumber}\n" +
             $"{Resources.GroupPassword} {group.Password}\n";

@@ -10,11 +10,7 @@ namespace Simulator.Services
         public static async Task<bool> AddGroup(string groupNumber)
         {
             bool hasGroup = true;
-            try
-            {
-                await DataBaseControl.GetEntity<DbGroup>(groupNumber);
-            }
-            catch (KeyNotFoundException)
+            if (await DataBaseControl.GetEntity<DbGroup>(groupNumber) == null)
             {
                 hasGroup = false;
             }

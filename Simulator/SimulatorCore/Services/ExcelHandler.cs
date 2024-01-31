@@ -6,6 +6,8 @@ using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Spreadsheet;
 using DocumentFormat.OpenXml.Packaging;
 using SimulatorCore.Models.DbModels;
+using DocumentFormat.OpenXml.Office2016.Excel;
+using DocumentFormat.OpenXml.Office2010.Excel;
 
 namespace Simulator.Services
 {
@@ -420,14 +422,15 @@ namespace Simulator.Services
 				WorkbookPart? workbookPart = document.WorkbookPart;
 				Sheets? sheets = workbookPart?.Workbook.GetFirstChild<Sheets>();
 				Sheet? mainSheet = sheets?.GetFirstChild<Sheet>();
-				SheetData? sheetData = mainSheet?.GetFirstChild<SheetData>();
+				Worksheet worksheet = (document.WorkbookPart.GetPartById(mainSheet.Id.Value) as WorksheetPart).Worksheet;
+				SheetData? sheetData = worksheet?.GetFirstChild<SheetData>();
 
-                count = await AddUsersIterative(sheetData, groupNumber); //построчно добавляем пользователей
+                count = await AddUsersIterative(workbookPart, sheetData, groupNumber); //построчно добавляем пользователей
             }
             return count;
         }
 
-        private static async Task<int> AddUsersIterative(SheetData? sheetData, string groupNumber)
+        private static async Task<int> AddUsersIterative(WorkbookPart? workbookPart, SheetData? sheetData, string groupNumber)
         {
             return await Task.Run(async () =>
             {
@@ -449,8 +452,9 @@ namespace Simulator.Services
                     {
                         continue; //Если пользователь уже есть, повторно не добавляем его
                     }
-                    string userName = rowValues[0].InnerText; //Берём имя из 1 столбца
-                    string userSurname = rowValues[1].InnerText; //Фамилию из 2 столбца
+					
+					string userName = GetSharedStringItemById(workbookPart, int.Parse(rowValues[0].InnerText)).InnerText; //Берём имя из 1 столбца
+                    string userSurname = GetSharedStringItemById(workbookPart, int.Parse(rowValues[1].InnerText)).InnerText; //Фамилию из 2 столбца
 
                     User user; //Создаём пользователя. И свойства проверяют входные данные
                     try
@@ -490,5 +494,10 @@ namespace Simulator.Services
                 return count;
             });
         }
-    }
+
+		public static SharedStringItem GetSharedStringItemById(WorkbookPart workbookPart, int id)
+		{
+			return workbookPart.SharedStringTablePart.SharedStringTable.Elements<SharedStringItem>().ElementAt(id);
+		}
+	}
 }

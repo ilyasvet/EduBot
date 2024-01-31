@@ -1,4 +1,5 @@
 ﻿using DbLibrary.Reflection;
+using SimulatorCore.Properties;
 using System.Text;
 
 namespace DbLibrary.CommandHandlers
@@ -23,7 +24,7 @@ namespace DbLibrary.CommandHandlers
         protected override StringBuilder GetCommandTextBase()
         {
             StringBuilder result = new StringBuilder();
-            result.Append($"UPDATE {_tableName} SET ");    
+            result.Append($"UPDATE {DbConfigProperties.DatabaseName}.{_tableName} SET ");    
 
             return result;
         }
