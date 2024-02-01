@@ -70,7 +70,7 @@
 
         public async Task SetExtraAttempt(string courseName, long userId, bool extraAttempt)
         {
-            string commandText = $"UPDATE Stats{courseName}{TABLE_TYPE} SET ExtraAttempt = '{extraAttempt}' WHERE UserID = {userId}";
+            string commandText = $"UPDATE Stats{courseName}{TABLE_TYPE} SET ExtraAttempt = {extraAttempt} WHERE UserID = {userId}";
             await ExecuteNonQueryCommand(commandText);
         }
 
@@ -92,7 +92,7 @@
 
         public async Task SetStartTime(string courseName, long userId, DateTime time)
         {
-            string commandText = $"UPDATE Stats{courseName}{TABLE_TYPE} SET StartTime = '{time}' WHERE UserID = {userId}";
+            string commandText = $"UPDATE Stats{courseName}{TABLE_TYPE} SET StartTime = '{time.ToString("yyyy-MM-dd HH:mm:ss")}' WHERE UserID = {userId}";
             await ExecuteNonQueryCommand(commandText);
         }
 

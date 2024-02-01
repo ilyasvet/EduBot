@@ -88,7 +88,8 @@ namespace Simulator.BotControl
 
             string courseName = Path.GetFileNameWithoutExtension(path);
             string coursePath = ControlSystem.caseDirectory + "\\" + courseName;
-            bool isNew = CoursesControl.Courses.Contains(courseName);
+            bool isNew = !CoursesControl.Courses.Contains(courseName);
+            ControlSystem.CreateDirectory(coursePath);
 
 			// Удаляем старые файлы перед добавлением новых
 			ControlSystem.DeleteFilesFromDirectory(coursePath);
@@ -104,7 +105,15 @@ namespace Simulator.BotControl
             {
                 if (!isNew)
                 {
-                    await DataBaseControl.UserStatsControl.DeleteStatsTables(courseName);
+                    try
+                    {
+                        await DataBaseControl.UserStatsControl.DeleteStatsTables(courseName);
+                    }
+                    catch { }
+                }
+                else
+                {
+                    await DataBaseControl.AddEntity(new Course { CourseName = courseName });
                 }
                 await DataBaseControl.UserStatsControl.MakeStatsTables(CoursesControl.Courses[courseName]);
             }
@@ -183,8 +192,8 @@ namespace Simulator.BotControl
                     document: new InputFileStream(fs, filePath),
                     replyMarkup: CommandKeyboard.ToMainMenu
                     );
-                System.IO.File.Delete(filePath);
             }
+            System.IO.File.Delete(filePath);
         }
     }
 }

@@ -153,7 +153,7 @@ namespace Simulator.BotControl
         private static async Task<bool> CheckPassword(long userId, ITelegramBotClient botClient, Message message)
         {
             DbUser user = await DataBaseControl.GetEntity<DbUser>(userId);
-            string groupPassword = (await DataBaseControl.GetEntity<Group>(user.GroupNumber)).GroupNumber;
+            string groupPassword = (await DataBaseControl.GetEntity<Group>(user.GroupNumber)).Password;
             if(message.Text == groupPassword)
             {
                 UserState currentState = await DataBaseControl.GetEntity<UserState>(userId);

@@ -53,7 +53,7 @@ namespace Simulator.Services
             Console.WriteLine("=======================================");
         }
 
-        private static void CreateDirectory(string directory)
+        public static void CreateDirectory(string directory)
         {
             if (!Directory.Exists(directory))
             {

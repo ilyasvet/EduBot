@@ -10,7 +10,8 @@ namespace Simulator.Case
         public static async void FromFile(string path)
         {
             JObject jsonOnject = await JsonHandler.ReadJsonFile(path);
-            CoursesControl.Courses.AddCourse(jsonOnject.ToObject<StageList>());
+            var courseMaterials = jsonOnject.ToObject<StageList>();
+			CoursesControl.Courses.AddCourse(courseMaterials);
         }
     }
 }

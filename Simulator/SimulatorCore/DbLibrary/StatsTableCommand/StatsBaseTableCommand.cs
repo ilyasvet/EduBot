@@ -1,4 +1,6 @@
-﻿namespace SimulatorCore.DbLibrary.StatsTableCommand
+﻿using System.Globalization;
+
+namespace SimulatorCore.DbLibrary.StatsTableCommand
 {
     public class StatsBaseTableCommand : CommandTable
     {
@@ -59,8 +61,9 @@
         {
             if (await StartTimeIsNull(courseName, userId))
             {
-                string commandText = $"UPDATE Stats{courseName}{TABLE_TYPE} " +
-                    $"SET StartCourseTime = '{time}' WHERE UserID = {userId}";
+                var timeStr = time.ToString("yyyy-MM-dd HH:mm:ss");
+			    string commandText = $"UPDATE Stats{courseName}{TABLE_TYPE} " +
+                    $"SET StartCourseTime = '{timeStr}' WHERE UserID = {userId}";
                 await ExecuteNonQueryCommand(commandText);
             }
         }
@@ -73,7 +76,7 @@
             bool result = (bool)await ExecuteReaderCommand(commandText, (reader) =>
             {
                 reader.Read();
-                return (int)reader[0] != 0;
+                return (long)reader[0] != 0;
             });
             return result;
         }
@@ -98,7 +101,7 @@
         public async Task SetEndCaseTime(string courseName, long userId, DateTime time)
         {
             string commandText = $"UPDATE Stats{courseName}{TABLE_TYPE} " +
-                $"SET EndCourseTime = '{time}' WHERE UserID = {userId}";
+                $"SET EndCourseTime = '{time.ToString("yyyy-MM-dd HH:mm:ss")}' WHERE UserID = {userId}";
             await ExecuteNonQueryCommand(commandText);
         }
         public async Task<DateTime> GetEndCaseTime(string courseName, long userId)

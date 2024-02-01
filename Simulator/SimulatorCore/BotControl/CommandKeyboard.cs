@@ -119,11 +119,15 @@ namespace Simulator.BotControl
 
         public static async Task MakeCourses(string command, bool present, string groupNumber = "")
         {
+            var courses = await DataBaseControl.GetCollection<Course>();
             IEnumerable<GroupCourse> groupsCourses = await DataBaseControl.GetCollection<GroupCourse>();
-            groupsCourses = groupsCourses.Where(gc => (gc.GroupNumber == groupNumber) == present).ToList();
+            courses = courses.Where(c =>
+                (groupsCourses.Where(gc => gc.GroupNumber == groupNumber).
+                FirstOrDefault(gc => gc.CourseName == c.CourseName) == null) != present
+                ).ToList();
 
 
-            List<InlineKeyboardButton[]> inlineKeyboardButtons = groupsCourses.Select(course => new[]
+            List<InlineKeyboardButton[]> inlineKeyboardButtons = courses.Select(course => new[]
             {
                 InlineKeyboardButton.WithCallbackData(course.CourseName, $"{command}|{course.CourseName}-{groupNumber}")
             }).ToList();

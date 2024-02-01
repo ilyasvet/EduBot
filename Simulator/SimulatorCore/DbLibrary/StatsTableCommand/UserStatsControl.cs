@@ -1,4 +1,5 @@
 ﻿using Simulator.Models;
+using SimulatorCore.Properties;
 using System.Text;
 
 namespace SimulatorCore.DbLibrary.StatsTableCommand
@@ -32,7 +33,7 @@ namespace SimulatorCore.DbLibrary.StatsTableCommand
             string commandText = string.Empty;
             foreach (string tableName in tableNames)
             {
-                commandText += $"DROP TABLE {tableName}\n";
+                commandText += $"DROP TABLE {tableName};\n";
             }
             await ExecuteNonQueryCommand(commandText);
         }
@@ -42,7 +43,7 @@ namespace SimulatorCore.DbLibrary.StatsTableCommand
             List<string> tableNames = FillTableNames(stages.CourseName);
             for (int i = 0; i < COUNT_TABLES_WITH_ALL_STAGES; i++)
             {
-                string dataType = i != 1 ? "FLOAT" : "NVARCHAR(20)";
+                string dataType = i != 1 ? "DOUBLE" : "NVARCHAR(20)";
                 await MakeStatsAllStages(stages, tableNames[i], dataType);
             }
             await MakeBaseStatsTable(stages.AttemptCount, tableNames[3]);
@@ -53,7 +54,7 @@ namespace SimulatorCore.DbLibrary.StatsTableCommand
 
         private async Task FillStateStatsTable(int attemptCount, bool extraAttempt, string tableName)
         {
-            string commandText = $"UPDATE {tableName} SET ExtraAttempt = '{extraAttempt}', Attempts = {attemptCount}";
+            string commandText = $"UPDATE {DbConfigProperties.DatabaseName}.{tableName} SET ExtraAttempt = {extraAttempt}, Attempts = {attemptCount}";
             await ExecuteNonQueryCommand(commandText);
         }
 
@@ -62,7 +63,7 @@ namespace SimulatorCore.DbLibrary.StatsTableCommand
             string commandText;
             foreach (string tableName in tableNames)
             {
-                commandText = $"INSERT INTO {tableName} (UserID) SELECT UserID from Users";
+                commandText = $"INSERT INTO {DbConfigProperties.DatabaseName}.{tableName} (UserID) SELECT UserID from Users";
                 await ExecuteNonQueryCommand(commandText);
             }
         }
@@ -73,10 +74,10 @@ namespace SimulatorCore.DbLibrary.StatsTableCommand
 
             commandText.AppendLine("UserID INT NOT NULL PRIMARY KEY REFERENCES Users(UserID),");
             commandText.AppendLine("Point INT NOT NULL DEFAULT 0,");
-            commandText.AppendLine("ExtraAttempt BIT NULL,");
+            commandText.AppendLine("ExtraAttempt BOOLEAN NULL,");
             commandText.AppendLine("Attempts INT NULL,");
-            commandText.AppendLine("Rate FLOAT NOT NULL DEFAULT 0,");
-            commandText.AppendLine("StartTime DATETIME NULL,");
+            commandText.AppendLine("Rate DOUBLE NOT NULL DEFAULT 0,");
+            commandText.AppendLine("StartTime DATETIME NULL");
 
             commandText.Append(')');
 
@@ -92,14 +93,13 @@ namespace SimulatorCore.DbLibrary.StatsTableCommand
             commandText.AppendLine($"EndCourseTime DATETIME NULL,");
             commandText.AppendLine($"AttemptsUsed INT NOT NULL DEFAULT 0,");
 
-            for (int i = 1; i <= attemptCount; i++)
+            for (int i = 1; i < attemptCount; i++)
             {
-                commandText.AppendLine($"RateAttempt{i} FLOAT NOT NULL DEFAULT 0,");
+                commandText.AppendLine($"RateAttempt{i} DOUBLE NOT NULL DEFAULT 0,");
             }
+			commandText.AppendLine($"RateAttempt{attemptCount} DOUBLE NOT NULL DEFAULT 0)");
 
-            commandText.Append(')');
-
-            await ExecuteNonQueryCommand(commandText.ToString());
+			await ExecuteNonQueryCommand(commandText.ToString());
         }
 
         // Создаёт таблицу, столбцы которой - сначала все вопросы первой попытки,
@@ -129,14 +129,17 @@ namespace SimulatorCore.DbLibrary.StatsTableCommand
                 }
             }
 
-            for (int i = 0; i < stages.AttemptCount; i++)
+            for (int i = 0; i < stages.AttemptCount - 1; i++)
             {
                 commandText.Append(commandTextAnyAttempt[i]);
             }
-
-            commandText.Append(")");
-
-            await ExecuteNonQueryCommand(commandText.ToString());
+            var last = commandTextAnyAttempt[stages.AttemptCount - 1];
+            var lastStr = last.ToString();
+            lastStr = lastStr.Remove(lastStr.Length - 3);
+            commandText.Append(lastStr);
+            commandText.Append(')');
+			
+			await ExecuteNonQueryCommand(commandText.ToString());
         }
     }
 }

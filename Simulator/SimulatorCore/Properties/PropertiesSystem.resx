@@ -127,13 +127,13 @@
     <value>temp</value>
   </data>
   <data name="PathAnswers" xml:space="preserve">
-    <value>temp/answers</value>
+    <value>temp\\answers</value>
   </data>
   <data name="PathCase" xml:space="preserve">
-    <value>temp/case</value>
+    <value>temp\\case</value>
   </data>
   <data name="PathStats" xml:space="preserve">
-    <value>temp/stats</value>
+    <value>temp\\stats</value>
   </data>
   <data name="StatsFileName" xml:space="preserve">
     <value>statistics</value>

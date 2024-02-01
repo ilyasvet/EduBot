@@ -88,7 +88,7 @@ namespace SimulatorCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to temp/answers.
+        ///   Looks up a localized string similar to temp\\answers.
         /// </summary>
         internal static string PathAnswers {
             get {
@@ -97,7 +97,7 @@ namespace SimulatorCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to temp/case.
+        ///   Looks up a localized string similar to temp\\case.
         /// </summary>
         internal static string PathCase {
             get {
@@ -106,7 +106,7 @@ namespace SimulatorCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to temp/stats.
+        ///   Looks up a localized string similar to temp\\stats.
         /// </summary>
         internal static string PathStats {
             get {

@@ -134,8 +134,9 @@ namespace Simulator.Services
 			{
                 WorkbookPart? workbookPart = document.WorkbookPart;
                 Sheets? sheets = workbookPart?.Workbook.GetFirstChild<Sheets>();
-                Sheet? mainSheet = sheets?.GetFirstChild<Sheet>();
-                SheetData? sheetData = mainSheet?.GetFirstChild<SheetData>();
+				Sheet? mainSheet = sheets?.GetFirstChild<Sheet>();
+				Worksheet worksheet = (document.WorkbookPart.GetPartById(mainSheet.Id.Value) as WorksheetPart).Worksheet;
+				SheetData? sheetData = worksheet?.GetFirstChild<SheetData>();
 
 				string caseFileName = ControlSystem.caseInfoFileName;
 
@@ -144,8 +145,8 @@ namespace Simulator.Services
 					using (StreamWriter sw = new(fs))
 					{
 						var stageList = new StageList();
-						await MakeCaseHeader(sheetData, stageList);
-						await AddCaseStageIterative(sheetData, stageList);
+						await MakeCaseHeader(workbookPart, sheetData, stageList);
+						await AddCaseStageIterative(workbookPart, sheetData, stageList);
 						await sw.WriteAsync(JObject.FromObject(stageList).ToString());
 					}
 				}
@@ -153,7 +154,7 @@ namespace Simulator.Services
 			}
 		}
 
-        private static async Task MakeCaseHeader(SheetData? sheetData, StageList stageList)
+        private static async Task MakeCaseHeader(WorkbookPart? workbookPart, SheetData? sheetData, StageList stageList)
         {
             await Task.Run(() =>
             {
@@ -161,28 +162,28 @@ namespace Simulator.Services
                 int columnNumber = 2;
 
                 var sheetDataTable = sheetData?.ToList();
-
-                stageList.CourseName = sheetDataTable[lineNumber].ToList()[columnNumber].InnerText;
+                
+				stageList.CourseName = GetSharedStringItemById(workbookPart, sheetDataTable[lineNumber-1].ToList()[columnNumber-1].InnerText);
                 lineNumber++;
 
-                string reCreateStats = sheetDataTable[lineNumber].ToList()[columnNumber].InnerText ?? string.Empty;
+				string reCreateStats = GetSharedStringItemById(workbookPart, sheetDataTable[lineNumber-1].ToList()[columnNumber-1].InnerText) ?? string.Empty;
                 stageList.ReCreateStats = reCreateStats.ToLower() == "true";
                 lineNumber++;
 
-                stageList.AttemptCount = int.Parse(sheetDataTable[lineNumber].ToList()[columnNumber].InnerText);
+                stageList.AttemptCount = int.Parse(sheetDataTable[lineNumber - 1].ToList()[columnNumber-1].InnerText);
                 lineNumber++;
 
-                string extraAttempt = sheetDataTable[lineNumber].ToList()[columnNumber].InnerText ?? string.Empty;
+                string extraAttempt = GetSharedStringItemById(workbookPart, sheetDataTable[lineNumber - 1].ToList()[columnNumber - 1].InnerText) ?? string.Empty;
                 stageList.ExtraAttempt = extraAttempt.ToLower() == "true";
                 lineNumber++;
 
-                string deletePollAfterAnswer = sheetDataTable[lineNumber].ToList()[columnNumber].InnerText ?? string.Empty;
+                string deletePollAfterAnswer = GetSharedStringItemById(workbookPart, sheetDataTable[lineNumber - 1].ToList()[columnNumber - 1].InnerText) ?? string.Empty;
                 stageList.DeletePollAfterAnswer = deletePollAfterAnswer.ToLower() == "true";
                 lineNumber++;
             });
         }
 
-        private static async Task AddCaseStageIterative(SheetData? sheetData, StageList stageList)
+        private static async Task AddCaseStageIterative(WorkbookPart? workbookPart, SheetData? sheetData, StageList stageList)
         {
             await Task.Run(() =>
             {
@@ -199,10 +200,10 @@ namespace Simulator.Services
                         string stageType; // Тип вопроса
 
                         // Находится в 1 столбце
-                        stageType = row.ToList()[columnNumber].InnerText.ToLower();
+                        stageType = GetSharedStringItemById(workbookPart, row.ToList()[columnNumber].InnerText).ToLower();
                         
-                        // Сначала заполняются специализированные свойства, они начинаются с 8 столбца (7 индекс)
-                        columnNumber = 7;
+                        // Сначала заполняются специализированные свойства, они начинаются с 7 столбца (6 индекс)
+                        columnNumber = 6;
 
                         CaseStage newStage = null;
                         // Ссылка на новый объект вопроса
@@ -215,15 +216,15 @@ namespace Simulator.Services
                                 stageList.StagesNone.Add(newStage as CaseStageNone);
                                 break;
                             case "poll":
-                                newStage = CreatePollStage(rowValues, ref columnNumber);
+                                newStage = CreatePollStage(workbookPart, rowValues, ref columnNumber);
                                 stageList.StagesPoll.Add(newStage as CaseStagePoll);
                                 break;
                             case "end":
-                                newStage = CreateEndStage(rowValues, ref columnNumber);
+                                newStage = CreateEndStage(workbookPart, rowValues, ref columnNumber);
                                 stageList.StagesEnd.Add(newStage as CaseStageEndModule);
                                 break;
                             case "message":
-                                newStage = CreateMessageStage(rowValues, ref columnNumber);
+                                newStage = CreateMessageStage(workbookPart, rowValues, ref columnNumber);
                                 stageList.StagesMessage.Add(newStage as CaseStageMessage);
                                 break;
                             default:
@@ -246,7 +247,7 @@ namespace Simulator.Services
                         columnNumber++;
 
                         // Основной тест вопроса
-                        newStage.TextBefore = rowValues[columnNumber].InnerText;
+                        newStage.TextBefore = GetSharedStringItemById(workbookPart, rowValues[columnNumber].InnerText);
                         columnNumber++;
                         if(stageType == "poll" && newStage.TextBefore.Length >= 300)
                         {
@@ -256,9 +257,9 @@ namespace Simulator.Services
 
                         // Если дополнительная информация имеется, то последовательность имён файлов
                         List<string> additionalFiles = new List<string>();
-                        string additionalFilesString = rowValues[columnNumber].InnerText;
+                        string additionalFilesString = GetSharedStringItemById(workbookPart, rowValues[columnNumber].InnerText);
 
-						if (!string.IsNullOrEmpty(additionalFilesString))
+						if (!additionalFilesString.Equals("null"))
                         {
                             additionalFiles = additionalFilesString.Split(';').ToList();
 						}
@@ -275,12 +276,13 @@ namespace Simulator.Services
             });
         }
 
-        private static CaseStageMessage CreateMessageStage(List<OpenXmlElement> rowValues, ref int j)
+        private static CaseStageMessage CreateMessageStage(WorkbookPart? workbookPart, List<OpenXmlElement> rowValues, ref int j)
         {
             CaseStageMessage newStage = new();
 
             // Тип ответа (видео, аудио). Обязательное поле
-            newStage.MessageTypeAnswer = (MessageType)Enum.Parse(typeof(MessageType), rowValues[j].InnerText);
+            newStage.MessageTypeAnswer = (MessageType)Enum.Parse(typeof(MessageType),
+                GetSharedStringItemById(workbookPart, rowValues[j].InnerText));
             j++;
             
             // Количество баллов за ответ. Обязательное поле
@@ -288,18 +290,19 @@ namespace Simulator.Services
             return newStage;
         }
 
-        private static CaseStageEndModule CreateEndStage(List<OpenXmlElement> rowValues, ref int j)
+        private static CaseStageEndModule CreateEndStage(WorkbookPart? workbookPart, List<OpenXmlElement> rowValues, ref int j)
         {
             CaseStageEndModule newStage = new();
 
             // Является ли концом курса. Обязательное поле
-            string isEndOfCase = rowValues[j].InnerText ?? string.Empty;
+            string isEndOfCase = GetSharedStringItemById(workbookPart, rowValues[j].InnerText) ?? string.Empty;
             newStage.IsEndOfCase = isEndOfCase.ToLower() == "true";
             j++;
 
             // Градации по рейтингу. Обязательное поле
-            List<string> stringsRate = new List<string>(rowValues[j].InnerText.
+            List<string> stringsRate = new List<string>(GetSharedStringItemById(workbookPart, rowValues[j].InnerText).
                 Split(';'));
+            stringsRate.Remove("");
 
             foreach (string s in stringsRate)
             {
@@ -321,7 +324,7 @@ namespace Simulator.Services
             newStage.Texts = new List<string>();
             for (int k = 0; k < countTexts; k++)
             {
-                string text = rowValues[j].InnerText;
+                string text = GetSharedStringItemById(workbookPart, rowValues[j].InnerText);
                 newStage.Texts.Add(text);
                 j++;
             } 
@@ -329,17 +332,17 @@ namespace Simulator.Services
             return newStage;
         }
 
-        private static CaseStagePoll CreatePollStage(List<OpenXmlElement> rowValues, ref int j)
+        private static CaseStagePoll CreatePollStage(WorkbookPart? workbookPart, List<OpenXmlElement> rowValues, ref int j)
         {
             CaseStagePoll newStage = new();
             
             // Налицие условного перехода между вопросами - 8. По умолчанию false
-            string conditionalMove = rowValues[j].InnerText ?? string.Empty;
+            string conditionalMove = GetSharedStringItemById(workbookPart, rowValues[j].InnerText) ?? string.Empty;
             newStage.ConditionalMove = conditionalMove.ToLower() == "true";
             j++;
 
             // Множественный ответ или нет - 9. По умолчанию false
-            string manyAnswers = rowValues[j].InnerText ?? string.Empty;
+            string manyAnswers = GetSharedStringItemById(workbookPart, rowValues[j].InnerText) ?? string.Empty;
             newStage.ManyAnswers = manyAnswers.ToLower() == "true";
             j++;
 
@@ -347,7 +350,7 @@ namespace Simulator.Services
                 throw new ArgumentException("Many answers with conditional move cannot be together");
 
             // Смотрим неотмеченные ответы или нет - 10. По умолчанию false
-            string watchNonAnswers = rowValues[j].InnerText ?? string.Empty;
+            string watchNonAnswers = GetSharedStringItemById(workbookPart, rowValues[j].InnerText) ?? string.Empty;
             newStage.WatchNonAnswer = watchNonAnswers.ToLower() == "true";
             j++;
 
@@ -384,7 +387,7 @@ namespace Simulator.Services
             newStage.Options = new List<string>();
             for(int k = 0; k < countOptions; k++)
             {
-                string optionString = rowValues[j].InnerText;
+                string optionString = GetSharedStringItemById(workbookPart, rowValues[j].InnerText);
                 string[] optionProperties = optionString.Split(';');
                 
                 if (optionProperties[0].Length > 100)
@@ -453,8 +456,8 @@ namespace Simulator.Services
                         continue; //Если пользователь уже есть, повторно не добавляем его
                     }
 					
-					string userName = GetSharedStringItemById(workbookPart, int.Parse(rowValues[0].InnerText)).InnerText; //Берём имя из 1 столбца
-                    string userSurname = GetSharedStringItemById(workbookPart, int.Parse(rowValues[1].InnerText)).InnerText; //Фамилию из 2 столбца
+					string userName = GetSharedStringItemById(workbookPart, rowValues[0].InnerText); //Берём имя из 1 столбца
+                    string userSurname = GetSharedStringItemById(workbookPart, rowValues[1].InnerText); //Фамилию из 2 столбца
 
                     User user; //Создаём пользователя. И свойства проверяют входные данные
                     try
@@ -495,9 +498,11 @@ namespace Simulator.Services
             });
         }
 
-		public static SharedStringItem GetSharedStringItemById(WorkbookPart workbookPart, int id)
+		public static string GetSharedStringItemById(WorkbookPart? workbookPart, string id)
 		{
-			return workbookPart.SharedStringTablePart.SharedStringTable.Elements<SharedStringItem>().ElementAt(id);
+			return workbookPart.SharedStringTablePart.SharedStringTable.
+                Elements<SharedStringItem>().
+                ElementAt(int.Parse(id)).InnerText;
 		}
 	}
 }
