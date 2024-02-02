@@ -13,8 +13,8 @@ namespace Simulator.Commands
         public async override Task Execute(long userId, ITelegramBotClient botClient, string param = "")
         {
             var paramsArray = param.Split('-');
-            string groupNumber = paramsArray[0];
-            string typeAnswer = paramsArray[1];
+            string groupNumber = paramsArray[0] + '-' + paramsArray[1];
+            string typeAnswer = paramsArray[2];
 
             var users = (await DataBaseControl.GetCollection<DbUser>()).Where(u => u.GroupNumber == groupNumber);
 

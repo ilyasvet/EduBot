@@ -13,7 +13,7 @@ namespace Simulator.Commands
 
             string[] properties = param.Split('-');
             string courseName = properties[0];
-            string groupNumber = properties[1];
+            string groupNumber = properties[1] + '-' + properties[2];
             
             try
             {

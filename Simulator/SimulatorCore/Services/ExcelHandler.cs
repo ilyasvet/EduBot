@@ -55,10 +55,6 @@ namespace Simulator.Services
 			WorksheetPart ws = wp.AddNewPart<WorksheetPart>();
 			Worksheet workSheet = new Worksheet();
 			SheetData sheetData = new SheetData();
-			
-            
-			//worksheet.Cells.WrapText = true;
-   //         worksheet.Columns.ColumnWidth = 20;
 
             List<string> header = await DataBaseControl.StatsBuilderCommand.GetColumnsName(tableName);
             Row headerRow = new Row();
@@ -88,11 +84,6 @@ namespace Simulator.Services
 			ws.Worksheet = workSheet;
 			sheets.Append(sheet);
 
-            foreach (Column column in sheetData.GetFirstChild<Columns>())
-            {
-                column.CustomWidth = true;
-                column.Width = 20;
-            }
 		}
 
         private static Cell CreateCell(object data)
