@@ -96,27 +96,34 @@ namespace Simulator.BotControl
             
             ZipFile.ExtractToDirectory(path, coursePath);
 
-            CoursesControl.Make();
+            await CoursesControl.ReMake(coursePath);
 
 
 
             // Сообщение об успехе операции
-            if (isNew || CoursesControl.Courses[courseName].ReCreateStats)
+            try
             {
-                if (!isNew)
+                if (isNew || CoursesControl.Courses[courseName].ReCreateStats)
                 {
-                    try
+                    if (!isNew)
                     {
-                        await DataBaseControl.UserStatsControl.DeleteStatsTables(courseName);
+                        try
+                        {
+                            await DataBaseControl.UserStatsControl.DeleteStatsTables(courseName);
+                        }
+                        catch { }
                     }
-                    catch { }
+                    else
+                    {
+                        await DataBaseControl.AddEntity(new Course { CourseName = courseName });
+                    }
+                    await DataBaseControl.UserStatsControl.MakeStatsTables(CoursesControl.Courses[courseName]);
                 }
-                else
-                {
-                    await DataBaseControl.AddEntity(new Course { CourseName = courseName });
-                }
-                await DataBaseControl.UserStatsControl.MakeStatsTables(CoursesControl.Courses[courseName]);
-            }
+            } catch
+            {
+				ControlSystem.DeleteFilesFromDirectory(coursePath);
+                throw;
+			}
             await BotCallBack(userId, botClient, Resources.AddCaseSuccess);
 
             return true;

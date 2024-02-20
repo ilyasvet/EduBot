@@ -1,5 +1,6 @@
 ﻿using Simulator.BotControl;
 using Simulator.Services;
+using SimulatorCore.Models.DbModels;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 
@@ -9,31 +10,45 @@ namespace Simulator.Commands
     {
         public async override Task Execute(long userId, ITelegramBotClient botClient, string param = "")
         {
-            string statsFilePath = string.Empty;
-
             string[] properties = param.Split('-');
             string courseName = properties[0];
-            string groupNumber = properties[1] + '-' + properties[2];
-            
-            try
+            if (properties[1].Equals("all"))
             {
-                statsFilePath = await ExcelHandler.MakeStatistics(courseName, groupNumber);
-                using (Stream fs = new FileStream(statsFilePath, FileMode.Open))
-                {
-                    await botClient.SendDocumentAsync(
-                        chatId: userId,
-                        document: new InputFileStream(fs, $"Statistics-{courseName}-{groupNumber}.xlsx"),
-                        replyMarkup: CommandKeyboard.ToMainMenu
-                        );
-                }
+				var groups = await DataBaseControl.GetCollection<Group>();
+				foreach (var group in groups)
+				{
+					await GetStatistics(userId, botClient, courseName, group.GroupNumber);
+				}
             }
-            finally
+            else
             {
-                if (System.IO.File.Exists(statsFilePath))
-                {
-                    System.IO.File.Delete(statsFilePath);
-                }
+                string groupNumber = properties[1] + '-' + properties[2];
+                await GetStatistics(userId, botClient, courseName, groupNumber);
             }
         }
+
+        private async Task GetStatistics(long userId, ITelegramBotClient botClient, string courseName, string groupNumber)
+        {
+			string statsFilePath = string.Empty;
+			try
+			{
+				statsFilePath = await ExcelHandler.MakeStatistics(courseName, groupNumber);
+				using (Stream fs = new FileStream(statsFilePath, FileMode.Open))
+				{
+					await botClient.SendDocumentAsync(
+					chatId: userId,
+						document: new InputFileStream(fs, $"Statistics-{courseName}-{groupNumber}.xlsx"),
+						replyMarkup: CommandKeyboard.ToMainMenu
+						);
+				}
+			}
+			finally
+			{
+				if (System.IO.File.Exists(statsFilePath))
+				{
+					System.IO.File.Delete(statsFilePath);
+				}
+			}
+		}
     }
 }

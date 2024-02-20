@@ -179,11 +179,14 @@
   <data name="SendVideo" xml:space="preserve">
     <value>Именно видео</value>
   </data>
+  <data name="ShowAllGroups" xml:space="preserve">
+    <value>Выберите группу для добавления на курс</value>
+  </data>
   <data name="ShowAnswersTypes" xml:space="preserve">
     <value>Группа выбрана. Теперь выберите тип ответа</value>
   </data>
   <data name="ShowGroups" xml:space="preserve">
-    <value>Список групп, добавленных на курс</value>
+    <value>Выберите группу</value>
   </data>
   <data name="ShowUsers" xml:space="preserve">
     <value>Список пользователей группы</value>
@@ -216,7 +219,7 @@
     <value>Это меню пользователя</value>
   </data>
   <data name="WelcomeKnown" xml:space="preserve">
-    <value>Здравствуйте, вы уже записаны на этот курс</value>
+    <value>Здравствуйте, вы добавлены в систему</value>
   </data>
   <data name="WelcomeKnownAdmin" xml:space="preserve">
     <value>Приветствуем, вы администратор, как неожиданно и приятно!)</value>

@@ -13,7 +13,7 @@ namespace Simulator.Case
             await DataBaseControl.StatsBaseTableCommand.SetAttemptRate(
                 CourseName, userId, stats.AttemptNumber, currentRate
                 );
-            await DataBaseControl.StatsStateTableCommand.SetRate(CourseName, userId, stats.Rate);
+            await DataBaseControl.StatsStateTableCommand.SetRate(CourseName, userId, currentRate);
         }
     }
 }

@@ -243,6 +243,15 @@ namespace SimulatorCore.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Выберите группу для добавления на курс.
+        /// </summary>
+        internal static string ShowAllGroups {
+            get {
+                return ResourceManager.GetString("ShowAllGroups", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Группа выбрана. Теперь выберите тип ответа.
         /// </summary>
         internal static string ShowAnswersTypes {
@@ -252,7 +261,7 @@ namespace SimulatorCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Список групп, добавленных на курс.
+        ///   Looks up a localized string similar to Выберите группу.
         /// </summary>
         internal static string ShowGroups {
             get {
@@ -351,7 +360,7 @@ namespace SimulatorCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Здравствуйте, вы уже записаны на этот курс.
+        ///   Looks up a localized string similar to Здравствуйте, вы добавлены в систему.
         /// </summary>
         internal static string WelcomeKnown {
             get {

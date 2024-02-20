@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "I:\\Work\\Repos\\TestSimulator\\Simulator\\SimulatorCore\\SimulatorCore.csproj": {}
+    "G:\\Work\\Repos\\TestSimulator\\Simulator\\SimulatorCore\\SimulatorCore.csproj": {}
   },
   "projects": {
-    "I:\\Work\\Repos\\TestSimulator\\Simulator\\SimulatorCore\\SimulatorCore.csproj": {
+    "G:\\Work\\Repos\\TestSimulator\\Simulator\\SimulatorCore\\SimulatorCore.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "I:\\Work\\Repos\\TestSimulator\\Simulator\\SimulatorCore\\SimulatorCore.csproj",
+        "projectUniqueName": "G:\\Work\\Repos\\TestSimulator\\Simulator\\SimulatorCore\\SimulatorCore.csproj",
         "projectName": "SimulatorCore",
-        "projectPath": "I:\\Work\\Repos\\TestSimulator\\Simulator\\SimulatorCore\\SimulatorCore.csproj",
+        "projectPath": "G:\\Work\\Repos\\TestSimulator\\Simulator\\SimulatorCore\\SimulatorCore.csproj",
         "packagesPath": "C:\\Users\\User\\.nuget\\packages\\",
-        "outputPath": "I:\\Work\\Repos\\TestSimulator\\Simulator\\SimulatorCore\\obj\\",
+        "outputPath": "G:\\Work\\Repos\\TestSimulator\\Simulator\\SimulatorCore\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "E:\\VS\\Packages\\NuGetPackages"

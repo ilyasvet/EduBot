@@ -121,10 +121,14 @@ namespace Simulator.BotControl
         {
             var courses = await DataBaseControl.GetCollection<Course>();
             IEnumerable<GroupCourse> groupsCourses = await DataBaseControl.GetCollection<GroupCourse>();
-            courses = courses.Where(c =>
-                (groupsCourses.Where(gc => gc.GroupNumber == groupNumber).
-                FirstOrDefault(gc => gc.CourseName == c.CourseName) == null) != present
-                ).ToList();
+
+            if (!groupNumber.Equals("all"))
+            {
+                courses = courses.Where(c =>
+                    (groupsCourses.Where(gc => gc.GroupNumber == groupNumber).
+                    FirstOrDefault(gc => gc.CourseName == c.CourseName) == null) != present
+                    ).ToList();
+            }
 
 
             List<InlineKeyboardButton[]> inlineKeyboardButtons = courses.Select(course => new[]

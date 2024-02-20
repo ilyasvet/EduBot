@@ -9,5 +9,5 @@ TelegramBotControl telegramBotControl = new TelegramBotControl(
 
 ControlSystem.CreateDirectories();
 
-telegramBotControl.ManageTelegramBot();
+await telegramBotControl.ManageTelegramBot();
 Console.ReadLine();

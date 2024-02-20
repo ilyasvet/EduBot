@@ -12,11 +12,11 @@ namespace Simulator.BotControl
         {
             botClient = new TelegramBotClient(token);
         }
-        public void ManageTelegramBot()
+        public async Task ManageTelegramBot()
         {
             try
             {
-                CoursesControl.Make();
+                await CoursesControl.Make();
             }
             catch (Exception ex)
             {

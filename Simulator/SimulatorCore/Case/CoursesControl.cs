@@ -8,28 +8,37 @@ namespace SimulatorCore.Case
 	{
 		public static CoursesList Courses { get; set; } = new CoursesList();
 
-		public static void Make()
+		public static async Task Make()
 		{
 			foreach (var courseDir in Directory.GetDirectories(ControlSystem.caseDirectory))
 			{
-				string path = courseDir + "\\" + ControlSystem.caseInfoFileName;
+				await MakeCourse(courseDir);
+			}
+		}
+		public static async Task ReMake(string coursePath)
+		{
+			await MakeCourse(coursePath);
+		}
+		private static async Task MakeCourse(string coursePath)
+		{
+			string path = coursePath + "\\" + ControlSystem.caseInfoFileName;
 
-				if (File.Exists(path))
+			if (File.Exists(path))
+			{
+				try
 				{
-					try
-					{
-						CaseConverter.FromFile(path);
-					}
-					catch
-					{
-						ControlSystem.DeleteFilesFromDirectory(courseDir);
-						throw;
-					}
+					var courseData = await CaseConverter.FromFile(path);
+					Courses.AddCourse(courseData);
 				}
-				else
+				catch
 				{
-					throw new FileNotFoundException();
+					ControlSystem.DeleteFilesFromDirectory(coursePath);
+					throw;
 				}
+			}
+			else
+			{
+				throw new FileNotFoundException();
 			}
 		}
 	}
