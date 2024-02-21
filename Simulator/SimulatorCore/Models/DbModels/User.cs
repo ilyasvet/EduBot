@@ -1,9 +1,9 @@
 ﻿using DbLibrary.Attributes;
-using SimulatorCore.Properties;
+using EduBotCore.Properties;
 using Simulator.Services;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace SimulatorCore.Models.DbModels
+namespace EduBotCore.Models.DbModels
 {
     [Table("Users")]
     [PrimaryKey("UserID", typeof(long))]

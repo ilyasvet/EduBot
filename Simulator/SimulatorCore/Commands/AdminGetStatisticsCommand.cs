@@ -1,6 +1,6 @@
 ﻿using Simulator.BotControl;
 using Simulator.Services;
-using SimulatorCore.Models.DbModels;
+using EduBotCore.Models.DbModels;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 

@@ -1,7 +1,7 @@
 ﻿using DbLibrary.Attributes;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace SimulatorCore.Models.DbModels
+namespace EduBotCore.Models.DbModels
 {
     [Table("Courses")]
     [PrimaryKey("CourseName", typeof(string))]

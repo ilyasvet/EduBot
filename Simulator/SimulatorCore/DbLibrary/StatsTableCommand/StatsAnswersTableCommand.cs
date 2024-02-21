@@ -1,4 +1,4 @@
-﻿namespace SimulatorCore.DbLibrary.StatsTableCommand
+﻿namespace EduBotCore.DbLibrary.StatsTableCommand
 {
     public class StatsAnswersTableCommand : CommandTable
     {

@@ -1,9 +1,9 @@
 ﻿using Simulator.BotControl;
 using Simulator.Commands;
-using SimulatorCore.Properties;
+using EduBotCore.Properties;
 using Telegram.Bot;
 
-namespace SimulatorCore.Commands
+namespace EduBotCore.Commands
 {
 	internal class AdminShowCoursesToAdd : Command
 	{

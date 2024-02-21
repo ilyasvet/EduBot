@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 
-namespace SimulatorCore.DbLibrary.StatsTableCommand
+namespace EduBotCore.DbLibrary.StatsTableCommand
 {
     public class StatsBaseTableCommand : CommandTable
     {

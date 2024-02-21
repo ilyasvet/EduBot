@@ -1,4 +1,4 @@
-﻿namespace SimulatorCore.Models.DbModels
+﻿namespace EduBotCore.Models.DbModels
 {
     public enum UserType
     {

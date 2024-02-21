@@ -1,5 +1,5 @@
 ﻿using MySqlConnector;
-using SimulatorCore.Properties;
+using EduBotCore.Properties;
 
 namespace DbLibrary.DbInterfaces
 {

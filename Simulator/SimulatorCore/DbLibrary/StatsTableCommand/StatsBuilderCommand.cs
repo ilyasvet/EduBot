@@ -1,4 +1,4 @@
-﻿namespace SimulatorCore.DbLibrary.StatsTableCommand
+﻿namespace EduBotCore.DbLibrary.StatsTableCommand
 {
     // Тут получаем информацию с таблиц со статистикой для передачи в excel
     internal class StatsBuilderCommand : CommandTable

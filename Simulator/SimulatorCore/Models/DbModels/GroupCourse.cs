@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace SimulatorCore.Models.DbModels
+namespace EduBotCore.Models.DbModels
 {
     [Table("GroupsCourses")]
     internal class GroupCourse

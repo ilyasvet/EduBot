@@ -1,7 +1,7 @@
 ﻿using DbLibrary.DbInterfaces;
 using MySqlConnector;
 
-namespace SimulatorCore.DbLibrary.StatsTableCommand
+namespace EduBotCore.DbLibrary.StatsTableCommand
 {
 	public class CommandTable
 	{

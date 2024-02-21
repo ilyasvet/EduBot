@@ -1,10 +1,10 @@
 ﻿using Simulator.Case;
 using Simulator.Models;
 using Telegram.Bot;
-using SimulatorCore.Properties;
+using EduBotCore.Properties;
 using Simulator.BotControl;
-using SimulatorCore.Case;
-using SimulatorCore.Models.DbModels;
+using EduBotCore.Case;
+using EduBotCore.Models.DbModels;
 
 namespace Simulator.Commands
 {

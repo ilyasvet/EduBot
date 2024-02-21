@@ -1,4 +1,4 @@
-﻿using SimulatorCore.Properties;
+﻿using EduBotCore.Properties;
 using System.Diagnostics;
 
 namespace Simulator.Services

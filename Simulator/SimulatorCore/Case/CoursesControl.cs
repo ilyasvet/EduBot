@@ -1,8 +1,8 @@
 ﻿using Simulator.Case;
 using Simulator.Services;
-using SimulatorCore.Models.CaseStage;
+using EduBotCore.Models.CaseStage;
 
-namespace SimulatorCore.Case
+namespace EduBotCore.Case
 {
 	internal class CoursesControl
 	{

@@ -1,8 +1,8 @@
 ﻿using Simulator.Models;
-using SimulatorCore.Properties;
+using EduBotCore.Properties;
 using System.Text;
 
-namespace SimulatorCore.DbLibrary.StatsTableCommand
+namespace EduBotCore.DbLibrary.StatsTableCommand
 {
     public enum StatsTableType
     {

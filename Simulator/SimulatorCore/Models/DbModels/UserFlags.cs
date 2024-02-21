@@ -1,8 +1,8 @@
 ﻿using DbLibrary.Attributes;
-using SimulatorCore.Properties;
+using EduBotCore.Properties;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace SimulatorCore.Models.DbModels
+namespace EduBotCore.Models.DbModels
 {
     [Table("UserFlags")]
     [PrimaryKey("UserID", typeof(long))]

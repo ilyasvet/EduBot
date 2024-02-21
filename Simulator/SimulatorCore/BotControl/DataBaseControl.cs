@@ -1,5 +1,5 @@
 ﻿using DbLibrary.CommandHandlers;
-using SimulatorCore.DbLibrary.StatsTableCommand;
+using EduBotCore.DbLibrary.StatsTableCommand;
 
 namespace Simulator.BotControl
 {

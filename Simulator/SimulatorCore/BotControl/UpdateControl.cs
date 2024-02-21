@@ -3,7 +3,7 @@ using Simulator.Commands;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Simulator.Services;
-using SimulatorCore.Models.DbModels;
+using EduBotCore.Models.DbModels;
 
 namespace Simulator.BotControl
 {

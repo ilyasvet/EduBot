@@ -1,9 +1,9 @@
 ﻿using DbLibrary.Attributes;
 using Simulator.BotControl.State;
-using SimulatorCore.Properties;
+using EduBotCore.Properties;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace SimulatorCore.Models.DbModels
+namespace EduBotCore.Models.DbModels
 {
     [Table("UsersState")]
     [PrimaryKey("UserID", typeof(long))]

@@ -1,6 +1,6 @@
 ﻿using DbLibrary.DbInterfaces;
 using DbLibrary.Reflection;
-using SimulatorCore.Properties;
+using EduBotCore.Properties;
 using System.Text;
 
 namespace DbLibrary.CommandHandlers

@@ -1,5 +1,5 @@
 ﻿using Simulator.BotControl;
-using SimulatorCore.Properties;
+using EduBotCore.Properties;
 using Telegram.Bot;
 
 namespace Simulator.Commands

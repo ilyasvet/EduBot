@@ -1,13 +1,13 @@
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Simulator.BotControl.State;
-using SimulatorCore.Properties;
+using EduBotCore.Properties;
 using Simulator.Services;
 using System.IO.Compression;
-using SimulatorCore.Models.DbModels;
+using EduBotCore.Models.DbModels;
 
-using DbUser = SimulatorCore.Models.DbModels.User;
-using SimulatorCore.Case;
+using DbUser = EduBotCore.Models.DbModels.User;
+using EduBotCore.Case;
 
 namespace Simulator.BotControl
 {

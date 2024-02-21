@@ -1,10 +1,10 @@
 using Simulator.BotControl;
-using SimulatorCore.Properties;
-using SimulatorCore.Models.DbModels;
+using EduBotCore.Properties;
+using EduBotCore.Models.DbModels;
 using Telegram.Bot;
 using Telegram.Bot.Types.ReplyMarkups;
 
-using DbUser = SimulatorCore.Models.DbModels.User;
+using DbUser = EduBotCore.Models.DbModels.User;
 
 namespace Simulator.Commands
 {

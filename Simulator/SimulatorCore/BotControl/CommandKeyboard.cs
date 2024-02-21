@@ -1,4 +1,4 @@
-﻿using SimulatorCore.Models.DbModels;
+﻿using EduBotCore.Models.DbModels;
 using Telegram.Bot.Types.ReplyMarkups;
 
 namespace Simulator.BotControl

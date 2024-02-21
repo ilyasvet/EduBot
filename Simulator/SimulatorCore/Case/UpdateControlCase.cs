@@ -2,12 +2,12 @@
 using Simulator.Models;
 using Telegram.Bot;
 using Telegram.Bot.Types;
-using SimulatorCore.Properties;
+using EduBotCore.Properties;
 using Simulator.Services;
 using Simulator.BotControl;
-using SimulatorCore.DbLibrary.StatsTableCommand;
-using SimulatorCore.Models.DbModels;
-using SimulatorCore.Case;
+using EduBotCore.DbLibrary.StatsTableCommand;
+using EduBotCore.Models.DbModels;
+using EduBotCore.Case;
 
 namespace Simulator.Case
 {

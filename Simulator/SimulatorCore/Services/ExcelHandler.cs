@@ -5,7 +5,7 @@ using Simulator.BotControl;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Spreadsheet;
 using DocumentFormat.OpenXml.Packaging;
-using SimulatorCore.Models.DbModels;
+using EduBotCore.Models.DbModels;
 using DocumentFormat.OpenXml.Office2016.Excel;
 using DocumentFormat.OpenXml.Office2010.Excel;
 

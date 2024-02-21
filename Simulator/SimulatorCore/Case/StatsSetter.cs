@@ -1,5 +1,5 @@
 ﻿using Simulator.BotControl;
-using SimulatorCore.DbLibrary.StatsTableCommand;
+using EduBotCore.DbLibrary.StatsTableCommand;
 
 namespace Simulator.Case
 {

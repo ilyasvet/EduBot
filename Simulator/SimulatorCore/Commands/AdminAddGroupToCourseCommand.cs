@@ -1,10 +1,10 @@
 ﻿using Simulator.BotControl;
 using Simulator.Commands;
-using SimulatorCore.Properties;
-using SimulatorCore.Models.DbModels;
+using EduBotCore.Properties;
+using EduBotCore.Models.DbModels;
 using Telegram.Bot;
 
-namespace SimulatorCore.Commands
+namespace EduBotCore.Commands
 {
 	internal class AdminAddGroupToCourseCommand : Command
 	{

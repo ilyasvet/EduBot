@@ -1,7 +1,7 @@
 ﻿using Simulator.BotControl;
 using System.Text.RegularExpressions;
 
-using DbGroup = SimulatorCore.Models.DbModels.Group;
+using DbGroup = EduBotCore.Models.DbModels.Group;
 
 namespace Simulator.Services
 {

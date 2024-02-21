@@ -1,7 +1,7 @@
 ﻿using Simulator.Models;
 using System.Collections;
 
-namespace SimulatorCore.Models.CaseStage
+namespace EduBotCore.Models.CaseStage
 {
 	internal class CoursesList : IEnumerable<StageList>
 	{

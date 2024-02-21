@@ -1,8 +1,8 @@
 using Simulator.BotControl.State;
-using SimulatorCore.Properties;
+using EduBotCore.Properties;
 using Telegram.Bot;
 using Simulator.BotControl;
-using SimulatorCore.Models.DbModels;
+using EduBotCore.Models.DbModels;
 
 namespace Simulator.Commands
 {
