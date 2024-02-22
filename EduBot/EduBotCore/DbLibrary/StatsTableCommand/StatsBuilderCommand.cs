@@ -60,11 +60,11 @@
             string commandText;
             if (groupNumber == "all")
             {
-                commandText = $"SELECT UserID, Name, Surname FROM Users";
+                commandText = $"SELECT UserID, Name, Surname FROM users";
             }
             else
             {
-                commandText = $"SELECT UserID, Name, Surname FROM Users WHERE GroupNumber = '{groupNumber}'";
+                commandText = $"SELECT UserID, Name, Surname FROM users WHERE GroupNumber = '{groupNumber}'";
             }
 
             Dictionary<long, string> result = await ExecuteReaderCommand(commandText, (reader) =>

@@ -2,7 +2,7 @@
 
 namespace EduBotCore.Models.DbModels
 {
-    [Table("GroupsCourses")]
+    [Table("groupscourses")]
     internal class GroupCourse
     {
         public string? GroupNumber { get; set; }

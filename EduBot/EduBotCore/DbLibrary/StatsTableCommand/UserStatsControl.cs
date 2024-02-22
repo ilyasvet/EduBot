@@ -26,7 +26,7 @@ namespace EduBotCore.DbLibrary.StatsTableCommand
             List<string> tableNames = new List<string>();
             foreach (string typeName in Enum.GetNames(typeof(StatsTableType)))
             {
-                string pattern = $"Stats{courseName}{typeName}";
+                string pattern = $"stats{courseName}{typeName}";
                 tableNames.Add(pattern);
             }
             return tableNames;
@@ -92,7 +92,7 @@ namespace EduBotCore.DbLibrary.StatsTableCommand
         {
             StringBuilder commandText = new StringBuilder($"CREATE TABLE {tableName} (\n");
 
-            commandText.AppendLine("UserID INT NOT NULL PRIMARY KEY REFERENCES Users(UserID),");
+            commandText.AppendLine("UserID INT NOT NULL PRIMARY KEY REFERENCES users(UserID),");
             commandText.AppendLine($"StartCourseTime DATETIME NULL,");
             commandText.AppendLine($"EndCourseTime DATETIME NULL,");
             commandText.AppendLine($"AttemptsUsed INT NOT NULL DEFAULT 0,");
@@ -112,7 +112,7 @@ namespace EduBotCore.DbLibrary.StatsTableCommand
         {
             StringBuilder commandText = new StringBuilder($"CREATE TABLE {tableName} (\n");
 
-            commandText.AppendLine("UserID INT NOT NULL PRIMARY KEY REFERENCES Users(UserID),");
+            commandText.AppendLine("UserID INT NOT NULL PRIMARY KEY REFERENCES users(UserID),");
 
             List<StringBuilder> commandTextAnyAttempt = new();
             for (int i = 0; i < stages.AttemptCount; i++)

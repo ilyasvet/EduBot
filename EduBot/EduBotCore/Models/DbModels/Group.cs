@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EduBotCore.Models.DbModels
 {
-    [Table("Groups")]
+    [Table("groups")]
     [PrimaryKey("GroupNumber", typeof(string))]
     public class Group
     {

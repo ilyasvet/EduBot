@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EduBotCore.Models.DbModels
 {
-    [Table("Courses")]
+    [Table("courses")]
     [PrimaryKey("CourseName", typeof(string))]
     internal class Course
     {
