@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EduBotCore.Models.DbModels
 {
-    [Table("usersState")]
+    [Table("usersstate")]
     [PrimaryKey("UserID", typeof(long))]
     internal class UserState
     {
