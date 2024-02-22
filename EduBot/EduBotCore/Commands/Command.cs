@@ -1,6 +1,6 @@
 using Telegram.Bot;
 
-namespace Simulator.Commands
+namespace EduBot.Commands
 {
   public abstract class Command
   {

@@ -1,12 +1,12 @@
-﻿using Simulator.BotControl;
+﻿using EduBot.BotControl;
 using EduBotCore.Properties;
-using Simulator.Services;
+using EduBot.Services;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 
 using DbUser = EduBotCore.Models.DbModels.User;
 
-namespace Simulator.Commands
+namespace EduBot.Commands
 {
     internal class AdminShowAnswersCommand : Command
     {

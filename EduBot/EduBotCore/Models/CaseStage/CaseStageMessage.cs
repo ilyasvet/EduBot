@@ -1,6 +1,6 @@
 ﻿using Telegram.Bot.Types.Enums;
 
-namespace Simulator.Models
+namespace EduBot.Models
 {
     internal class CaseStageMessage : CaseStage
     {

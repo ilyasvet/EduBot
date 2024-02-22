@@ -1,9 +1,9 @@
-﻿using Simulator.Commands;
-using Simulator.Services;
+﻿using EduBot.Commands;
+using EduBot.Services;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 
-namespace Simulator.BotControl
+namespace EduBot.BotControl
 {
     internal static class UpdateControlMenu
     {

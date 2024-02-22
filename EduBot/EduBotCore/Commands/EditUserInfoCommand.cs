@@ -1,10 +1,10 @@
-﻿using Simulator.BotControl;
-using Simulator.BotControl.State;
+﻿using EduBot.BotControl;
+using EduBot.BotControl.State;
 using EduBotCore.Properties;
 using EduBotCore.Models.DbModels;
 using Telegram.Bot;
 
-namespace Simulator.Commands
+namespace EduBot.Commands
 {
     internal class EditUserInfoCommand : Command
     {

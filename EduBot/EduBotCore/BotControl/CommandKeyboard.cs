@@ -1,7 +1,7 @@
 ﻿using EduBotCore.Models.DbModels;
 using Telegram.Bot.Types.ReplyMarkups;
 
-namespace Simulator.BotControl
+namespace EduBot.BotControl
 {
     public static class CommandKeyboard
     {

@@ -1,5 +1,5 @@
 ﻿using DbLibrary.Attributes;
-using Simulator.BotControl.State;
+using EduBot.BotControl.State;
 using EduBotCore.Properties;
 using System.ComponentModel.DataAnnotations.Schema;
 

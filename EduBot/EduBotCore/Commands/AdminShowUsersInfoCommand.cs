@@ -1,4 +1,4 @@
-using Simulator.BotControl;
+using EduBot.BotControl;
 using EduBotCore.Properties;
 using EduBotCore.Models.DbModels;
 using Telegram.Bot;
@@ -6,7 +6,7 @@ using Telegram.Bot.Types.ReplyMarkups;
 
 using DbUser = EduBotCore.Models.DbModels.User;
 
-namespace Simulator.Commands
+namespace EduBot.Commands
 {
     public class AdminShowUsersInfoCommand : Command
     {

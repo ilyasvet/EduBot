@@ -1,5 +1,5 @@
-﻿using Simulator.Case;
-using Simulator.Services;
+﻿using EduBot.Case;
+using EduBot.Services;
 using EduBotCore.Models.CaseStage;
 
 namespace EduBotCore.Case

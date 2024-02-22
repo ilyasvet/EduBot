@@ -1,7 +1,7 @@
-﻿using Simulator.BotControl;
-using Simulator.Models;
+﻿using EduBot.BotControl;
+using EduBot.Models;
 using EduBotCore.Properties;
-using Simulator.Services;
+using EduBot.Services;
 using EduBotCore.Case;
 using EduBotCore.Models.DbModels;
 using Telegram.Bot;
@@ -9,7 +9,7 @@ using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
 
-namespace Simulator.Case
+namespace EduBot.Case
 {
     internal static class StagesControl
     {

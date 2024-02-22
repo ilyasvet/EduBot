@@ -1,7 +1,7 @@
 ﻿using DbLibrary.CommandHandlers;
 using EduBotCore.DbLibrary.StatsTableCommand;
 
-namespace Simulator.BotControl
+namespace EduBot.BotControl
 {
     internal static class DataBaseControl
     {

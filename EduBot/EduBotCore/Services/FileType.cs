@@ -1,4 +1,4 @@
-﻿namespace Simulator.Services
+﻿namespace EduBot.Services
 {
     public enum FileType
     {

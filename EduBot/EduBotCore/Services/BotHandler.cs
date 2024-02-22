@@ -1,7 +1,7 @@
 ﻿using Telegram.Bot;
 using Telegram.Bot.Types;
 
-namespace Simulator.Services
+namespace EduBot.Services
 {
     public static class BotHandler
     {

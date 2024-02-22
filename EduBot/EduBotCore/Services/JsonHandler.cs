@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace Simulator.TelegramBotLibrary
+namespace EduBot.TelegramBotLibrary
 {
     public static class JsonHandler
     {

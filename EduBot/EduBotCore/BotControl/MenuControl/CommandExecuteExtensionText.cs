@@ -1,13 +1,13 @@
-﻿using Simulator.BotControl.State;
+﻿using EduBot.BotControl.State;
 using EduBotCore.Properties;
-using Simulator.Services;
+using EduBot.Services;
 using EduBotCore.Models.DbModels;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 
 using DbUser = EduBotCore.Models.DbModels.User;
 
-namespace Simulator.BotControl
+namespace EduBot.BotControl
 {
     public static class CommandExecuteExtensionText
     {

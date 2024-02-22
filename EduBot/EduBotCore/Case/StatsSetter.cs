@@ -1,7 +1,7 @@
-﻿using Simulator.BotControl;
+﻿using EduBot.BotControl;
 using EduBotCore.DbLibrary.StatsTableCommand;
 
-namespace Simulator.Case
+namespace EduBot.Case
 {
     internal class StatsSetter
     {

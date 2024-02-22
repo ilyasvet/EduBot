@@ -1,5 +1,5 @@
-﻿using Simulator.BotControl;
-using Simulator.Services;
+﻿using EduBot.BotControl;
+using EduBot.Services;
 
 
 

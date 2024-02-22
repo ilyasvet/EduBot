@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Simulator.Models
+namespace EduBot.Models
 {
     internal class CaseStageEndModule : CaseStage
     {

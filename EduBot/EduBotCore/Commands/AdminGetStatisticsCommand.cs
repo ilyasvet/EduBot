@@ -1,10 +1,10 @@
-﻿using Simulator.BotControl;
-using Simulator.Services;
+﻿using EduBot.BotControl;
+using EduBot.Services;
 using EduBotCore.Models.DbModels;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 
-namespace Simulator.Commands
+namespace EduBot.Commands
 {
     internal class AdminGetStatisticsCommand : Command
     {

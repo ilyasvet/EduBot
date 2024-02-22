@@ -1,9 +1,9 @@
-﻿using Simulator.BotControl;
+﻿using EduBot.BotControl;
 using System.Text.RegularExpressions;
 
 using DbGroup = EduBotCore.Models.DbModels.Group;
 
-namespace Simulator.Services
+namespace EduBot.Services
 {
     public static class GroupHandler
     {

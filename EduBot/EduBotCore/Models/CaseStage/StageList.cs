@@ -1,4 +1,4 @@
-﻿namespace Simulator.Models
+﻿namespace EduBot.Models
 {
     internal class StageList
     {

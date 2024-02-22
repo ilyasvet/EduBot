@@ -1,11 +1,11 @@
-﻿using Simulator.BotControl;
-using Simulator.BotControl.State;
+﻿using EduBot.BotControl;
+using EduBot.BotControl.State;
 using EduBotCore.Properties;
 using EduBotCore.Models.DbModels;
 using Telegram.Bot;
 using Telegram.Bot.Types.ReplyMarkups;
 
-namespace Simulator.Commands
+namespace EduBot.Commands
 {
     public class SkipCommand : Command
     {

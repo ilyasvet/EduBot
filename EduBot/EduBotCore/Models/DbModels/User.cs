@@ -1,6 +1,6 @@
 ﻿using DbLibrary.Attributes;
 using EduBotCore.Properties;
-using Simulator.Services;
+using EduBot.Services;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EduBotCore.Models.DbModels

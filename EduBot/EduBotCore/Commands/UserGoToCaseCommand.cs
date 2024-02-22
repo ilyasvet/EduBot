@@ -1,12 +1,12 @@
-﻿using Simulator.Case;
-using Simulator.Models;
+﻿using EduBot.Case;
+using EduBot.Models;
 using Telegram.Bot;
 using EduBotCore.Properties;
-using Simulator.BotControl;
+using EduBot.BotControl;
 using EduBotCore.Case;
 using EduBotCore.Models.DbModels;
 
-namespace Simulator.Commands
+namespace EduBot.Commands
 {
     internal class UserGoToCaseCommand : Command
     {

@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json.Linq;
-using Simulator.Models;
+using EduBot.Models;
 using Telegram.Bot.Types.Enums;
-using Simulator.BotControl;
+using EduBot.BotControl;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Spreadsheet;
 using DocumentFormat.OpenXml.Packaging;
@@ -9,7 +9,7 @@ using EduBotCore.Models.DbModels;
 using DocumentFormat.OpenXml.Office2016.Excel;
 using DocumentFormat.OpenXml.Office2010.Excel;
 
-namespace Simulator.Services
+namespace EduBot.Services
 {
     internal static class ExcelHandler
     {

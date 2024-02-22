@@ -1,8 +1,8 @@
 ﻿using Newtonsoft.Json.Linq;
-using Simulator.Models;
-using Simulator.TelegramBotLibrary;
+using EduBot.Models;
+using EduBot.TelegramBotLibrary;
 
-namespace Simulator.Case
+namespace EduBot.Case
 {
     internal static class CaseConverter
     {

@@ -1,4 +1,4 @@
-﻿using Simulator.Models;
+﻿using EduBot.Models;
 using System.Collections;
 
 namespace EduBotCore.Models.CaseStage

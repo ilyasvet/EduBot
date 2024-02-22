@@ -1,10 +1,10 @@
-using Simulator.BotControl.State;
+using EduBot.BotControl.State;
 using EduBotCore.Properties;
 using Telegram.Bot;
-using Simulator.BotControl;
+using EduBot.BotControl;
 using EduBotCore.Models.DbModels;
 
-namespace Simulator.Commands
+namespace EduBot.Commands
 {
     public class LogInCommand : Command
     {

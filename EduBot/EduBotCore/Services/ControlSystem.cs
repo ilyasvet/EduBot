@@ -1,7 +1,7 @@
 ﻿using EduBotCore.Properties;
 using System.Diagnostics;
 
-namespace Simulator.Services
+namespace EduBot.Services
 {
     public static class ControlSystem
     {

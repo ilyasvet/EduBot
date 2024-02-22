@@ -1,7 +1,7 @@
-﻿using Simulator.Commands;
+﻿using EduBot.Commands;
 using System.Reflection;
 
-namespace Simulator.Services
+namespace EduBot.Services
 {
     public static class Filler
     {

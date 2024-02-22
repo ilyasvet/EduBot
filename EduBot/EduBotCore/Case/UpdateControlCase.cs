@@ -1,15 +1,15 @@
-﻿using Simulator.Commands;
-using Simulator.Models;
+﻿using EduBot.Commands;
+using EduBot.Models;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using EduBotCore.Properties;
-using Simulator.Services;
-using Simulator.BotControl;
+using EduBot.Services;
+using EduBot.BotControl;
 using EduBotCore.DbLibrary.StatsTableCommand;
 using EduBotCore.Models.DbModels;
 using EduBotCore.Case;
 
-namespace Simulator.Case
+namespace EduBot.Case
 {
     internal static class UpdateControlCase
     {

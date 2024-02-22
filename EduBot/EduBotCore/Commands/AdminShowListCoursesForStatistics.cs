@@ -1,8 +1,8 @@
-﻿using Simulator.BotControl;
+﻿using EduBot.BotControl;
 using EduBotCore.Properties;
 using Telegram.Bot;
 
-namespace Simulator.Commands
+namespace EduBot.Commands
 {
     internal class AdminShowListCoursesForStatistics : Command
     {

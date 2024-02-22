@@ -1,10 +1,10 @@
-using Simulator.BotControl;
+using EduBot.BotControl;
 using EduBotCore.Properties;
 using EduBotCore.Models.DbModels;
 using Telegram.Bot;
 using EduBotCore.DbLibrary.StatsTableCommand;
 
-namespace Simulator.Commands
+namespace EduBot.Commands
 {
     public class WelcomeCommand : Command
     {

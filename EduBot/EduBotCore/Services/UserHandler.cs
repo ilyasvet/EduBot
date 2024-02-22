@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace Simulator.Services
+namespace EduBot.Services
 {
     public static class UserHandler
     {

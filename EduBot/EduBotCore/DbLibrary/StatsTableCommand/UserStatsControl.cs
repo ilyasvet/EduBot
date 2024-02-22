@@ -1,9 +1,9 @@
-﻿using Simulator.Models;
+﻿using EduBot.Models;
 using EduBotCore.Properties;
 using System.Text;
 using EduBotCore.Case;
 using EduBotCore.Models.DbModels;
-using Simulator.BotControl;
+using EduBot.BotControl;
 using DocumentFormat.OpenXml.Spreadsheet;
 
 namespace EduBotCore.DbLibrary.StatsTableCommand

@@ -1,7 +1,7 @@
-﻿using Simulator.BotControl;
-using Simulator.Models;
+﻿using EduBot.BotControl;
+using EduBot.Models;
 
-namespace Simulator.Services
+namespace EduBot.Services
 {
     internal static class EndStageCalc
     {

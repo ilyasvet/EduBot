@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Simulator.Models
+namespace EduBot.Models
 {
     internal abstract class CaseStage : IComparable
     {

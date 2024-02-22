@@ -1,4 +1,4 @@
-namespace Simulator.BotControl.State
+namespace EduBot.BotControl.State
 {
     public enum DialogState
     {

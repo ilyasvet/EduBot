@@ -1,9 +1,9 @@
-﻿using Simulator.BotControl;
+﻿using EduBot.BotControl;
 using EduBotCore.Properties;
 using EduBotCore.Models.DbModels;
 using Telegram.Bot;
 
-namespace Simulator.Commands
+namespace EduBot.Commands
 {
     public class GoToMainMenuCommand : Command
     {
