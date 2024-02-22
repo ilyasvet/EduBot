@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "G:\\Work\\Repos\\TestSimulator\\Simulator\\SimulatorCore\\EduBotCore.csproj": {}
+    "G:\\Work\\Repos\\TestSimulator\\EduBot\\EduBotCore\\EduBotCore.csproj": {}
   },
   "projects": {
-    "G:\\Work\\Repos\\TestSimulator\\Simulator\\SimulatorCore\\EduBotCore.csproj": {
+    "G:\\Work\\Repos\\TestSimulator\\EduBot\\EduBotCore\\EduBotCore.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "G:\\Work\\Repos\\TestSimulator\\Simulator\\SimulatorCore\\EduBotCore.csproj",
+        "projectUniqueName": "G:\\Work\\Repos\\TestSimulator\\EduBot\\EduBotCore\\EduBotCore.csproj",
         "projectName": "EduBotCore",
-        "projectPath": "G:\\Work\\Repos\\TestSimulator\\Simulator\\SimulatorCore\\EduBotCore.csproj",
+        "projectPath": "G:\\Work\\Repos\\TestSimulator\\EduBot\\EduBotCore\\EduBotCore.csproj",
         "packagesPath": "C:\\Users\\User\\.nuget\\packages\\",
-        "outputPath": "G:\\Work\\Repos\\TestSimulator\\Simulator\\SimulatorCore\\obj\\",
+        "outputPath": "G:\\Work\\Repos\\TestSimulator\\EduBot\\EduBotCore\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "E:\\VS\\Packages\\NuGetPackages"

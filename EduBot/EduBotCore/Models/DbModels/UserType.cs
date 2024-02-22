@@ -5,5 +5,6 @@
         Admin,
         ClassLeader,
         User,
+        Guest,
     }
 }

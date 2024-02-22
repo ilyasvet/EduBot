@@ -23,26 +23,36 @@ namespace Simulator.Commands
                                 text: param + "\nПереход в меню",
                                 replyMarkup: CommandKeyboard.ToMainMenu);
                 }
-                else
+                else 
                 {
-                    IReplyMarkup markup;
-                    UserFlags userFlags = await DataBaseControl.GetEntity<UserFlags>(userId);
-                    userFlags.CurrentCourse = null;
-                    await DataBaseControl.UpdateEntity(userId, userFlags);
-
-                    if (userState.LogedIn)
+					UserFlags userFlags = await DataBaseControl.GetEntity<UserFlags>(userId);
+					userFlags.CurrentCourse = null;
+					await DataBaseControl.UpdateEntity(userId, userFlags);
+					if (userState.GetUserType() != UserType.Guest)
                     {
-                        markup = CommandKeyboard.ToMainMenu;
+                        IReplyMarkup markup;
+
+                        if (userState.LogedIn)
+                        {
+                            markup = CommandKeyboard.ToMainMenu;
+                        }
+                        else
+                        {
+                            markup = CommandKeyboard.LogIn;
+                        }
+
+                        await botClient.SendTextMessageAsync(
+                                           chatId: userId,
+                                           text: param + "!",
+                                           replyMarkup: markup);
                     }
                     else
                     {
-                        markup = CommandKeyboard.LogIn;
+                        await botClient.SendTextMessageAsync(
+                                           chatId: userId,
+                                           text: param + "!",
+                                           replyMarkup: CommandKeyboard.ToMainMenu);
                     }
-
-                    await botClient.SendTextMessageAsync(
-                                       chatId: userId,
-                                       text: param + "!",
-                                       replyMarkup: markup);
                 }
             }
             else

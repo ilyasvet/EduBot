@@ -9,5 +9,6 @@ namespace Simulator.Services
             Regex regex = new Regex("[А-Я][а-я]+");
             return regex.IsMatch(inputName);
         }
+        
     }
 }

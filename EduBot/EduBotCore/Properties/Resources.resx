@@ -145,6 +145,9 @@
   <data name="ChoosingCourse" xml:space="preserve">
     <value>Выберите курс из списка</value>
   </data>
+  <data name="ClassLeaderMenu" xml:space="preserve">
+    <value>Это меню старосты</value>
+  </data>
   <data name="CreateCase" xml:space="preserve">
     <value>Добавьте файл формата электроной таблицы, которая содержит материалы курса по заданному шаблону</value>
   </data>
@@ -225,7 +228,7 @@
     <value>Приветствуем, вы администратор, как неожиданно и приятно!)</value>
   </data>
   <data name="WelcomeUnknown" xml:space="preserve">
-    <value>Приветствуем! К сожалению, вам недоступен этот курс</value>
+    <value>Приветствуем! Вы не зарегистрированы в системе, но можете проходить курсы в качестве гостя</value>
   </data>
   <data name="WrongArgumentMessage" xml:space="preserve">
     <value>Ты чё скинул...</value>

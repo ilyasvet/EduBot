@@ -143,6 +143,15 @@ namespace EduBotCore.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Это меню старосты.
+        /// </summary>
+        internal static string ClassLeaderMenu {
+            get {
+                return ResourceManager.GetString("ClassLeaderMenu", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Добавьте файл формата электроной таблицы, которая содержит материалы курса по заданному шаблону.
         /// </summary>
         internal static string CreateCase {
@@ -378,7 +387,7 @@ namespace EduBotCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Приветствуем! К сожалению, вам недоступен этот курс.
+        ///   Looks up a localized string similar to Приветствуем! Вы не зарегистрированы в системе, но можете проходить курсы в качестве гостя.
         /// </summary>
         internal static string WelcomeUnknown {
             get {

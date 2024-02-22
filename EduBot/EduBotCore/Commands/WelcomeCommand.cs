@@ -2,6 +2,7 @@ using Simulator.BotControl;
 using EduBotCore.Properties;
 using EduBotCore.Models.DbModels;
 using Telegram.Bot;
+using EduBotCore.DbLibrary.StatsTableCommand;
 
 namespace Simulator.Commands
 {
@@ -12,13 +13,20 @@ namespace Simulator.Commands
 			UserState userState = await DataBaseControl.GetEntity<UserState>(userId);
 			if (userState != null)
 			{
-                if (userState.GetUserType() != UserType.Admin)
+				if (userState.GetUserType() == UserType.Guest)
+				{
+					await botClient.SendTextMessageAsync(
+									   chatId: userId,
+									   text: Resources.WelcomeUnknown,
+									   replyMarkup: CommandKeyboard.ToMainMenu);
+				}
+				else if (userState.GetUserType() != UserType.Admin)
                 {
                     await botClient.SendTextMessageAsync(
                        chatId: userId,
                        text: Resources.WelcomeKnown,
                        replyMarkup: CommandKeyboard.LogIn);
-                }
+                }      
                 else
                 {
                     await botClient.SendTextMessageAsync(
@@ -29,10 +37,12 @@ namespace Simulator.Commands
             }
             else
             {
-                await botClient.SendTextMessageAsync(
+				UserStatsControl usc = new UserStatsControl();
+				await usc.AddGuestUserToAllTables(userId);
+				await botClient.SendTextMessageAsync(
                         chatId: userId,
                         text: Resources.WelcomeUnknown,
-                        replyMarkup: CommandKeyboard.TelegramId);
+                        replyMarkup: CommandKeyboard.ToMainMenu);
             }
         }
     }

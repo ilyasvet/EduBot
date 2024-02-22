@@ -119,6 +119,7 @@ namespace Simulator.BotControl
 
         public static async Task MakeCourses(string command, bool present, string groupNumber = "")
         {
+            groupNumber = groupNumber ?? "all";
             var courses = await DataBaseControl.GetCollection<Course>();
             IEnumerable<GroupCourse> groupsCourses = await DataBaseControl.GetCollection<GroupCourse>();
 

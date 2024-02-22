@@ -23,16 +23,16 @@ namespace Simulator.Commands
                 case UserType.ClassLeader:
                     endDialogMessageId = (await botClient.SendTextMessageAsync(
                             chatId: userId,
-                            text: Resources.UserMenu,
+                            text: Resources.ClassLeaderMenu,
                             replyMarkup: CommandKeyboard.GroupLeaderMenu)).MessageId;
                     break;
-                case UserType.User:
+                case UserType.User | UserType.Guest:
                     endDialogMessageId = (await botClient.SendTextMessageAsync(
                         chatId: userId,
                         text: Resources.UserMenu,
                         replyMarkup: CommandKeyboard.UserMenu)).MessageId;
                     break;
-                default:
+				default:
                     break;
             }
             endDialogMessageId--;

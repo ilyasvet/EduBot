@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("EduBotCore")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b3cfa00da51e1b3fbeb437c60986f28fd6c9142e")]
 [assembly: System.Reflection.AssemblyProductAttribute("EduBotCore")]
 [assembly: System.Reflection.AssemblyTitleAttribute("EduBotCore")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

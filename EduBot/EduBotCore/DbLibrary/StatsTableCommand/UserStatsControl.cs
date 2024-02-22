@@ -1,6 +1,10 @@
 ﻿using Simulator.Models;
 using EduBotCore.Properties;
 using System.Text;
+using EduBotCore.Case;
+using EduBotCore.Models.DbModels;
+using Simulator.BotControl;
+using DocumentFormat.OpenXml.Spreadsheet;
 
 namespace EduBotCore.DbLibrary.StatsTableCommand
 {
@@ -141,5 +145,53 @@ namespace EduBotCore.DbLibrary.StatsTableCommand
 			
 			await ExecuteNonQueryCommand(commandText.ToString());
         }
-    }
+		public async Task AddGuestUserToAllTables(long userId)
+		{
+			UserState userState = new UserState() { UserID = userId, LogedIn = true };
+			userState.SetUserType(UserType.Guest);
+			await DataBaseControl.AddEntity(userState);
+
+			UserFlags userFlags = new UserFlags() { UserID = userId };
+			await DataBaseControl.AddEntity(userFlags);
+
+			User user = new User() { UserID = userId, Name = "Юзер", Surname = "Гость" };
+			await DataBaseControl.AddEntity(user);
+
+			var courses = await DataBaseControl.GetCollection<Course>();
+			foreach (var course in courses)
+			{
+				var courseMaterials = CoursesControl.Courses[course.CourseName];
+
+				string addToRate = $"INSERT INTO stats{course.CourseName}rate (UserID) VALUES ({userId});";
+				string addToTime = $"INSERT INTO stats{course.CourseName}time (UserID) VALUES ({userId});";
+				string addToAnswers = $"INSERT INTO stats{course.CourseName}answers (UserID) VALUES ({userId});";
+				string addToState = $"INSERT INTO stats{course.CourseName}state (UserID, Point, ExtraAttempt, Attempts, Rate) VALUES" +
+					$" ({userId}, 0, {courseMaterials.ExtraAttempt}, {courseMaterials.AttemptCount}, 0);";
+				StringBuilder propNames = new StringBuilder("(UserId, AttemptsUsed, ");
+				StringBuilder propValues = new StringBuilder($"({userId}, 0, ");
+				for (int i = 1; i <= courseMaterials.AttemptCount; i++)
+				{
+					propNames.Append($"RateAttempt{i}");
+					propValues.Append("0");
+					if (i == courseMaterials.AttemptCount)
+					{
+						propNames.Append(")");
+						propValues.Append(")");
+					}
+					else
+					{
+						propNames.Append(", ");
+						propValues.Append(", ");
+					}
+				}
+				string addToBase = $"INSERT INTO stats{course.CourseName}Base {propNames} VALUES {propValues};";
+
+				await ExecuteNonQueryCommand(addToRate);
+				await ExecuteNonQueryCommand(addToTime);
+				await ExecuteNonQueryCommand(addToAnswers);
+				await ExecuteNonQueryCommand(addToState);
+				await ExecuteNonQueryCommand(addToBase);
+			}
+		}
+	}
 }
