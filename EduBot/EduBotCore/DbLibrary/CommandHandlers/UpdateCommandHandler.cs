@@ -24,7 +24,7 @@ namespace DbLibrary.CommandHandlers
         protected override StringBuilder GetCommandTextBase()
         {
             StringBuilder result = new StringBuilder();
-            result.Append($"UPDATE {_tableName} SET ");    
+            result.Append($"UPDATE {DbConfigProperties.DatabaseName}.{_tableName} SET ");    
 
             return result;
         }

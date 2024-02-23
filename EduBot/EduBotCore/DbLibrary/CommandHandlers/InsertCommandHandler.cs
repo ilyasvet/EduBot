@@ -19,7 +19,7 @@ namespace DbLibrary.CommandHandlers
         protected override StringBuilder GetCommandTextBase()
         {
             StringBuilder result = new StringBuilder();
-            result.Append($"INSERT INTO {_tableName} ");
+            result.Append($"INSERT INTO {DbConfigProperties.DatabaseName}.{_tableName} ");
 
             var properties = Properties.GetPropertiesNames(typeof(T).GetProperties());
             string propertyString = Properties.GetPropertiesString(properties);

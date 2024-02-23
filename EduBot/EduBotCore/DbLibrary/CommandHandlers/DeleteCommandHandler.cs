@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using EduBotCore.Properties;
+using System.Text;
 
 namespace DbLibrary.CommandHandlers
 {
@@ -21,7 +22,7 @@ namespace DbLibrary.CommandHandlers
         protected override StringBuilder GetCommandTextBase()
         {
             StringBuilder result = new StringBuilder();
-            result.Append($"DELETE FROM {_tableName} ");
+            result.Append($"DELETE FROM {DbConfigProperties.DatabaseName}.{_tableName} ");
             return result;
         }
     }
