@@ -87,7 +87,7 @@ namespace EduBot.BotControl
             }
 
             string courseName = Path.GetFileNameWithoutExtension(path);
-            string coursePath = ControlSystem.caseDirectory + "\\" + courseName;
+            string coursePath = ControlSystem.caseDirectory + "/" + courseName;
             bool isNew = !CoursesControl.Courses.Contains(courseName);
             ControlSystem.CreateDirectory(coursePath);
 

@@ -15,13 +15,20 @@ namespace DbLibrary.DbInterfaces
                 string DatabaseName = DbConfigProperties.DatabaseName;
 				string UserName = DbConfigProperties.UserName;
 				string Password = DbConfigProperties.Password;
-                int Port = int.Parse(DbConfigProperties.Port);
 
-                _connectionString =
+                if (DbConfigProperties.NeedPort == "true")
+                {
+                    int Port = int.Parse(DbConfigProperties.Port);
+                    _connectionString =
                     $"Server={Server}; database={DatabaseName}; UID={UserName}; password={Password}; port={Port}";
-     //           _connectionString =
-					//$"Server={Server}; database={DatabaseName}; UID={UserName}; password={Password}";
-			}
+                }
+                else
+                {
+					_connectionString =
+					$"Server={Server}; database={DatabaseName}; UID={UserName}; password={Password}";
+				}
+                
+            }
 
             private readonly MySqlConnection _connection;
 

@@ -70,6 +70,15 @@ namespace EduBotCore.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to false.
+        /// </summary>
+        internal static string NeedPort {
+            get {
+                return ResourceManager.GetString("NeedPort", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 1234.
         /// </summary>
         internal static string Password {

@@ -120,7 +120,7 @@ namespace EduBot.Services
 
         public static async Task<string> CreateCaseAsync(string path)
 		{
-            path = AppDomain.CurrentDomain.BaseDirectory + "\\" + path;
+            path = AppDomain.CurrentDomain.BaseDirectory + "/" + path;
 			using (SpreadsheetDocument document = SpreadsheetDocument.Open(path, false))
 			{
                 WorkbookPart? workbookPart = document.WorkbookPart;
@@ -410,7 +410,7 @@ namespace EduBot.Services
         public static async Task<int> AddUsersFromExcel(string path, string groupNumber)
         {
             int count = 0;
-			path = AppDomain.CurrentDomain.BaseDirectory + "\\" + path;
+			path = AppDomain.CurrentDomain.BaseDirectory + "/" + path;
 			using (SpreadsheetDocument document = SpreadsheetDocument.Open(path, false))
 			{
 				WorkbookPart? workbookPart = document.WorkbookPart;

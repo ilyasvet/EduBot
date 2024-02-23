@@ -21,7 +21,7 @@ namespace EduBotCore.Case
 		}
 		private static async Task MakeCourse(string coursePath)
 		{
-			string path = coursePath + "\\" + ControlSystem.caseInfoFileName;
+			string path = coursePath + "/" + ControlSystem.caseInfoFileName;
 
 			if (File.Exists(path))
 			{

@@ -120,6 +120,9 @@
   <data name="DatabaseName" xml:space="preserve">
     <value>edubot</value>
   </data>
+  <data name="NeedPort" xml:space="preserve">
+    <value>false</value>
+  </data>
   <data name="Password" xml:space="preserve">
     <value>1234</value>
   </data>

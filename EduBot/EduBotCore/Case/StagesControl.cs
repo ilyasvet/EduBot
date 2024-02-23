@@ -166,8 +166,8 @@ namespace EduBot.Case
             {
                 foreach (string fileName in nextStage.AdditionalInfoFiles[infoType])
                 {
-                    using (Stream fs = new FileStream(ControlSystem.caseDirectory + "\\" + courseName
-                        + "\\" + fileName.Trim(), FileMode.Open))
+                    using (Stream fs = new FileStream(ControlSystem.caseDirectory + "/" + courseName
+                        + "/" + fileName.Trim(), FileMode.Open))
                     {
                         switch (infoType)
                         {

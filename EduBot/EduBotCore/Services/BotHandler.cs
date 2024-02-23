@@ -10,7 +10,7 @@ namespace EduBot.Services
             var file = await botClient.GetFileAsync(messageDocument.FileId);
             //все файлы, посланные боту, хранятся в одной папке
 
-            string path = ControlSystem.tempDirectory + "\\" + messageDocument.FileName;
+            string path = ControlSystem.tempDirectory + "/" + messageDocument.FileName;
 
             FileStream fs = new FileStream(path, FileMode.Create);
             await botClient.DownloadFileAsync(file.FilePath, fs);
