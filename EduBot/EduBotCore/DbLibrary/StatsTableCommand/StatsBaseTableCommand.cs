@@ -4,7 +4,7 @@ namespace EduBotCore.DbLibrary.StatsTableCommand
 {
     public class StatsBaseTableCommand : CommandTable
     {
-        private const string TABLE_TYPE = "base";
+        private const string TABLE_TYPE = "based";
 
         public async Task SetAttemptsUsed(string courseName, long userId)
         {
@@ -21,16 +21,22 @@ namespace EduBotCore.DbLibrary.StatsTableCommand
             string commandText = $"SELECT AttemptsUsed FROM stats{courseName}{TABLE_TYPE} " +
                 $"WHERE UserID = {userId}";
 
-            int result = (int)await ExecuteReaderCommand(commandText, (reader) =>
+            var result = await ExecuteReaderCommand(commandText, (reader) =>
             {
                 if (reader.Read())
                 {
-                    return (int)reader[0];
+                    return reader[0];
                 }
                 return null;
             });
-
-            return result;
+            if (result == null)
+            {
+                return 0;
+            }
+            else
+            {
+                return (int)result;
+            }
         }
 
         public async Task SetAttemptRate(string courseName, long userId, int attemptNumber, double rate)

@@ -10,11 +10,11 @@ namespace EduBotCore.DbLibrary.StatsTableCommand
 {
     public enum StatsTableType
     {
-        Rate,
-        Answers,
-        Time,
-        Base,
-        State,
+        rate,
+        answers,
+        time,
+        based,
+        state,
     }
 
     //Тут создаются таблицы со статистикой и заполняются поумолчанию
