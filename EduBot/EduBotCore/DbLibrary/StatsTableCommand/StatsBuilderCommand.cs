@@ -1,11 +1,13 @@
-﻿namespace EduBotCore.DbLibrary.StatsTableCommand
+﻿using EduBotCore.Properties;
+
+namespace EduBotCore.DbLibrary.StatsTableCommand
 {
     // Тут получаем информацию с таблиц со статистикой для передачи в excel
     internal class StatsBuilderCommand : CommandTable
     {
         public async Task<List<string>> GetColumnsName(string TableName)
         {
-            string commandText = $"SELECT * FROM {TableName}";
+            string commandText = $"SELECT * FROM {DbConfigProperties.DatabaseName}.{TableName}";
 
             List<string> result = await ExecuteReaderCommand(commandText, (reader) =>
             {
@@ -26,11 +28,11 @@
             string commandText;
             if (groupNumber == "all")
             {
-                commandText = $"SELECT * FROM {TableName}";
+                commandText = $"SELECT * FROM {DbConfigProperties.DatabaseName}.{TableName}";
             }
             else
             {
-                commandText = $"SELECT * FROM {TableName} s WHERE s.UserID IN " +
+                commandText = $"SELECT * FROM {DbConfigProperties.DatabaseName}.{TableName} s WHERE s.UserID IN " +
                     $"(SELECT UserID FROM Users u WHERE u.GroupNumber = '{groupNumber}')";
             }
 
@@ -60,11 +62,11 @@
             string commandText;
             if (groupNumber == "all")
             {
-                commandText = $"SELECT UserID, Name, Surname FROM users";
+                commandText = $"SELECT UserID, Name, Surname FROM {DbConfigProperties.DatabaseName}.users";
             }
             else
             {
-                commandText = $"SELECT UserID, Name, Surname FROM users WHERE GroupNumber = '{groupNumber}'";
+                commandText = $"SELECT UserID, Name, Surname FROM {DbConfigProperties.DatabaseName}.users WHERE GroupNumber = '{groupNumber}'";
             }
 
             Dictionary<long, string> result = await ExecuteReaderCommand(commandText, (reader) =>

@@ -26,13 +26,11 @@ namespace EduBot.Commands
                             text: Resources.ClassLeaderMenu,
                             replyMarkup: CommandKeyboard.GroupLeaderMenu)).MessageId;
                     break;
-                case UserType.User | UserType.Guest:
+				default:
                     endDialogMessageId = (await botClient.SendTextMessageAsync(
                         chatId: userId,
                         text: Resources.UserMenu,
                         replyMarkup: CommandKeyboard.UserMenu)).MessageId;
-                    break;
-				default:
                     break;
             }
             endDialogMessageId--;

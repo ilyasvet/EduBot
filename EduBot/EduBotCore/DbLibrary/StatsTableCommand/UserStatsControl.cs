@@ -37,7 +37,7 @@ namespace EduBotCore.DbLibrary.StatsTableCommand
             string commandText = string.Empty;
             foreach (string tableName in tableNames)
             {
-                commandText += $"DROP TABLE {tableName};\n";
+                commandText += $"DROP TABLE {DbConfigProperties.DatabaseName}.{tableName};\n";
             }
             await ExecuteNonQueryCommand(commandText);
         }
@@ -162,10 +162,10 @@ namespace EduBotCore.DbLibrary.StatsTableCommand
 			{
 				var courseMaterials = CoursesControl.Courses[course.CourseName];
 
-				string addToRate = $"INSERT INTO stats{course.CourseName}rate (UserID) VALUES ({userId});";
-				string addToTime = $"INSERT INTO stats{course.CourseName}time (UserID) VALUES ({userId});";
-				string addToAnswers = $"INSERT INTO stats{course.CourseName}answers (UserID) VALUES ({userId});";
-				string addToState = $"INSERT INTO stats{course.CourseName}state (UserID, Point, ExtraAttempt, Attempts, Rate) VALUES" +
+				string addToRate = $"INSERT INTO {DbConfigProperties.DatabaseName}.stats{course.CourseName}rate (UserID) VALUES ({userId});";
+				string addToTime = $"INSERT INTO {DbConfigProperties.DatabaseName}.stats{course.CourseName}time (UserID) VALUES ({userId});";
+				string addToAnswers = $"INSERT INTO {DbConfigProperties.DatabaseName}.stats{course.CourseName}answers (UserID) VALUES ({userId});";
+				string addToState = $"INSERT INTO {DbConfigProperties.DatabaseName}.stats{course.CourseName}state (UserID, Point, ExtraAttempt, Attempts, Rate) VALUES" +
 					$" ({userId}, 0, {courseMaterials.ExtraAttempt}, {courseMaterials.AttemptCount}, 0);";
 				StringBuilder propNames = new StringBuilder("(UserId, AttemptsUsed, ");
 				StringBuilder propValues = new StringBuilder($"({userId}, 0, ");
@@ -184,7 +184,7 @@ namespace EduBotCore.DbLibrary.StatsTableCommand
 						propValues.Append(", ");
 					}
 				}
-				string addToBase = $"INSERT INTO stats{course.CourseName}Base {propNames} VALUES {propValues};";
+				string addToBase = $"INSERT INTO {DbConfigProperties.DatabaseName}.stats{course.CourseName}based {propNames} VALUES {propValues};";
 
 				await ExecuteNonQueryCommand(addToRate);
 				await ExecuteNonQueryCommand(addToTime);

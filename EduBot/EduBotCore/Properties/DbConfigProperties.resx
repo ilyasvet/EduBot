@@ -121,7 +121,7 @@
     <value>edubot</value>
   </data>
   <data name="NeedPort" xml:space="preserve">
-    <value>false</value>
+    <value>true</value>
   </data>
   <data name="Password" xml:space="preserve">
     <value>1234</value>
